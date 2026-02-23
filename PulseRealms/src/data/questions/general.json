@@ -1,0 +1,14 @@
+{
+  "questions": [
+    { "id": "gen_001", "subject": "general", "difficulty": 1, "text": "Which continent is Egypt located in?", "options": ["Asia", "Africa", "Europe", "South America"], "correctIndex": 1 },
+    { "id": "gen_002", "subject": "general", "difficulty": 1, "text": "What is the capital of France?", "options": ["Paris", "Rome", "Berlin", "Lisbon"], "correctIndex": 0 },
+    { "id": "gen_003", "subject": "general", "difficulty": 2, "text": "Which gas do plants mainly absorb?", "options": ["Oxygen", "Hydrogen", "Carbon Dioxide", "Nitrogen"], "correctIndex": 2 },
+    { "id": "gen_004", "subject": "general", "difficulty": 2, "text": "Who wrote 'Romeo and Juliet'?", "options": ["Mark Twain", "William Shakespeare", "Jane Austen", "Charles Dickens"], "correctIndex": 1 },
+    { "id": "gen_005", "subject": "general", "difficulty": 3, "text": "What is the largest ocean on Earth?", "options": ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"], "correctIndex": 2 },
+    { "id": "gen_006", "subject": "general", "difficulty": 3, "text": "Which organ in the human body pumps blood?", "options": ["Lung", "Kidney", "Liver", "Heart"], "correctIndex": 3 },
+    { "id": "gen_007", "subject": "general", "difficulty": 4, "text": "The Magna Carta was signed in which year?", "options": ["1066", "1215", "1492", "1776"], "correctIndex": 1 },
+    { "id": "gen_008", "subject": "general", "difficulty": 4, "text": "Which city hosted the 2016 Summer Olympics?", "options": ["Beijing", "London", "Rio de Janeiro", "Tokyo"], "correctIndex": 2 },
+    { "id": "gen_009", "subject": "general", "difficulty": 5, "text": "Who proposed the three laws of motion?", "options": ["Newton", "Einstein", "Galileo", "Kepler"], "correctIndex": 0 },
+    { "id": "gen_010", "subject": "general", "difficulty": 5, "text": "What is the term for a word opposite in meaning to another?", "options": ["Synonym", "Homonym", "Antonym", "Acronym"], "correctIndex": 2 }
+  ]
+}

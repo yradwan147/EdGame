@@ -1,0 +1,18 @@
+{
+  "name": "pulse-realms-omniverse-trials",
+  "version": "1.0.0",
+  "description": "Pulse Realms MVP built with KAPLAY.js",
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve -p 5175",
+    "start": "npx serve -p 5175"
+  },
+  "keywords": [
+    "kaplay",
+    "education",
+    "mcq",
+    "multiplayer-ready",
+    "telemetry"
+  ],
+  "license": "MIT"
+}
