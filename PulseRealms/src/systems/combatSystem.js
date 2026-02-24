@@ -11,6 +11,7 @@ export function createCombatSystem({
     telemetry,
     progression,
     gameStateStore,
+    onEffect = null,
 }) {
     const seenQuestionIds = questionEngine.createSeenSet();
 
@@ -80,6 +81,18 @@ export function createCombatSystem({
         const effect = correct
             ? applyActionEffect({ actionId, actorObj, targetObj, power })
             : { success: false, value: 0, effectType: "miss" };
+
+        if (onEffect) {
+            onEffect({
+                effectType: effect.effectType,
+                actionId,
+                actorObj,
+                targetObj,
+                value: effect.value,
+                power,
+                correct,
+            });
+        }
 
         telemetry.event("action_performed", {
             actionType: actionId,

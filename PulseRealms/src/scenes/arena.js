@@ -8,6 +8,7 @@ import { createQuestionOverlay } from "../components/questionOverlay.js";
 import { createHudRenderer } from "../components/hudRenderer.js";
 import { playerComp } from "../components/playerComp.js";
 import { botComp } from "../components/botComp.js";
+import { createActionEffects } from "../components/actionEffects.js";
 
 let spritesLoaded = false;
 
@@ -78,12 +79,34 @@ export function registerArenaScene({
         const botAI = createBotAI();
         const overlay = createQuestionOverlay(k);
         const hud = createHudRenderer(k, { progression });
+        const actionEffects = createActionEffects(k);
+
         const combatSystem = createCombatSystem({
             questionEngine,
             overlay,
             telemetry,
             progression,
             gameStateStore,
+            onEffect: ({ effectType, actorObj, targetObj, value, power }) => {
+                const fromX = actorObj?.pos?.x ?? 0;
+                const fromY = actorObj?.pos?.y ?? 0;
+                const toX = (targetObj?.pos?.x ?? actorObj?.pos?.x) ?? 0;
+                const toY = (targetObj?.pos?.y ?? actorObj?.pos?.y) ?? 0;
+                const from = { x: fromX, y: fromY };
+                const to = { x: toX, y: toY };
+                if (effectType === "damage") {
+                    actionEffects.attackBeam(from, to, [255, 90, 90]);
+                    actionEffects.damage(to, power, targetObj?.isPlayerControlled ?? false);
+                } else if (effectType === "heal") {
+                    actionEffects.attackBeam(from, to, [80, 255, 140]);
+                    actionEffects.heal(to, value);
+                } else if (effectType === "shield" || effectType === "barrier") {
+                    actionEffects.attackBeam(from, to, [90, 180, 255]);
+                    actionEffects.shield(to);
+                } else if (effectType === "miss") {
+                    actionEffects.miss(to);
+                }
+            },
         });
 
         const sessionId = telemetry.beginSession({
