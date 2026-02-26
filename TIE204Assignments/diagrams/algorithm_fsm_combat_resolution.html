@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Question-Gated Combat Resolution — Finite State Machine</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:14px}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:#0d0d1a;color:#e0e0e0;
+    min-height:100vh;padding:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .title-bar{
+    background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);
+    padding:28px 48px;border-bottom:3px solid #0f3460;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .title-bar h1{font-size:1.55rem;font-weight:700;color:#fff;letter-spacing:-.3px}
+  .title-bar h1 span{color:#00d4ff;font-weight:300}
+  .title-bar .meta{font-size:.85rem;color:#8892b0;font-weight:400;text-align:right;line-height:1.5}
+
+  .canvas{
+    display:flex;gap:28px;
+    max-width:1860px;margin:0 auto;padding:28px 40px 40px;
+  }
+  .fsm-area{flex:1;position:relative}
+  .side-panel{width:310px;flex-shrink:0;display:flex;flex-direction:column;gap:16px}
+
+  svg.fsm{width:100%;height:auto;display:block}
+
+  .info-card{
+    background:linear-gradient(135deg,#12182a,#0f1a30);
+    border:1px solid #1e2d48;border-radius:14px;
+    padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.4);
+  }
+  .info-card h3{font-size:.85rem;font-weight:600;color:#00d4ff;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .info-card p{font-size:.76rem;color:#a0aec0;line-height:1.6}
+  .highlight{color:#fbbf24;font-weight:500}
+
+  .callout{
+    background:#0f3460;border-left:4px solid #00d4ff;
+    border-radius:0 10px 10px 0;padding:18px 20px;
+  }
+  .callout p{font-size:.78rem;color:#c0d0e8;line-height:1.65;font-style:italic}
+
+  .color-key{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+  .color-key .item{display:flex;align-items:center;gap:10px;font-size:.72rem;color:#a0aec0}
+  .color-key .swatch{width:28px;height:4px;border-radius:2px}
+
+  @media print{body{background:#fff;color:#111}.info-card,.callout{background:#f5f5f5;border-color:#ccc}}
+</style>
+</head>
+<body>
+
+<div class="title-bar">
+  <h1>EdGame <span>—</span> Question-Gated Combat Resolution <span>— Finite State Machine</span></h1>
+  <div class="meta">TIE 204 Lab 2<br>February 2026</div>
+</div>
+
+<div class="canvas">
+
+<div class="fsm-area">
+<svg class="fsm" viewBox="0 0 1200 950" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Arrowhead markers -->
+    <marker id="ag" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><path d="M0,0 L10,3.5 L0,7 Z" fill="#4ade80"/></marker>
+    <marker id="ar" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><path d="M0,0 L10,3.5 L0,7 Z" fill="#f87171"/></marker>
+    <marker id="ab" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><path d="M0,0 L10,3.5 L0,7 Z" fill="#60a5fa"/></marker>
+    <marker id="ao" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><path d="M0,0 L10,3.5 L0,7 Z" fill="#fbbf24"/></marker>
+    <marker id="ac" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><path d="M0,0 L10,3.5 L0,7 Z" fill="#00d4ff"/></marker>
+  </defs>
+
+  <!--
+    LAYOUT PLAN (1200 x 950 viewBox):
+    ═══════════════════════════════════════════════════
+    Central column X center = 500
+    Error states (3, 4) to the RIGHT at X ~850, ~1020
+    Left margin for 13→1 loop: X = 40
+    Right margin for 3→1, 4→1 loops: X = 1160
+
+    Row Y positions (≥80px gaps):
+      Row 0 (S1):           Y = 40
+      Row 1 (S2):           Y = 140
+      Row 1 error (S3, S4): Y = 140  (same row, to the right)
+      Row 2 (S5):           Y = 260
+      Row 3 (S6):           Y = 370
+      Row 4 (S7):           Y = 480
+      Row 5 (S8, S9):       Y = 590
+      Row 6 (S10):          Y = 710
+      Row 7 (S11, S12, S13):Y = 830
+  -->
+
+  <!-- ══════════════════ STATES ══════════════════ -->
+
+  <!-- S1: Idle (start state — double border, cyan) -->
+  <g transform="translate(405,40)">
+    <rect width="190" height="58" rx="12" fill="#12182a" stroke="#00d4ff" stroke-width="3"/>
+    <rect x="4" y="4" width="182" height="50" rx="9" fill="none" stroke="#00d4ff" stroke-width="1"/>
+    <text x="95" y="26" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12">1. Idle</text>
+    <text x="95" y="44" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">Waiting for ability trigger</text>
+  </g>
+  <!-- S1 center: (500, 69) -->
+
+  <!-- S2: Validate Target (blue) -->
+  <g transform="translate(390,140)">
+    <rect width="220" height="58" rx="12" fill="#12182a" stroke="#60a5fa" stroke-width="2"/>
+    <text x="110" y="26" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12">2. Validate Target</text>
+    <text x="110" y="44" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">Check range + cooldown</text>
+  </g>
+  <!-- S2 center: (500, 169)  right edge: 610 -->
+
+  <!-- S3: Out of Range (red, error — to the RIGHT) -->
+  <g transform="translate(730,120)">
+    <rect width="190" height="58" rx="12" fill="#2a0a0a" stroke="#f87171" stroke-width="2"/>
+    <text x="95" y="26" text-anchor="middle" fill="#f87171" font-family="Inter" font-weight="600" font-size="12">3. Out of Range</text>
+    <text x="95" y="44" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">Show message &rarr; Idle</text>
+  </g>
+  <!-- S3 center: (825, 149)  top: 120  bottom: 178 -->
+
+  <!-- S4: On Cooldown (yellow, error — to the RIGHT, below S3) -->
+  <g transform="translate(730,200)">
+    <rect width="190" height="58" rx="12" fill="#2a1a0a" stroke="#fbbf24" stroke-width="2"/>
+    <text x="95" y="26" text-anchor="middle" fill="#fbbf24" font-family="Inter" font-weight="600" font-size="12">4. On Cooldown</text>
+    <text x="95" y="44" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">Show timer &rarr; Idle</text>
+  </g>
+  <!-- S4 center: (825, 229)  top: 200  bottom: 258 -->
+
+  <!-- S5: Fetch Question (blue) -->
+  <g transform="translate(385,260)">
+    <rect width="230" height="58" rx="12" fill="#12182a" stroke="#60a5fa" stroke-width="2"/>
+    <text x="115" y="26" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12">5. Fetch Question</text>
+    <text x="115" y="44" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">Request from Adaptive Engine</text>
+  </g>
+  <!-- S5 center: (500, 289) -->
+
+  <!-- S6: Present MCQ (cyan) -->
+  <g transform="translate(375,370)">
+    <rect width="250" height="58" rx="12" fill="#12182a" stroke="#00d4ff" stroke-width="2"/>
+    <text x="125" y="26" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12">6. Present MCQ</text>
+    <text x="125" y="44" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">Overlay displayed, 8s timer starts</text>
+  </g>
+  <!-- S6 center: (500, 399) -->
+
+  <!-- S7: Evaluate Answer (blue) -->
+  <g transform="translate(370,480)">
+    <rect width="260" height="58" rx="12" fill="#12182a" stroke="#60a5fa" stroke-width="2"/>
+    <text x="130" y="26" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12">7. Evaluate Answer</text>
+    <text x="130" y="44" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">Compare selected vs. correctIndex</text>
+  </g>
+  <!-- S7 center: (500, 509)   left: 370   right: 630 -->
+
+  <!-- S8: Compute Power (green, LEFT branch) -->
+  <g transform="translate(145,590)">
+    <rect width="310" height="62" rx="12" fill="#0a2a1a" stroke="#4ade80" stroke-width="2"/>
+    <text x="155" y="24" text-anchor="middle" fill="#4ade80" font-family="Inter" font-weight="600" font-size="12">8. Compute Power</text>
+    <text x="155" y="42" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="8.5">correct=true</text>
+    <text x="155" y="55" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="8">speedMul = max(1,min(2, 2.2-ms/5000))</text>
+  </g>
+  <!-- S8 center: (300, 621)   bottom: 652 -->
+
+  <!-- S9: Miss Effect (red, RIGHT branch) -->
+  <g transform="translate(545,590)">
+    <rect width="260" height="62" rx="12" fill="#2a0a0a" stroke="#f87171" stroke-width="2"/>
+    <text x="130" y="24" text-anchor="middle" fill="#f87171" font-family="Inter" font-weight="600" font-size="12">9. Miss Effect</text>
+    <text x="130" y="42" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="8.5">correct=false</text>
+    <text x="130" y="55" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="8">power=0, miss animation</text>
+  </g>
+  <!-- S9 center: (675, 621)   bottom: 652 -->
+
+  <!-- S10: Apply Effect (blue) -->
+  <g transform="translate(350,710)">
+    <rect width="300" height="58" rx="12" fill="#12182a" stroke="#60a5fa" stroke-width="2"/>
+    <text x="150" y="26" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12">10. Apply Effect</text>
+    <text x="150" y="44" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">Damage / Heal / Shield &rarr; target</text>
+  </g>
+  <!-- S10 center: (500, 739)   bottom: 768 -->
+
+  <!-- S11: Emit Telemetry (blue, bottom row LEFT) -->
+  <g transform="translate(100,830)">
+    <rect width="290" height="58" rx="12" fill="#12182a" stroke="#60a5fa" stroke-width="2"/>
+    <text x="145" y="26" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12">11. Emit Telemetry</text>
+    <text x="145" y="44" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">question_answered + action_performed</text>
+  </g>
+  <!-- S11 center: (245, 859)   right: 390 -->
+
+  <!-- S12: Grant XP (blue, bottom row CENTER) -->
+  <g transform="translate(440,830)">
+    <rect width="260" height="58" rx="12" fill="#12182a" stroke="#60a5fa" stroke-width="2"/>
+    <text x="130" y="26" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12">12. Grant XP</text>
+    <text x="130" y="44" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">XP = base x diff x speed x correct</text>
+  </g>
+  <!-- S12 center: (570, 859)   right: 700 -->
+
+  <!-- S13: Set Cooldown (blue, bottom row RIGHT) -->
+  <g transform="translate(750,830)">
+    <rect width="240" height="58" rx="12" fill="#12182a" stroke="#60a5fa" stroke-width="2"/>
+    <text x="120" y="26" text-anchor="middle" fill="#fff" font-family="Inter" font-weight="600" font-size="12">13. Set Cooldown</text>
+    <text x="120" y="44" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">ability.cooldown timer starts</text>
+  </g>
+  <!-- S13 center: (870, 859)   right: 990 -->
+
+
+  <!-- ══════════════════ ARROWS ══════════════════ -->
+
+  <!-- 1 → 2 (blue, straight down center) -->
+  <path d="M500,98 L500,140" fill="none" stroke="#60a5fa" stroke-width="2" marker-end="url(#ab)"/>
+
+  <!-- 2 → 3 (red, "out of range" — right from S2 to S3) -->
+  <path d="M610,155 L730,149" fill="none" stroke="#f87171" stroke-width="2" marker-end="url(#ar)"/>
+  <g>
+    <rect x="632" y="139" width="75" height="16" rx="4" fill="#0d0d1a" fill-opacity="0.9"/>
+    <text x="670" y="151" text-anchor="middle" fill="#f87171" font-family="JetBrains Mono" font-size="8.5">out of range</text>
+  </g>
+
+  <!-- 2 → 4 (yellow, "on cooldown" — right from S2 to S4) -->
+  <path d="M610,180 Q670,210 730,225" fill="none" stroke="#fbbf24" stroke-width="2" marker-end="url(#ao)"/>
+  <g>
+    <rect x="632" y="198" width="75" height="16" rx="4" fill="#0d0d1a" fill-opacity="0.9"/>
+    <text x="670" y="210" text-anchor="middle" fill="#fbbf24" font-family="JetBrains Mono" font-size="8.5">on cooldown</text>
+  </g>
+
+  <!-- 2 → 5 (blue, "valid" — straight down center) -->
+  <path d="M500,198 L500,260" fill="none" stroke="#60a5fa" stroke-width="2" marker-end="url(#ab)"/>
+  <g>
+    <rect x="506" y="218" width="34" height="16" rx="4" fill="#0d0d1a" fill-opacity="0.9"/>
+    <text x="523" y="230" text-anchor="middle" fill="#60a5fa" font-family="JetBrains Mono" font-size="8.5">valid</text>
+  </g>
+
+  <!-- 3 → 1 (red dashed, loop-back along RIGHT margin) -->
+  <!-- From S3 right edge → right margin → up → across top → into S1 top -->
+  <path d="M920,149 L1150,149 L1150,30 L595,30 L595,55" fill="none" stroke="#f87171" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#ar)"/>
+
+  <!-- 4 → 1 (yellow dashed, loop-back along RIGHT margin, slightly offset) -->
+  <!-- From S4 right edge → right margin → up → across top → into S1 top-right -->
+  <path d="M920,229 L1140,229 L1140,20 L590,20 L590,40" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#ao)"/>
+
+  <!-- 5 → 6 (blue, straight down) -->
+  <path d="M500,318 L500,370" fill="none" stroke="#60a5fa" stroke-width="2" marker-end="url(#ab)"/>
+
+  <!-- 6 → 7 (blue, straight down) -->
+  <path d="M500,428 L500,480" fill="none" stroke="#60a5fa" stroke-width="2" marker-end="url(#ab)"/>
+
+  <!-- 7 → 8 (green, "correct" — branch LEFT) -->
+  <path d="M370,525 Q330,560 320,590" fill="none" stroke="#4ade80" stroke-width="2" marker-end="url(#ag)"/>
+  <g>
+    <rect x="310" y="550" width="52" height="16" rx="4" fill="#0d0d1a" fill-opacity="0.9"/>
+    <text x="336" y="562" text-anchor="middle" fill="#4ade80" font-family="JetBrains Mono" font-size="9" font-weight="500">correct</text>
+  </g>
+
+  <!-- 7 → 9 (red, "wrong" — branch RIGHT) -->
+  <path d="M630,525 Q660,560 665,590" fill="none" stroke="#f87171" stroke-width="2" marker-end="url(#ar)"/>
+  <g>
+    <rect x="640" y="550" width="45" height="16" rx="4" fill="#0d0d1a" fill-opacity="0.9"/>
+    <text x="663" y="562" text-anchor="middle" fill="#f87171" font-family="JetBrains Mono" font-size="9" font-weight="500">wrong</text>
+  </g>
+
+  <!-- 8 → 10 (green, merge back to center) -->
+  <path d="M380,652 Q430,690 430,710" fill="none" stroke="#4ade80" stroke-width="2" marker-end="url(#ag)"/>
+
+  <!-- 9 → 10 (red, merge back to center, label "power=0") -->
+  <path d="M620,652 Q580,690 570,710" fill="none" stroke="#f87171" stroke-width="2" marker-end="url(#ar)"/>
+  <g>
+    <rect x="585" y="674" width="52" height="16" rx="4" fill="#0d0d1a" fill-opacity="0.9"/>
+    <text x="611" y="686" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="8">power=0</text>
+  </g>
+
+  <!-- 10 → 11 (blue, down and left to bottom row) -->
+  <path d="M420,768 Q340,800 310,830" fill="none" stroke="#60a5fa" stroke-width="2" marker-end="url(#ab)"/>
+
+  <!-- 11 → 12 (blue, horizontal right) -->
+  <path d="M390,859 L440,859" fill="none" stroke="#60a5fa" stroke-width="2" marker-end="url(#ab)"/>
+
+  <!-- 12 → 13 (blue, horizontal right) -->
+  <path d="M700,859 L750,859" fill="none" stroke="#60a5fa" stroke-width="2" marker-end="url(#ab)"/>
+
+  <!-- 13 → 1 (blue dashed, "loop back" — LEFT margin, clean vertical path) -->
+  <!-- From S13 bottom → down → left margin → up entire height → right → into S1 left -->
+  <path d="M870,888 L870,920 L50,920 L50,69 L405,69" fill="none" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#ab)"/>
+  <g>
+    <rect x="28" y="485" width="16" height="68" rx="4" fill="#0d0d1a" fill-opacity="0.9"/>
+    <text x="36" y="525" text-anchor="middle" fill="#60a5fa" font-family="JetBrains Mono" font-size="8" transform="rotate(-90,36,525)">loop back</text>
+  </g>
+
+</svg>
+</div>
+
+<div class="side-panel">
+
+  <div class="info-card callout">
+    <h3>&#128161; Core Insight</h3>
+    <p>This is the core of <span class="highlight">stealth assessment</span> &mdash; students don't feel "tested" because the question IS the gameplay. Every ability requires knowledge to use. <span class="highlight">Assessment and play are indistinguishable.</span></p>
+  </div>
+
+  <div class="info-card">
+    <h3>&#128260; State Flow</h3>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:.68rem;line-height:1.9;color:#60a5fa">
+      1 &rarr; 2 &rarr; {3&rarr;1 | 4&rarr;1 | 5}<br>
+      &rarr; 6 &rarr; 7 &rarr; {8 | 9}<br>
+      &rarr; 10 &rarr; 11 &rarr; 12 &rarr; 13 &rarr; 1
+    </p>
+  </div>
+
+  <div class="info-card">
+    <h3>&#127912; Color Key</h3>
+    <div class="color-key">
+      <div class="item"><div class="swatch" style="background:#4ade80"></div> Correct answer path</div>
+      <div class="item"><div class="swatch" style="background:#f87171"></div> Wrong answer / out of range</div>
+      <div class="item"><div class="swatch" style="background:#fbbf24"></div> On cooldown</div>
+      <div class="item"><div class="swatch" style="background:#60a5fa"></div> System flow</div>
+      <div class="item"><div class="swatch" style="background:#00d4ff"></div> Start state / MCQ display</div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <h3>&#9889; Speed Multiplier</h3>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#4ade80;line-height:1.8">
+      speedMul = max(1, min(2, 2.2 - ms/5000))
+    </p>
+    <p style="margin-top:8px">
+      Faster correct answers yield higher damage. Rewards both <span class="highlight">accuracy</span> and <span class="highlight">fluency</span>.
+    </p>
+  </div>
+
+  <div class="info-card">
+    <h3>&#128200; XP Formula</h3>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#00d4ff;line-height:1.8">
+      XP = base &times; difficulty<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&times; speedMultiplier<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&times; correctness
+    </p>
+    <p style="margin-top:8px">
+      Harder questions at higher difficulty levels grant proportionally more XP, rewarding growth.
+    </p>
+  </div>
+
+</div>
+</div>
+
+</body>
+</html>

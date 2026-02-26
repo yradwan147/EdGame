@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algorithm-to-System Layer Mapping</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:14px}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:#0d0d1a;color:#e0e0e0;
+    min-height:100vh;padding:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .title-bar{
+    background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);
+    padding:28px 48px;border-bottom:3px solid #0f3460;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .title-bar h1{font-size:1.6rem;font-weight:700;color:#fff;letter-spacing:-.3px}
+  .title-bar h1 span{color:#00d4ff;font-weight:300}
+  .title-bar .meta{font-size:.85rem;color:#8892b0;font-weight:400;text-align:right;line-height:1.5}
+
+  .canvas{
+    max-width:1860px;margin:0 auto;padding:28px 40px 48px;
+  }
+
+  /* ── Layer strips ── */
+  .layers{display:flex;flex-direction:column;gap:0;position:relative}
+
+  .layer-strip{
+    padding:24px 32px;
+    border:1px solid transparent;
+    position:relative;
+    min-height:120px;
+    display:flex;align-items:flex-start;gap:24px;
+  }
+  .layer-strip .layer-header{
+    width:200px;flex-shrink:0;
+    padding-top:4px;
+  }
+  .layer-strip .layer-header .num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:24px;height:24px;border-radius:50%;
+    font-size:.7rem;font-weight:700;margin-right:8px;
+  }
+  .layer-strip .layer-header .name{
+    font-size:.85rem;font-weight:600;color:#fff;
+  }
+  .layer-strip .layer-header .sub{
+    font-size:.7rem;color:#8892b0;margin-top:4px;display:block;
+  }
+  .layer-strip .content{flex:1;display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}
+
+  .l1{background:linear-gradient(90deg,#1a2440 0%,#162030 100%);border-color:#1e3050;border-radius:14px 14px 0 0}
+  .l1 .num{background:#3b82f6;color:#fff}
+  .l2{background:linear-gradient(90deg,#14203a 0%,#101828 100%);border-color:#162848}
+  .l2 .num{background:#2563eb;color:#fff}
+  .l3{background:linear-gradient(90deg,#0e1828 0%,#0a1220 100%);border-color:#122040}
+  .l3 .num{background:#1d4ed8;color:#fff}
+  .l4{background:linear-gradient(90deg,#0a1420 0%,#080e18 100%);border-color:#0f1a30;border-radius:0 0 14px 14px}
+  .l4 .num{background:#1e40af;color:#fff}
+
+  /* ── Algorithm cards ── */
+  .algo-card{
+    background:#12182a;
+    border:2px solid;
+    border-radius:12px;
+    padding:18px 22px;
+    min-width:280px;max-width:440px;
+    box-shadow:0 6px 24px rgba(0,0,0,.45);
+    position:relative;
+  }
+  .algo-card .algo-name{
+    font-size:.95rem;font-weight:700;margin-bottom:6px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .algo-card .algo-name .dot{
+    width:10px;height:10px;border-radius:50%;flex-shrink:0;
+  }
+  .algo-card .algo-desc{
+    font-size:.72rem;color:#a0aec0;line-height:1.5;margin-bottom:10px;
+  }
+
+  .justify-box{
+    background:#0a1220;
+    border:1px solid #1e2d48;
+    border-radius:8px;
+    padding:10px 14px;
+    margin-top:6px;
+  }
+  .justify-box .jlabel{
+    font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;
+    color:#8892b0;margin-bottom:5px;
+  }
+  .justify-box ul{list-style:none;padding:0}
+  .justify-box ul li{
+    font-size:.7rem;color:#c0d0e8;padding:2px 0 2px 12px;position:relative;line-height:1.45;
+  }
+  .justify-box ul li::before{
+    content:'';position:absolute;left:0;top:8px;
+    width:5px;height:5px;border-radius:50%;background:#0f3460;
+  }
+
+  .ac-adaptive{border-color:#4ade80}
+  .ac-adaptive .algo-name{color:#4ade80}
+  .ac-adaptive .algo-name .dot{background:#4ade80}
+
+  .ac-combat{border-color:#60a5fa}
+  .ac-combat .algo-name{color:#60a5fa}
+  .ac-combat .algo-name .dot{background:#60a5fa}
+
+  .ac-metric{border-color:#fbbf24}
+  .ac-metric .algo-name{color:#fbbf24}
+  .ac-metric .algo-name .dot{background:#fbbf24}
+
+  .ac-insight{border-color:#c084fc}
+  .ac-insight .algo-name{color:#c084fc}
+  .ac-insight .algo-name .dot{background:#c084fc}
+
+  /* ── Data flow arrows (SVG overlay) ── */
+  .flow-overlay{
+    position:relative;
+    margin-top:32px;
+  }
+  svg.flow{width:100%;height:auto;display:block}
+
+  /* ── Span badge for layer 3-4 ── */
+  .span-badge{
+    position:absolute;right:-8px;top:50%;transform:translateY(-50%);
+    background:#1e1b4b;color:#c084fc;
+    font-size:.6rem;font-weight:600;
+    padding:3px 8px;border-radius:4px;
+    white-space:nowrap;
+    border:1px solid #c084fc40;
+  }
+
+  /* ── Teacher Dashboard callout ── */
+  .dashboard-callout{
+    background:#16213e;border:1.5px solid #00d4ff;border-radius:10px;
+    padding:12px 18px;min-width:180px;
+  }
+  .dashboard-callout .dc-name{
+    font-size:.82rem;font-weight:600;color:#00d4ff;
+  }
+  .dashboard-callout .dc-sub{
+    font-size:.68rem;color:#8892b0;margin-top:2px;
+  }
+
+  @media print{body{background:#fff;color:#111}.layer-strip{background:#f5f5f5!important}.algo-card{background:#fff}}
+</style>
+</head>
+<body>
+
+<div class="title-bar">
+  <h1>EdGame <span>—</span> Algorithm-to-System Layer Mapping</h1>
+  <div class="meta">TIE 204 Lab 2<br>February 2026</div>
+</div>
+
+<div class="canvas">
+
+  <!-- ══ LAYER DIAGRAM ══ -->
+  <div class="layers">
+
+    <!-- Layer 1: Client Browser -->
+    <div class="layer-strip l1">
+      <div class="layer-header">
+        <span class="num">1</span><span class="name">Client Browser</span>
+        <span class="sub">Student's device</span>
+      </div>
+      <div class="content">
+        <div class="algo-card ac-adaptive">
+          <div class="algo-name"><span class="dot"></span>Adaptive Difficulty</div>
+          <div class="algo-desc">Adjusts question difficulty in real-time based on student performance streaks and skill rating.</div>
+          <div class="justify-box">
+            <div class="jlabel">Justification for Client Placement</div>
+            <ul>
+              <li>Latency &lt; 100 ms required for smooth UX</li>
+              <li>Per-session state only (no persistence needed)</li>
+              <li>No server round-trip; runs in game loop</li>
+            </ul>
+          </div>
+        </div>
+        <div class="algo-card ac-combat">
+          <div class="algo-name"><span class="dot"></span>Combat Resolution</div>
+          <div class="algo-desc">Validates abilities, presents MCQ overlay, computes power based on answer correctness and speed.</div>
+          <div class="justify-box">
+            <div class="jlabel">Justification for Client Placement</div>
+            <ul>
+              <li>Synchronous with game loop (60 fps)</li>
+              <li>MCQ overlay blocks game; must be instant</li>
+              <li>Bot simulation runs locally</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dashboard-callout" style="margin-left:auto">
+          <div class="dc-name">Teacher Dashboard</div>
+          <div class="dc-sub">Next.js + React (also in browser)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layer 2: Cloud Edge -->
+    <div class="layer-strip l2">
+      <div class="layer-header">
+        <span class="num">2</span><span class="name">Cloud Edge</span>
+        <span class="sub">Vercel Edge Network</span>
+      </div>
+      <div class="content">
+        <div style="display:flex;align-items:center;gap:16px;padding:8px 0">
+          <div style="background:#0f1a30;border:1px solid #1e2d48;border-radius:8px;padding:10px 18px">
+            <div style="font-size:.78rem;font-weight:500;color:#60a5fa">API Routes</div>
+            <div style="font-size:.65rem;color:#8892b0;margin-top:2px">/api/sessions, /api/analytics</div>
+          </div>
+          <div style="background:#0f1a30;border:1px solid #1e2d48;border-radius:8px;padding:10px 18px">
+            <div style="font-size:.78rem;font-weight:500;color:#60a5fa">Edge Functions</div>
+            <div style="font-size:.65rem;color:#8892b0;margin-top:2px">Auth, Rate limit, CORS</div>
+          </div>
+          <div style="font-size:.7rem;color:#6b7280;font-style:italic;padding-left:20px">Pass-through layer: routes requests, no algorithm execution</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layer 3: Backend Database -->
+    <div class="layer-strip l3">
+      <div class="layer-header">
+        <span class="num">3</span><span class="name">Backend Database</span>
+        <span class="sub">Supabase PostgreSQL</span>
+      </div>
+      <div class="content">
+        <div class="algo-card ac-metric">
+          <div class="algo-name"><span class="dot"></span>Metric Computation</div>
+          <div class="algo-desc">Computes 15+ behavioral metrics from raw event JSONB using SQL aggregation functions.</div>
+          <div class="justify-box">
+            <div class="jlabel">Justification for Backend Placement</div>
+            <ul>
+              <li>Tamper-proof: students cannot modify metrics</li>
+              <li>Full event history needed for aggregation</li>
+              <li>SQL aggregation (SUM, AVG, REGR_SLOPE)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="algo-card ac-insight" style="position:relative">
+          <div class="algo-name"><span class="dot"></span>Insight Generation</div>
+          <div class="algo-desc">Ranks insights by priority, generates natural language messages with actionable recommendations.</div>
+          <div class="justify-box">
+            <div class="jlabel">Justification for Backend + Edge Placement</div>
+            <ul>
+              <li>Cross-student comparison required</li>
+              <li>Historical data (7-day trends) needed</li>
+              <li>Cacheable for 24 hours (low urgency)</li>
+            </ul>
+          </div>
+          <div class="span-badge">Spans Layer 3 &amp; 4</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layer 4: Analytics / BI -->
+    <div class="layer-strip l4">
+      <div class="layer-header">
+        <span class="num">4</span><span class="name">Analytics / BI</span>
+        <span class="sub">Supabase + Edge Functions</span>
+      </div>
+      <div class="content">
+        <div style="display:flex;align-items:center;gap:16px;padding:8px 0;flex-wrap:wrap">
+          <div style="background:#0a1220;border:1px solid #1e1b4b;border-radius:8px;padding:10px 18px;border-left:3px solid #c084fc">
+            <div style="font-size:.78rem;font-weight:500;color:#c084fc">Daily Rollup Cron</div>
+            <div style="font-size:.65rem;color:#8892b0;margin-top:2px">student_metrics_daily aggregation</div>
+          </div>
+          <div style="background:#0a1220;border:1px solid #1e1b4b;border-radius:8px;padding:10px 18px;border-left:3px solid #c084fc">
+            <div style="font-size:.78rem;font-weight:500;color:#c084fc">Insight Cache</div>
+            <div style="font-size:.65rem;color:#8892b0;margin-top:2px">24h TTL, refreshed on dashboard load</div>
+          </div>
+          <div style="font-size:.7rem;color:#6b7280;font-style:italic;padding-left:20px">Insight Generation spans into this layer via Edge Functions</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ DATA FLOW ARROWS (SVG) ══ -->
+  <div class="flow-overlay">
+    <svg class="flow" viewBox="0 0 1200 340" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="mGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <path d="M0,0 L10,3.5 L0,7 Z" fill="#4ade80"/>
+        </marker>
+        <marker id="mBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <path d="M0,0 L10,3.5 L0,7 Z" fill="#60a5fa"/>
+        </marker>
+        <marker id="mYellow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <path d="M0,0 L10,3.5 L0,7 Z" fill="#fbbf24"/>
+        </marker>
+        <marker id="mPurple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <path d="M0,0 L10,3.5 L0,7 Z" fill="#c084fc"/>
+        </marker>
+        <marker id="mCyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <path d="M0,0 L10,3.5 L0,7 Z" fill="#00d4ff"/>
+        </marker>
+        <marker id="mGreenL" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+          <path d="M10,0 L0,3.5 L10,7 Z" fill="#4ade80"/>
+        </marker>
+      </defs>
+
+      <!-- Title -->
+      <text x="600" y="22" text-anchor="middle" fill="#8892b0" font-family="Inter" font-weight="600" font-size="12" letter-spacing="1.5" text-decoration="none">DATA FLOW BETWEEN ALGORITHMS</text>
+
+      <!-- Nodes representing algorithms -->
+      <!-- Adaptive Difficulty (Layer 1) -->
+      <g transform="translate(50,50)">
+        <rect width="200" height="44" rx="10" fill="#0a2a1a" stroke="#4ade80" stroke-width="2"/>
+        <text x="100" y="28" text-anchor="middle" fill="#4ade80" font-family="Inter" font-weight="600" font-size="11">Adaptive Difficulty</text>
+        <text x="100" y="58" text-anchor="middle" fill="#6b7280" font-family="Inter" font-size="8">Layer 1 — Client</text>
+      </g>
+
+      <!-- Combat Resolution (Layer 1) -->
+      <g transform="translate(350,50)">
+        <rect width="200" height="44" rx="10" fill="#0f1a30" stroke="#60a5fa" stroke-width="2"/>
+        <text x="100" y="28" text-anchor="middle" fill="#60a5fa" font-family="Inter" font-weight="600" font-size="11">Combat Resolution</text>
+        <text x="100" y="58" text-anchor="middle" fill="#6b7280" font-family="Inter" font-size="8">Layer 1 — Client</text>
+      </g>
+
+      <!-- Metric Computation (Layer 3) -->
+      <g transform="translate(350,170)">
+        <rect width="200" height="44" rx="10" fill="#1a1a0a" stroke="#fbbf24" stroke-width="2"/>
+        <text x="100" y="28" text-anchor="middle" fill="#fbbf24" font-family="Inter" font-weight="600" font-size="11">Metric Computation</text>
+        <text x="100" y="58" text-anchor="middle" fill="#6b7280" font-family="Inter" font-size="8">Layer 3 — Backend</text>
+      </g>
+
+      <!-- Insight Generation (Layer 3-4) -->
+      <g transform="translate(700,170)">
+        <rect width="200" height="44" rx="10" fill="#1a0a2a" stroke="#c084fc" stroke-width="2"/>
+        <text x="100" y="28" text-anchor="middle" fill="#c084fc" font-family="Inter" font-weight="600" font-size="11">Insight Generation</text>
+        <text x="100" y="58" text-anchor="middle" fill="#6b7280" font-family="Inter" font-size="8">Layer 3-4 — Backend + Edge</text>
+      </g>
+
+      <!-- Teacher Dashboard (Layer 1) -->
+      <g transform="translate(900,50)">
+        <rect width="200" height="44" rx="10" fill="#0f1a30" stroke="#00d4ff" stroke-width="2"/>
+        <text x="100" y="28" text-anchor="middle" fill="#00d4ff" font-family="Inter" font-weight="600" font-size="11">Teacher Dashboard</text>
+        <text x="100" y="58" text-anchor="middle" fill="#6b7280" font-family="Inter" font-size="8">Layer 1 — Client</text>
+      </g>
+
+      <!-- ═══ FLOW ARROWS ═══ -->
+
+      <!-- Adaptive Difficulty ↔ Combat Resolution (bidirectional - question) -->
+      <path d="M250,65 L350,65" fill="none" stroke="#4ade80" stroke-width="2" marker-end="url(#mGreen)"/>
+      <path d="M350,80 L250,80" fill="none" stroke="#4ade80" stroke-width="2" marker-end="url(#mGreenL)"/>
+      <rect x="268" y="54" width="64" height="16" rx="3" fill="#0d0d1a"/>
+      <text x="300" y="66" text-anchor="middle" fill="#4ade80" font-family="JetBrains Mono" font-size="8" font-weight="500">question</text>
+
+      <!-- Combat Resolution → Metric Computation (events, batch POST /10s) -->
+      <path d="M480,94 L480,170" fill="none" stroke="#fbbf24" stroke-width="2" marker-end="url(#mYellow)"/>
+      <rect x="490" y="118" width="115" height="28" rx="4" fill="#0d0d1a" stroke="#fbbf2440" stroke-width="1"/>
+      <text x="548" y="130" text-anchor="middle" fill="#fbbf24" font-family="JetBrains Mono" font-size="8" font-weight="500">events (raw)</text>
+      <text x="548" y="142" text-anchor="middle" fill="#8892b0" font-family="JetBrains Mono" font-size="7">batch POST /10s</text>
+
+      <!-- Metric Computation → Insight Generation -->
+      <path d="M550,192 L700,192" fill="none" stroke="#c084fc" stroke-width="2" marker-end="url(#mPurple)"/>
+      <rect x="580" y="200" width="110" height="28" rx="4" fill="#0d0d1a" stroke="#c084fc40" stroke-width="1"/>
+      <text x="635" y="212" text-anchor="middle" fill="#c084fc" font-family="JetBrains Mono" font-size="8" font-weight="500">metrics</text>
+      <text x="635" y="224" text-anchor="middle" fill="#8892b0" font-family="JetBrains Mono" font-size="7">on session end</text>
+
+      <!-- Insight Generation → Teacher Dashboard -->
+      <path d="M850,170 Q950,140 990,94" fill="none" stroke="#00d4ff" stroke-width="2" marker-end="url(#mCyan)"/>
+      <rect x="920" y="118" width="130" height="28" rx="4" fill="#0d0d1a" stroke="#00d4ff40" stroke-width="1"/>
+      <text x="985" y="130" text-anchor="middle" fill="#00d4ff" font-family="JetBrains Mono" font-size="8" font-weight="500">insights</text>
+      <text x="985" y="142" text-anchor="middle" fill="#8892b0" font-family="JetBrains Mono" font-size="7">on load or daily cron</text>
+
+      <!-- Legend row -->
+      <g transform="translate(50,280)">
+        <text x="0" y="0" fill="#8892b0" font-family="Inter" font-weight="600" font-size="10" letter-spacing="1">TIMING ANNOTATIONS</text>
+
+        <line x1="0" y1="20" x2="30" y2="20" stroke="#fbbf24" stroke-width="2"/>
+        <text x="38" y="24" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">batch POST every 10 seconds (event buffer flush)</text>
+
+        <line x1="450" y1="20" x2="480" y2="20" stroke="#c084fc" stroke-width="2"/>
+        <text x="488" y="24" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">on session end (metric computation trigger)</text>
+
+        <line x1="0" y1="40" x2="30" y2="40" stroke="#00d4ff" stroke-width="2"/>
+        <text x="38" y="44" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">on dashboard load or daily cron (insight refresh)</text>
+
+        <line x1="450" y1="40" x2="480" y2="40" stroke="#4ade80" stroke-width="2"/>
+        <text x="488" y="44" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">synchronous within game loop (question fetch)</text>
+      </g>
+
+    </svg>
+  </div>
+
+</div>
+
+</body>
+</html>

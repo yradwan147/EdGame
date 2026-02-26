@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Behavioral Metric Computation &amp; Insight Generation — Dataflow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:14px}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:#0d0d1a;color:#e0e0e0;
+    min-height:100vh;padding:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .title-bar{
+    background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);
+    padding:28px 48px;border-bottom:3px solid #0f3460;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .title-bar h1{font-size:1.5rem;font-weight:700;color:#fff;letter-spacing:-.3px}
+  .title-bar h1 span{color:#00d4ff;font-weight:300}
+  .title-bar .meta{font-size:.85rem;color:#8892b0;font-weight:400;text-align:right;line-height:1.5}
+
+  .canvas{
+    max-width:1860px;margin:0 auto;padding:28px 40px 48px;
+    display:flex;flex-direction:column;gap:24px;
+  }
+
+  .section-title{
+    font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:1.8px;
+    color:#8892b0;margin-bottom:4px;display:flex;align-items:center;gap:10px;
+  }
+  .section-title .badge{
+    background:#0f3460;color:#00d4ff;padding:3px 10px;border-radius:4px;font-size:.65rem;
+  }
+
+  /* ── SVG area ── */
+  svg.dataflow{width:100%;height:auto;display:block}
+
+  /* ── Shared box styles in SVG ── */
+  .df-box rect{rx:10;ry:10}
+  .df-box text.label{font-family:'Inter',sans-serif;font-weight:600;font-size:11.5px;fill:#fff}
+  .df-box text.sub{font-family:'JetBrains Mono',monospace;font-weight:400;font-size:8.5px;fill:#a0aec0}
+
+  /* ── Dimension colors ── */
+  .dim-d1{fill:#1a2a4a;stroke:#60a5fa}
+  .dim-d1-header{fill:#2a3a5a}
+  .dim-d2{fill:#1a2a2a;stroke:#4ade80}
+  .dim-d2-header{fill:#1a3a2a}
+  .dim-d3{fill:#2a2a1a;stroke:#fbbf24}
+  .dim-d3-header{fill:#3a3a1a}
+  .dim-d5{fill:#2a1a3a;stroke:#c084fc}
+  .dim-d5-header{fill:#3a1a4a}
+
+  .insight-box{fill:#12182a;stroke:#0f3460}
+  .output-box{fill:#0a2040;stroke:#00d4ff}
+
+  @media print{body{background:#fff;color:#111}}
+</style>
+</head>
+<body>
+
+<div class="title-bar">
+  <h1>EdGame <span>—</span> Behavioral Metric Computation &amp; Insight Generation <span>— Dataflow</span></h1>
+  <div class="meta">TIE 204 Lab 2<br>February 2026</div>
+</div>
+
+<div class="canvas">
+
+<!-- ════════════════════════════════════════ -->
+<!-- SECTION 1: METRIC COMPUTATION           -->
+<!-- ════════════════════════════════════════ -->
+<div>
+  <div class="section-title"><span class="badge">Part A</span> Metric Computation Pipeline</div>
+  <svg class="dataflow" viewBox="0 0 1200 520" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="aDown" markerWidth="8" markerHeight="6" refX="4" refY="6" orient="auto"><path d="M0,0 L4,6 L8,0" fill="none" stroke="#0f3460" stroke-width="1.5"/></marker>
+      <marker id="aDownCyan" markerWidth="8" markerHeight="6" refX="4" refY="6" orient="auto"><path d="M0,0 L4,6 L8,0" fill="none" stroke="#00d4ff" stroke-width="1.5"/></marker>
+    </defs>
+
+    <!-- Raw Events -->
+    <g transform="translate(400,10)">
+      <rect width="400" height="56" rx="10" fill="#1a1a2e" stroke="#00d4ff" stroke-width="2"/>
+      <text x="200" y="24" text-anchor="middle" fill="#00d4ff" font-family="Inter" font-weight="600" font-size="13">Raw Events JSONB</text>
+      <text x="200" y="44" text-anchor="middle" fill="#8892b0" font-family="JetBrains Mono" font-size="9">100 - 1,000 events per session</text>
+    </g>
+
+    <!-- Arrow down -->
+    <line x1="600" y1="66" x2="600" y2="95" stroke="#0f3460" stroke-width="2" marker-end="url(#aDown)"/>
+
+    <!-- Event Parser -->
+    <g transform="translate(380,95)">
+      <rect width="440" height="48" rx="10" fill="#12182a" stroke="#60a5fa" stroke-width="2"/>
+      <text x="220" y="30" text-anchor="middle" fill="#60a5fa" font-family="Inter" font-weight="600" font-size="12">Event Parser &amp; Classifier</text>
+    </g>
+
+    <!-- 4 fan-out arrows -->
+    <line x1="480" y1="143" x2="180" y2="195" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#aDown)"/>
+    <line x1="540" y1="143" x2="460" y2="195" stroke="#4ade80" stroke-width="1.5" marker-end="url(#aDown)"/>
+    <line x1="660" y1="143" x2="740" y2="195" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#aDown)"/>
+    <line x1="720" y1="143" x2="1020" y2="195" stroke="#c084fc" stroke-width="1.5" marker-end="url(#aDown)"/>
+
+    <!-- D1: Cognitive -->
+    <g transform="translate(60,195)">
+      <rect width="240" height="155" rx="10" class="dim-d1" stroke-width="2"/>
+      <rect width="240" height="30" rx="10" class="dim-d1-header"/>
+      <rect x="0" y="15" width="240" height="15" class="dim-d1-header" rx="0"/>
+      <text x="120" y="20" text-anchor="middle" fill="#60a5fa" font-family="Inter" font-weight="700" font-size="11">D1: Cognitive</text>
+      <text x="20" y="52" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">correctness_rate</text>
+      <text x="20" y="70" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">response_time_avg</text>
+      <text x="20" y="88" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">speed_accuracy_tradeoff</text>
+      <text x="20" y="106" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">error_type_distribution</text>
+      <text x="20" y="124" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">BKT_mastery_estimate</text>
+      <text x="20" y="142" fill="#60a5fa" font-family="JetBrains Mono" font-size="8" font-weight="500">5 metrics</text>
+    </g>
+
+    <!-- D2: Engagement -->
+    <g transform="translate(340,195)">
+      <rect width="240" height="155" rx="10" class="dim-d2" stroke-width="2"/>
+      <rect width="240" height="30" rx="10" class="dim-d2-header"/>
+      <rect x="0" y="15" width="240" height="15" class="dim-d2-header" rx="0"/>
+      <text x="120" y="20" text-anchor="middle" fill="#4ade80" font-family="Inter" font-weight="700" font-size="11">D2: Engagement</text>
+      <text x="20" y="52" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">time_on_task</text>
+      <text x="20" y="70" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">session_frequency</text>
+      <text x="20" y="88" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">completion_rate</text>
+      <text x="20" y="106" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">replay_rate</text>
+      <text x="20" y="124" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">dropout_point</text>
+      <text x="20" y="142" fill="#4ade80" font-family="JetBrains Mono" font-size="8" font-weight="500">5 metrics</text>
+    </g>
+
+    <!-- D3: Strategic -->
+    <g transform="translate(620,195)">
+      <rect width="240" height="155" rx="10" class="dim-d3" stroke-width="2"/>
+      <rect width="240" height="30" rx="10" class="dim-d3-header"/>
+      <rect x="0" y="15" width="240" height="15" class="dim-d3-header" rx="0"/>
+      <text x="120" y="20" text-anchor="middle" fill="#fbbf24" font-family="Inter" font-weight="700" font-size="11">D3: Strategic</text>
+      <text x="20" y="52" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">action_variety_index</text>
+      <text x="20" y="70" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">strategy_classification</text>
+      <text x="20" y="88" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">exploration_paths</text>
+      <text x="20" y="106" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">experimentation_score</text>
+      <text x="20" y="142" fill="#fbbf24" font-family="JetBrains Mono" font-size="8" font-weight="500">4 metrics</text>
+    </g>
+
+    <!-- D5: SEL -->
+    <g transform="translate(900,195)">
+      <rect width="240" height="155" rx="10" class="dim-d5" stroke-width="2"/>
+      <rect width="240" height="30" rx="10" class="dim-d5-header"/>
+      <rect x="0" y="15" width="240" height="15" class="dim-d5-header" rx="0"/>
+      <text x="120" y="20" text-anchor="middle" fill="#c084fc" font-family="Inter" font-weight="700" font-size="11">D5: SEL</text>
+      <text x="20" y="52" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">persistence_score</text>
+      <text x="20" y="70" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">frustration_index</text>
+      <text x="20" y="88" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">help_seeking_rate</text>
+      <text x="20" y="106" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">growth_mindset_proxy</text>
+      <text x="20" y="142" fill="#c084fc" font-family="JetBrains Mono" font-size="8" font-weight="500">4 metrics (inferred)</text>
+    </g>
+
+    <!-- Fan-in arrows to aggregator -->
+    <line x1="180" y1="350" x2="480" y2="400" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#aDown)"/>
+    <line x1="460" y1="350" x2="540" y2="400" stroke="#4ade80" stroke-width="1.5" marker-end="url(#aDown)"/>
+    <line x1="740" y1="350" x2="660" y2="400" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#aDown)"/>
+    <line x1="1020" y1="350" x2="720" y2="400" stroke="#c084fc" stroke-width="1.5" marker-end="url(#aDown)"/>
+
+    <!-- Metric Aggregator -->
+    <g transform="translate(380,400)">
+      <rect width="440" height="48" rx="10" fill="#12182a" stroke="#00d4ff" stroke-width="2"/>
+      <text x="220" y="30" text-anchor="middle" fill="#00d4ff" font-family="Inter" font-weight="600" font-size="12">Metric Aggregator (SUM, AVG, REGR_SLOPE)</text>
+    </g>
+
+    <!-- Fan-out to two stores -->
+    <line x1="500" y1="448" x2="280" y2="478" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#aDownCyan)"/>
+    <line x1="700" y1="448" x2="870" y2="478" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#aDownCyan)"/>
+
+    <!-- Store 1: game_sessions.computed_metrics -->
+    <g transform="translate(80,478)">
+      <rect width="340" height="38" rx="8" fill="#0a2040" stroke="#00d4ff" stroke-width="1.5"/>
+      <text x="170" y="24" text-anchor="middle" fill="#00d4ff" font-family="JetBrains Mono" font-weight="500" font-size="10">game_sessions.computed_metrics</text>
+    </g>
+
+    <!-- Store 2: student_metrics_daily -->
+    <g transform="translate(760,478)">
+      <rect width="340" height="38" rx="8" fill="#0a2040" stroke="#00d4ff" stroke-width="1.5"/>
+      <text x="170" y="24" text-anchor="middle" fill="#00d4ff" font-family="JetBrains Mono" font-weight="500" font-size="10">student_metrics_daily (cron rollup)</text>
+    </g>
+
+    <!-- Total metrics label -->
+    <g transform="translate(10,460)">
+      <text fill="#6b7280" font-family="Inter" font-size="9" font-style="italic">Total: 15+ core metrics across 4 behavioral dimensions</text>
+    </g>
+  </svg>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- SECTION 2: INSIGHT GENERATION           -->
+<!-- ════════════════════════════════════════ -->
+<div>
+  <div class="section-title"><span class="badge">Part B</span> Insight Generation Pipeline</div>
+  <svg class="dataflow" viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="aD2" markerWidth="8" markerHeight="6" refX="4" refY="6" orient="auto"><path d="M0,0 L4,6 L8,0" fill="none" stroke="#0f3460" stroke-width="1.5"/></marker>
+      <marker id="aDc2" markerWidth="8" markerHeight="6" refX="4" refY="6" orient="auto"><path d="M0,0 L4,6 L8,0" fill="none" stroke="#00d4ff" stroke-width="1.5"/></marker>
+    </defs>
+
+    <!-- Three input sources -->
+    <g transform="translate(60,10)">
+      <rect width="280" height="48" rx="10" fill="#0a2040" stroke="#00d4ff" stroke-width="1.5"/>
+      <text x="140" y="20" text-anchor="middle" fill="#00d4ff" font-family="JetBrains Mono" font-weight="500" font-size="10">student_metrics_daily</text>
+      <text x="140" y="36" text-anchor="middle" fill="#6b7280" font-family="JetBrains Mono" font-size="8">per-student daily aggregates</text>
+    </g>
+    <g transform="translate(400,10)">
+      <rect width="280" height="48" rx="10" fill="#0a2040" stroke="#00d4ff" stroke-width="1.5"/>
+      <text x="140" y="20" text-anchor="middle" fill="#00d4ff" font-family="JetBrains Mono" font-weight="500" font-size="10">class_baselines</text>
+      <text x="140" y="36" text-anchor="middle" fill="#6b7280" font-family="JetBrains Mono" font-size="8">class-wide averages &amp; percentiles</text>
+    </g>
+    <g transform="translate(740,10)">
+      <rect width="280" height="48" rx="10" fill="#0a2040" stroke="#00d4ff" stroke-width="1.5"/>
+      <text x="140" y="20" text-anchor="middle" fill="#00d4ff" font-family="JetBrains Mono" font-weight="500" font-size="10">historical_trends (7-day)</text>
+      <text x="140" y="36" text-anchor="middle" fill="#6b7280" font-family="JetBrains Mono" font-size="8">rolling window comparisons</text>
+    </g>
+
+    <!-- Fan-in arrows -->
+    <line x1="200" y1="58" x2="480" y2="100" stroke="#0f3460" stroke-width="1.5" marker-end="url(#aD2)"/>
+    <line x1="540" y1="58" x2="540" y2="100" stroke="#0f3460" stroke-width="1.5" marker-end="url(#aD2)"/>
+    <line x1="880" y1="58" x2="620" y2="100" stroke="#0f3460" stroke-width="1.5" marker-end="url(#aD2)"/>
+
+    <!-- Insight Ranker -->
+    <g transform="translate(280,100)">
+      <rect width="520" height="120" rx="12" fill="#12182a" stroke="#fbbf24" stroke-width="2"/>
+      <rect width="520" height="32" rx="12" fill="#2a2a1a"/>
+      <rect x="0" y="16" width="520" height="16" fill="#2a2a1a" rx="0"/>
+      <text x="260" y="22" text-anchor="middle" fill="#fbbf24" font-family="Inter" font-weight="700" font-size="12">Insight Ranker</text>
+
+      <text x="30" y="52" fill="#8892b0" font-family="Inter" font-weight="500" font-size="9">Priority:</text>
+      <rect x="90" y="42" width="75" height="18" rx="4" fill="#7f1d1d"/>
+      <text x="128" y="55" text-anchor="middle" fill="#f87171" font-family="Inter" font-weight="600" font-size="9">struggling</text>
+      <text x="172" y="55" fill="#8892b0" font-family="Inter" font-size="9">&gt;</text>
+      <rect x="182" y="42" width="105" height="18" rx="4" fill="#713f12"/>
+      <text x="235" y="55" text-anchor="middle" fill="#fbbf24" font-family="Inter" font-weight="600" font-size="9">needs_attention</text>
+      <text x="294" y="55" fill="#8892b0" font-family="Inter" font-size="9">&gt;</text>
+      <rect x="304" y="42" width="75" height="18" rx="4" fill="#14532d"/>
+      <text x="342" y="55" text-anchor="middle" fill="#4ade80" font-family="Inter" font-weight="600" font-size="9">improving</text>
+      <text x="386" y="55" fill="#8892b0" font-family="Inter" font-size="9">&gt;</text>
+      <rect x="396" y="42" width="70" height="18" rx="4" fill="#1e1b4b"/>
+      <text x="431" y="55" text-anchor="middle" fill="#818cf8" font-family="Inter" font-weight="600" font-size="9">excelling</text>
+
+      <text x="30" y="78" fill="#a0aec0" font-family="JetBrains Mono" font-size="8.5">accuracy &lt; 0.4 on concept</text>
+      <text x="300" y="78" fill="#f87171" font-family="JetBrains Mono" font-size="8.5">&rarr; "struggling"</text>
+
+      <text x="30" y="93" fill="#a0aec0" font-family="JetBrains Mono" font-size="8.5">accuracy declined 20%+ this week</text>
+      <text x="300" y="93" fill="#fbbf24" font-family="JetBrains Mono" font-size="8.5">&rarr; "needs_attention"</text>
+
+      <text x="30" y="108" fill="#a0aec0" font-family="JetBrains Mono" font-size="8.5">persistence after failure increased</text>
+      <text x="300" y="108" fill="#4ade80" font-family="JetBrains Mono" font-size="8.5">&rarr; "improving"</text>
+
+      <text x="30" y="123" fill="#a0aec0" font-family="JetBrains Mono" font-size="8.5">mastery on 3+ concepts</text>
+      <text x="300" y="123" fill="#818cf8" font-family="JetBrains Mono" font-size="8.5">&rarr; "excelling"</text>
+    </g>
+
+    <!-- Arrow down -->
+    <line x1="540" y1="220" x2="540" y2="255" stroke="#0f3460" stroke-width="2" marker-end="url(#aD2)"/>
+
+    <!-- Top-3 Filter -->
+    <g transform="translate(380,255)">
+      <rect width="320" height="52" rx="10" fill="#12182a" stroke="#60a5fa" stroke-width="2"/>
+      <text x="160" y="22" text-anchor="middle" fill="#60a5fa" font-family="Inter" font-weight="600" font-size="12">Top-3 Filter</text>
+      <text x="160" y="40" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">Select 3 highest-priority insights</text>
+    </g>
+
+    <!-- Arrow down -->
+    <line x1="540" y1="307" x2="540" y2="340" stroke="#0f3460" stroke-width="2" marker-end="url(#aD2)"/>
+
+    <!-- Natural Language Generator -->
+    <g transform="translate(340,340)">
+      <rect width="400" height="52" rx="10" fill="#12182a" stroke="#c084fc" stroke-width="2"/>
+      <text x="200" y="22" text-anchor="middle" fill="#c084fc" font-family="Inter" font-weight="600" font-size="12">Natural Language Generator</text>
+      <text x="200" y="40" text-anchor="middle" fill="#a0aec0" font-family="JetBrains Mono" font-size="9">metric + threshold &rarr; human message + action</text>
+    </g>
+
+    <!-- Arrow down -->
+    <line x1="540" y1="392" x2="540" y2="425" stroke="#00d4ff" stroke-width="2" marker-end="url(#aDc2)"/>
+
+    <!-- Output: StudentInsight[] -->
+    <g transform="translate(200,425)">
+      <rect width="680" height="125" rx="12" fill="#0a2040" stroke="#00d4ff" stroke-width="2"/>
+      <rect width="680" height="30" rx="12" fill="#0f3460"/>
+      <rect x="0" y="15" width="680" height="15" fill="#0f3460" rx="0"/>
+      <text x="340" y="22" text-anchor="middle" fill="#00d4ff" font-family="Inter" font-weight="700" font-size="12">StudentInsight[] Output</text>
+
+      <text x="30" y="52" fill="#6b7280" font-family="JetBrains Mono" font-size="9">Example output:</text>
+      <text x="30" y="70" fill="#f87171" font-family="JetBrains Mono" font-size="9.5">type: "struggling"</text>
+      <text x="30" y="86" fill="#a0aec0" font-family="JetBrains Mono" font-size="9.5">metric: "accuracy_by_concept"</text>
+      <text x="30" y="102" fill="#fff" font-family="JetBrains Mono" font-size="9.5">message: "Sarah struggles with fractions (42% accuracy)"</text>
+      <text x="30" y="118" fill="#4ade80" font-family="JetBrains Mono" font-size="9.5">action: "Reteach equivalent fractions with visual models"</text>
+    </g>
+
+    <!-- Arrow to Teacher Dashboard -->
+    <line x1="540" y1="550" x2="540" y2="556" stroke="#00d4ff" stroke-width="0"/>
+    <g transform="translate(860,445)">
+      <line x1="0" y1="20" x2="80" y2="20" stroke="#00d4ff" stroke-width="2" marker-end="url(#aDc2)"/>
+      <rect x="88" y="0" width="200" height="40" rx="8" fill="#16213e" stroke="#00d4ff" stroke-width="1.5"/>
+      <text x="188" y="16" text-anchor="middle" fill="#00d4ff" font-family="Inter" font-weight="600" font-size="10">Teacher Dashboard</text>
+      <text x="188" y="32" text-anchor="middle" fill="#8892b0" font-family="JetBrains Mono" font-size="8">Top-3 Insights Cards</text>
+    </g>
+
+  </svg>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdGame — Functional Block Diagram</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:#0d0d1a;
+    color:#e0e0e0;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .title-bar{
+    background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);
+    padding:24px 48px;
+    border-bottom:3px solid #0f3460;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .title-bar h1{font-size:1.65rem;font-weight:700;color:#fff;letter-spacing:-.3px}
+  .title-bar h1 span{color:#00d4ff;font-weight:300}
+  .title-bar .meta{font-size:.85rem;color:#8892b0;font-weight:400;text-align:right;line-height:1.5}
+  .diagram-wrap{
+    display:flex;
+    justify-content:center;
+    padding:16px 12px 24px;
+    background:#0d0d1a;
+  }
+  .diagram-wrap svg{
+    max-width:100%;
+    height:auto;
+  }
+</style>
+</head>
+<body>
+
+<!-- Title Bar -->
+<div class="title-bar">
+  <h1>EdGame <span>—</span> Functional Block Diagram</h1>
+  <div class="meta">TIE 204 Lab 3 | February 2026</div>
+</div>
+
+<!-- Static SVG Diagram -->
+<div class="diagram-wrap">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1050" width="1500" height="1050">
+<defs>
+  <!-- Arrowhead: unidirectional (cyan) -->
+  <marker id="ah-uni" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L10,3.5 L0,7 Z" fill="#00d4ff"/>
+  </marker>
+  <!-- Arrowhead: bidirectional end (gold) -->
+  <marker id="ah-bi-end" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L10,3.5 L0,7 Z" fill="#fbbf24"/>
+  </marker>
+  <!-- Arrowhead: bidirectional start (gold) -->
+  <marker id="ah-bi-start" markerWidth="10" markerHeight="7" refX="1" refY="3.5" orient="auto" markerUnits="strokeWidth">
+    <path d="M10,0 L0,3.5 L10,7 Z" fill="#fbbf24"/>
+  </marker>
+  <!-- Glow filter for blocks -->
+  <filter id="block-shadow" x="-4%" y="-4%" width="108%" height="116%">
+    <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/>
+  </filter>
+</defs>
+
+<!-- Background -->
+<rect width="1500" height="1050" fill="#0d0d1a"/>
+
+<!-- ================================================================== -->
+<!-- ROW 0: External Actor — Student                                     -->
+<!-- ================================================================== -->
+<g id="ext-student">
+  <rect x="20" y="20" width="150" height="70" rx="12" fill="#12182a" stroke="#4a5568" stroke-width="2" stroke-dasharray="6,4" filter="url(#block-shadow)"/>
+  <text x="95" y="47" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="#8892b0">Student</text>
+  <text x="95" y="65" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6b7a90">Browser input</text>
+</g>
+
+<!-- ================================================================== -->
+<!-- ROW 1: FB-1 Game Client (Sense) — wide block                       -->
+<!-- ================================================================== -->
+<g id="fb1">
+  <rect x="200" y="110" width="700" height="100" rx="12" fill="url(#grad-sense)" stroke="#2d6a4f" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <rect x="216" y="126" width="46" height="18" rx="4" fill="#2d6a4f"/>
+  <text x="239" y="139" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#b7e4c7">FB-1</text>
+  <text x="276" y="139" font-family="Inter,sans-serif" font-size="14" font-weight="700" fill="#fff">Game Client</text>
+  <rect x="216" y="150" width="50" height="14" rx="3" fill="rgba(45,106,79,0.3)"/>
+  <text x="241" y="160" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="600" fill="#52b788" text-transform="uppercase" letter-spacing="1">SENSE</text>
+  <text x="216" y="182" font-family="Inter,sans-serif" font-size="10.5" fill="#c0c8d8">Captures student input events (clicks, keys, answers, timing); renders game state; presents MCQ overlays</text>
+</g>
+<defs>
+  <linearGradient id="grad-sense" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#1a3d2e"/><stop offset="100%" stop-color="#1a2e28"/>
+  </linearGradient>
+</defs>
+
+<!-- ================================================================== -->
+<!-- ROW 2: FB-2, FB-4, FB-5, FB-12                                     -->
+<!-- ================================================================== -->
+
+<!-- FB-2 Event Collector (Communicate) -->
+<g id="fb2">
+  <rect x="200" y="268" width="250" height="100" rx="12" fill="url(#grad-comm)" stroke="#1d3557" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <rect x="216" y="284" width="46" height="18" rx="4" fill="#1d3557"/>
+  <text x="239" y="297" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#a8dadc">FB-2</text>
+  <text x="276" y="297" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#fff">Event Collector</text>
+  <rect x="216" y="308" width="85" height="14" rx="3" fill="rgba(29,53,87,0.3)"/>
+  <text x="258" y="318" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="600" fill="#a8dadc" letter-spacing="1">COMMUNICATE</text>
+  <text x="216" y="342" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">Buffers raw events; batch POST</text>
+  <text x="216" y="355" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">every 10s; offline queuing</text>
+</g>
+<defs>
+  <linearGradient id="grad-comm" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#152d48"/><stop offset="100%" stop-color="#122640"/>
+  </linearGradient>
+</defs>
+
+<!-- FB-4 Adaptive Difficulty Engine (Decide) -->
+<g id="fb4">
+  <rect x="500" y="268" width="260" height="100" rx="12" fill="url(#grad-decide)" stroke="#7b2cbf" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <rect x="516" y="284" width="46" height="18" rx="4" fill="#7b2cbf"/>
+  <text x="539" y="297" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#e0aaff">FB-4</text>
+  <text x="576" y="297" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#fff">Adaptive Difficulty Engine</text>
+  <rect x="516" y="308" width="52" height="14" rx="3" fill="rgba(123,44,191,0.2)"/>
+  <text x="542" y="318" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="600" fill="#c77dff" letter-spacing="1">DECIDE</text>
+  <text x="516" y="342" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">Per-player skill rating; difficulty</text>
+  <text x="516" y="355" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">targeting based on streaks</text>
+</g>
+<defs>
+  <linearGradient id="grad-decide" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#2a1548"/><stop offset="100%" stop-color="#201040"/>
+  </linearGradient>
+</defs>
+
+<!-- FB-5 Combat System (Decide) -->
+<g id="fb5">
+  <rect x="810" y="268" width="240" height="100" rx="12" fill="url(#grad-decide)" stroke="#7b2cbf" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <rect x="826" y="284" width="46" height="18" rx="4" fill="#7b2cbf"/>
+  <text x="849" y="297" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#e0aaff">FB-5</text>
+  <text x="886" y="297" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#fff">Combat System</text>
+  <rect x="826" y="308" width="52" height="14" rx="3" fill="rgba(123,44,191,0.2)"/>
+  <text x="852" y="318" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="600" fill="#c77dff" letter-spacing="1">DECIDE</text>
+  <text x="826" y="342" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">MCQ-gated action resolution;</text>
+  <text x="826" y="355" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">power multipliers; effect application</text>
+</g>
+
+<!-- FB-12 Progression System (Process) -->
+<g id="fb12">
+  <rect x="1100" y="268" width="230" height="100" rx="12" fill="url(#grad-process)" stroke="#e76f51" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <rect x="1116" y="284" width="50" height="18" rx="4" fill="#e76f51"/>
+  <text x="1141" y="297" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#fff">FB-12</text>
+  <text x="1180" y="297" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#fff">Progression System</text>
+  <rect x="1116" y="308" width="58" height="14" rx="3" fill="rgba(231,111,81,0.2)"/>
+  <text x="1145" y="318" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="600" fill="#f4a261" letter-spacing="1">PROCESS</text>
+  <text x="1116" y="342" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">XP, levels, badges; computed</text>
+  <text x="1116" y="355" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">from question results</text>
+</g>
+<defs>
+  <linearGradient id="grad-process" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#3d2418"/><stop offset="100%" stop-color="#2e1e16"/>
+  </linearGradient>
+</defs>
+
+<!-- ================================================================== -->
+<!-- ROW 3: FB-3, FB-6, FB-11, Google                                   -->
+<!-- ================================================================== -->
+
+<!-- FB-3 Question Provider (Process) -->
+<g id="fb3">
+  <rect x="500" y="428" width="250" height="100" rx="12" fill="url(#grad-process)" stroke="#e76f51" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <rect x="516" y="444" width="46" height="18" rx="4" fill="#e76f51"/>
+  <text x="539" y="457" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#fff">FB-3</text>
+  <text x="576" y="457" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#fff">Question Provider</text>
+  <rect x="516" y="468" width="58" height="14" rx="3" fill="rgba(231,111,81,0.2)"/>
+  <text x="545" y="478" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="600" fill="#f4a261" letter-spacing="1">PROCESS</text>
+  <text x="516" y="502" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">Question banks by subject +</text>
+  <text x="516" y="515" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">difficulty; JSON API provider</text>
+</g>
+
+<!-- FB-6 Supabase Auth (Process) -->
+<g id="fb6">
+  <rect x="800" y="428" width="240" height="100" rx="12" fill="url(#grad-process)" stroke="#e76f51" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <rect x="816" y="444" width="46" height="18" rx="4" fill="#e76f51"/>
+  <text x="839" y="457" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#fff">FB-6</text>
+  <text x="876" y="457" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#fff">Supabase Auth</text>
+  <rect x="816" y="468" width="58" height="14" rx="3" fill="rgba(231,111,81,0.2)"/>
+  <text x="845" y="478" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="600" fill="#f4a261" letter-spacing="1">PROCESS</text>
+  <text x="816" y="502" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">JWT tokens, Google OAuth,</text>
+  <text x="816" y="515" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">magic links, RLS policies</text>
+</g>
+
+<!-- FB-11 LTI Integration Bridge (Communicate) -->
+<g id="fb11">
+  <rect x="1090" y="428" width="240" height="100" rx="12" fill="url(#grad-comm)" stroke="#1d3557" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <rect x="1106" y="444" width="50" height="18" rx="4" fill="#1d3557"/>
+  <text x="1131" y="457" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#a8dadc">FB-11</text>
+  <text x="1170" y="457" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#fff">LTI Integration Bridge</text>
+  <rect x="1106" y="468" width="85" height="14" rx="3" fill="rgba(29,53,87,0.3)"/>
+  <text x="1148" y="478" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="600" fill="#a8dadc" letter-spacing="1">COMMUNICATE</text>
+  <text x="1106" y="502" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">LTI 1.3 OIDC handshake;</text>
+  <text x="1106" y="515" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">user mapping; grade passback</text>
+</g>
+
+<!-- External: Google Classroom -->
+<g id="ext-google">
+  <rect x="1370" y="440" width="115" height="70" rx="12" fill="#12182a" stroke="#4a5568" stroke-width="2" stroke-dasharray="6,4" filter="url(#block-shadow)"/>
+  <text x="1427" y="467" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#8892b0">Google</text>
+  <text x="1427" y="481" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#8892b0">Classroom</text>
+  <text x="1427" y="498" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6b7a90">LTI 1.3</text>
+</g>
+
+<!-- ================================================================== -->
+<!-- ROW 4: FB-7 (wide), FB-8, FB-9                                     -->
+<!-- ================================================================== -->
+
+<!-- FB-7 Supabase Database (Process) — wide -->
+<g id="fb7">
+  <rect x="200" y="588" width="460" height="100" rx="12" fill="url(#grad-process)" stroke="#e76f51" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <rect x="216" y="604" width="46" height="18" rx="4" fill="#e76f51"/>
+  <text x="239" y="617" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#fff">FB-7</text>
+  <text x="276" y="617" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#fff">Supabase Database</text>
+  <rect x="216" y="628" width="58" height="14" rx="3" fill="rgba(231,111,81,0.2)"/>
+  <text x="245" y="638" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="600" fill="#f4a261" letter-spacing="1">PROCESS</text>
+  <text x="216" y="662" font-family="Inter,sans-serif" font-size="10.5" fill="#c0c8d8">PostgreSQL: users, sessions, metrics, assignments, classes</text>
+</g>
+
+<!-- FB-8 Metric Computation Engine (Decide) -->
+<g id="fb8">
+  <rect x="710" y="588" width="260" height="100" rx="12" fill="url(#grad-decide)" stroke="#7b2cbf" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <rect x="726" y="604" width="46" height="18" rx="4" fill="#7b2cbf"/>
+  <text x="749" y="617" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#e0aaff">FB-8</text>
+  <text x="786" y="617" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#fff">Metric Computation Engine</text>
+  <rect x="726" y="628" width="52" height="14" rx="3" fill="rgba(123,44,191,0.2)"/>
+  <text x="752" y="638" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="600" fill="#c77dff" letter-spacing="1">DECIDE</text>
+  <text x="726" y="662" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">15 behavioral metrics from raw</text>
+  <text x="726" y="675" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">events; daily rollup</text>
+</g>
+
+<!-- FB-9 Insight Generator (Decide) -->
+<g id="fb9">
+  <rect x="1020" y="588" width="240" height="100" rx="12" fill="url(#grad-decide)" stroke="#7b2cbf" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <rect x="1036" y="604" width="46" height="18" rx="4" fill="#7b2cbf"/>
+  <text x="1059" y="617" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#e0aaff">FB-9</text>
+  <text x="1096" y="617" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#fff">Insight Generator</text>
+  <rect x="1036" y="628" width="52" height="14" rx="3" fill="rgba(123,44,191,0.2)"/>
+  <text x="1062" y="638" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="600" fill="#c77dff" letter-spacing="1">DECIDE</text>
+  <text x="1036" y="662" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">Top-3 insights per student;</text>
+  <text x="1036" y="675" font-family="Inter,sans-serif" font-size="10" fill="#c0c8d8">priority ranking; class baselines</text>
+</g>
+
+<!-- ================================================================== -->
+<!-- ROW 5: FB-10 Teacher Dashboard (Act) + External: Teacher           -->
+<!-- ================================================================== -->
+
+<!-- External: Teacher -->
+<g id="ext-teacher">
+  <rect x="20" y="758" width="150" height="70" rx="12" fill="#12182a" stroke="#4a5568" stroke-width="2" stroke-dasharray="6,4" filter="url(#block-shadow)"/>
+  <text x="95" y="785" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="#8892b0">Teacher</text>
+  <text x="95" y="803" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6b7a90">Dashboard user</text>
+</g>
+
+<!-- FB-10 Teacher Dashboard (Act) — wide -->
+<g id="fb10">
+  <rect x="200" y="748" width="700" height="100" rx="12" fill="url(#grad-act)" stroke="#e63946" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <rect x="216" y="764" width="50" height="18" rx="4" fill="#e63946"/>
+  <text x="241" y="777" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#fff">FB-10</text>
+  <text x="280" y="777" font-family="Inter,sans-serif" font-size="14" font-weight="700" fill="#fff">Teacher Dashboard</text>
+  <rect x="216" y="788" width="36" height="14" rx="3" fill="rgba(230,57,70,0.2)"/>
+  <text x="234" y="798" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="600" fill="#ff8fa3" letter-spacing="1">ACT</text>
+  <text x="216" y="822" font-family="Inter,sans-serif" font-size="10.5" fill="#c0c8d8">Class overview; student drill-down; insight cards; concept mastery heatmap</text>
+</g>
+<defs>
+  <linearGradient id="grad-act" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#3d1518"/><stop offset="100%" stop-color="#2e1216"/>
+  </linearGradient>
+</defs>
+
+
+<!-- ================================================================== -->
+<!-- ARROWS — all orthogonal, statically positioned                     -->
+<!-- ================================================================== -->
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 1: Student -> FB-1  "user input"                  -->
+<!-- Student bottom-center (95,90) down to Y=100, right to FB-1 left (200,160) -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="95,90 95,160 200,160"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="112" y="147" width="68" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="146" y="159" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">user input</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 2: FB-1 -> FB-2  "raw events"                     -->
+<!-- FB-1 bottom (310,210) down to FB-2 top (325,268)        -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="310,210 310,268"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="270" y="230" width="78" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="309" y="242" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">raw events</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 3: FB-2 -> FB-7  "event batches (HTTP)"           -->
+<!-- FB-2 bottom (325,368) down to FB-7 top (325,588)        -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="325,368 325,588"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="240" y="470" width="140" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="310" y="482" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">event batches (HTTP)</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 4: FB-1 <-> FB-4  "difficulty req/resp" (bidirectional) -->
+<!-- FB-1 bottom (550,210) down to FB-4 top (620,268)              -->
+<!-- Use two parallel lines offset by 10px                          -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="620,210 620,268"
+  fill="none" stroke="#fbbf24" stroke-width="2" stroke-opacity="0.7"
+  marker-start="url(#ah-bi-start)" marker-end="url(#ah-bi-end)"/>
+<rect x="540" y="228" width="128" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="604" y="240" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#fbbf24" fill-opacity="0.9">difficulty req/resp</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 5: FB-4 <-> FB-3  "question filtering" (bidirectional) -->
+<!-- FB-4 bottom (630,368) down to FB-3 top (625,428)              -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="630,368 630,428"
+  fill="none" stroke="#fbbf24" stroke-width="2" stroke-opacity="0.7"
+  marker-start="url(#ah-bi-start)" marker-end="url(#ah-bi-end)"/>
+<rect x="548" y="388" width="120" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="608" y="400" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#fbbf24" fill-opacity="0.9">question filtering</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 6: FB-3 -> FB-1  "selected question"              -->
+<!-- FB-3 top-left (510,428) up to row gap, left, up to FB-1 bottom (490,210) -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="510,428 510,406 490,406 490,210"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="410" y="393" width="116" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="468" y="405" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">selected question</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 7: FB-1 -> FB-5  "answer submission"              -->
+<!-- FB-1 bottom-right (820,210) down to gap, right, down to FB-5 top (880,268) -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="820,210 820,245 870,245 870,268"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="765" y="220" width="130" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="830" y="232" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">answer submission</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 8: FB-5 -> FB-1  "combat effects"                 -->
+<!-- FB-5 top (940,268) up to gap, left, up to FB-1 bottom-right (880,210) -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="940,268 940,248 893,248 893,210"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="892" y="248" width="104" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="944" y="260" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">combat effects</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 9: FB-5 -> FB-12  "XP grant"                      -->
+<!-- FB-5 right (1050,318) right to FB-12 left (1100,318)    -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="1050,318 1100,318"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="1052" y="305" width="62" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="1083" y="317" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">XP grant</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 10: FB-7 -> FB-8  "raw events"                    -->
+<!-- FB-7 right (660,628) right to gap, then to FB-8 left (710,628) -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="660,628 710,628"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="656" y="614" width="76" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="694" y="626" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">raw events</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 11: FB-8 -> FB-7  "computed metrics"              -->
+<!-- FB-8 left (710,655) left to FB-7 right (660,655)        -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="710,655 660,655"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="638" y="660" width="112" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="694" y="672" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">computed metrics</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 12: FB-8 -> FB-9  "metrics"                       -->
+<!-- FB-8 right (970,638) right to FB-9 left (1020,638)      -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="970,638 1020,638"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="971" y="626" width="60" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="1001" y="638" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">metrics</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 13: FB-9 -> FB-10  "insights"                     -->
+<!-- FB-9 bottom (1140,688) down to Y=728, left to FB-10 top-right (800,748) -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="1140,688 1140,728 800,728 800,748"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="942" y="716" width="64" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="974" y="728" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">insights</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 14: FB-7 -> FB-10  "dashboard data"               -->
+<!-- FB-7 bottom (430,688) down to FB-10 top (430,748)       -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="430,688 430,748"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="370" y="708" width="106" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="423" y="720" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">dashboard data</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 15: FB-6 <-> FB-1  "auth tokens" (bidirectional)  -->
+<!-- FB-6 top (920,428) up to gap Y=245, right to X=895, up to FB-1 (but avoid arrow 8 at 893) -->
+<!-- Route: FB-6 top up, then bend left to X=770, then up to FB-1 bottom -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="920,428 920,400 770,400 770,210"
+  fill="none" stroke="#fbbf24" stroke-width="2" stroke-opacity="0.7"
+  marker-start="url(#ah-bi-start)" marker-end="url(#ah-bi-end)"/>
+<rect x="806" y="393" width="88" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="850" y="405" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#fbbf24" fill-opacity="0.9">auth tokens</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 16: FB-6 <-> FB-7  "auth / RLS" (bidirectional)   -->
+<!-- FB-6 bottom (920,528) down to Y=560, left to FB-7 right-top (660,610) -->
+<!-- Route: down then left then down to FB-7 top area -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="920,528 920,560 640,560 640,588"
+  fill="none" stroke="#fbbf24" stroke-width="2" stroke-opacity="0.7"
+  marker-start="url(#ah-bi-start)" marker-end="url(#ah-bi-end)"/>
+<rect x="740" y="548" width="80" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="780" y="560" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#fbbf24" fill-opacity="0.9">auth / RLS</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 17: Google <-> FB-11  "LTI 1.3" (bidirectional)   -->
+<!-- Google left (1370,475) left to FB-11 right (1330,478)    -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="1370,475 1330,475"
+  fill="none" stroke="#fbbf24" stroke-width="2" stroke-opacity="0.7"
+  marker-start="url(#ah-bi-start)" marker-end="url(#ah-bi-end)"/>
+<rect x="1334" y="460" width="56" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="1362" y="472" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#fbbf24" fill-opacity="0.9">LTI 1.3</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 18: FB-11 -> FB-7  "user mapping"                 -->
+<!-- FB-11 bottom (1210,528) down to Y=560, left to FB-7 area, down to FB-7 top (560,588) -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="1210,528 1210,572 560,572 560,588"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="848" y="560" width="98" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="897" y="572" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">user mapping</text>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Arrow 19: Teacher -> FB-10  "interactions"              -->
+<!-- Teacher right (170,793) right to FB-10 left (200,798)   -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<polyline points="170,793 200,793"
+  fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"
+  marker-end="url(#ah-uni)"/>
+<rect x="138" y="768" width="90" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+<text x="183" y="780" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" fill-opacity="0.9">interactions</text>
+
+
+<!-- ================================================================== -->
+<!-- LEGEND — bottom-right area                                         -->
+<!-- ================================================================== -->
+<g transform="translate(1130,880)">
+  <rect x="0" y="0" width="340" height="155" rx="12" fill="#12182a" stroke="#1e2d48" stroke-width="1"/>
+
+  <text x="20" y="24" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#8892b0" letter-spacing="1.2" text-transform="uppercase">LEGEND</text>
+
+  <!-- Category swatches -->
+  <rect x="20" y="36" width="16" height="12" rx="3" fill="#2d6a4f"/>
+  <text x="44" y="47" font-family="Inter,sans-serif" font-size="10" fill="#a0aec0">Sense</text>
+
+  <rect x="100" y="36" width="16" height="12" rx="3" fill="#1d3557"/>
+  <text x="124" y="47" font-family="Inter,sans-serif" font-size="10" fill="#a0aec0">Communicate</text>
+
+  <rect x="220" y="36" width="16" height="12" rx="3" fill="#e76f51"/>
+  <text x="244" y="47" font-family="Inter,sans-serif" font-size="10" fill="#a0aec0">Process</text>
+
+  <rect x="20" y="56" width="16" height="12" rx="3" fill="#7b2cbf"/>
+  <text x="44" y="67" font-family="Inter,sans-serif" font-size="10" fill="#a0aec0">Decide</text>
+
+  <rect x="100" y="56" width="16" height="12" rx="3" fill="#e63946"/>
+  <text x="124" y="67" font-family="Inter,sans-serif" font-size="10" fill="#a0aec0">Act</text>
+
+  <!-- Divider -->
+  <line x1="20" y1="80" x2="320" y2="80" stroke="#1e2d48" stroke-width="1"/>
+
+  <!-- Unidirectional arrow -->
+  <line x1="20" y1="98" x2="50" y2="98" stroke="#00d4ff" stroke-width="2"/>
+  <polygon points="50,95 56,98 50,101" fill="#00d4ff"/>
+  <text x="66" y="102" font-family="Inter,sans-serif" font-size="10" fill="#a0aec0">Unidirectional flow</text>
+
+  <!-- Bidirectional arrow -->
+  <polygon points="20,118 26,115 26,121" fill="#fbbf24"/>
+  <line x1="26" y1="118" x2="50" y2="118" stroke="#fbbf24" stroke-width="2"/>
+  <polygon points="50,115 56,118 50,121" fill="#fbbf24"/>
+  <text x="66" y="122" font-family="Inter,sans-serif" font-size="10" fill="#a0aec0">Bidirectional flow</text>
+
+  <!-- Divider -->
+  <line x1="20" y1="132" x2="320" y2="132" stroke="#1e2d48" stroke-width="1"/>
+
+  <!-- External actor -->
+  <rect x="20" y="139" width="30" height="14" rx="4" fill="none" stroke="#4a5568" stroke-width="2" stroke-dasharray="4,3"/>
+  <text x="60" y="152" font-family="Inter,sans-serif" font-size="10" fill="#a0aec0">External actor</text>
+</g>
+
+</svg>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdGame — Interface Dependency Graph</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:14px}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:#0d0d1a;
+    color:#e0e0e0;
+    min-height:100vh;
+    padding:0;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* Title Bar */
+  .title-bar{
+    background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);
+    padding:28px 48px;
+    border-bottom:3px solid #0f3460;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .title-bar h1{font-size:1.65rem;font-weight:700;color:#fff;letter-spacing:-.3px}
+  .title-bar h1 span{color:#00d4ff;font-weight:300}
+  .title-bar .meta{font-size:.85rem;color:#8892b0;font-weight:400;text-align:right;line-height:1.5}
+
+  /* SVG container */
+  .svg-container{
+    width:100%;
+    overflow-x:auto;
+    padding:20px 40px;
+  }
+  .svg-container svg{
+    display:block;
+    margin:0 auto;
+  }
+
+  /* Analysis boxes */
+  .analysis-section{
+    margin:24px 40px 0;
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+
+  .cycle-check-box{
+    background:linear-gradient(135deg,#0a2818 0%,#0d1a14 100%);
+    border:2px solid #2d6a4f;
+    border-radius:14px;
+    padding:24px 32px;
+    flex:1;
+    min-width:500px;
+    box-shadow:0 4px 24px rgba(0,0,0,.4);
+  }
+  .cycle-check-box h3{
+    font-size:1rem;
+    font-weight:700;
+    color:#52b788;
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .cycle-check-box h3 .check-icon{
+    width:28px;height:28px;
+    background:#2d6a4f;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1rem;
+    color:#b7e4c7;
+    flex-shrink:0;
+  }
+  .cycle-check-box p{
+    font-size:.78rem;
+    color:#a0aec0;
+    line-height:1.7;
+    margin-bottom:6px;
+  }
+  .cycle-check-box .flow-line{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.72rem;
+    color:#00d4ff;
+    background:#0d0d1a;
+    padding:8px 14px;
+    border-radius:6px;
+    margin:10px 0;
+    display:inline-block;
+    border:1px solid #1e2d48;
+  }
+
+  .deadlock-box{
+    background:linear-gradient(135deg,#1a1a2e 0%,#12122a 100%);
+    border:1px solid #1e2d48;
+    border-radius:14px;
+    padding:24px 32px;
+    min-width:420px;
+    box-shadow:0 4px 24px rgba(0,0,0,.4);
+  }
+  .deadlock-box h3{
+    font-size:.9rem;
+    font-weight:700;
+    color:#fff;
+    margin-bottom:16px;
+  }
+
+  .status-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:12px;
+    padding:10px 16px;
+    border-radius:8px;
+  }
+  .status-row.green{
+    background:rgba(45,106,79,.15);
+    border:1px solid rgba(45,106,79,.4);
+  }
+  .status-row.yellow{
+    background:rgba(251,191,36,.08);
+    border:1px solid rgba(251,191,36,.3);
+  }
+
+  .status-icon{
+    width:26px;height:26px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:.85rem;font-weight:700;flex-shrink:0;
+  }
+  .status-icon.green{background:#2d6a4f;color:#b7e4c7}
+  .status-icon.yellow{background:#92400e;color:#fbbf24}
+
+  .status-label{
+    font-size:.78rem;
+    font-weight:600;
+    min-width:90px;
+  }
+  .status-label.green{color:#52b788}
+  .status-label.yellow{color:#fbbf24}
+
+  .status-value{
+    font-size:.78rem;
+    font-weight:700;
+    min-width:36px;
+  }
+  .status-value.green{color:#52b788}
+  .status-value.yellow{color:#fbbf24}
+
+  .status-detail{
+    font-size:.72rem;
+    color:#8892b0;
+    flex:1;
+  }
+
+  /* Legend */
+  .legend{
+    background:#12182a;
+    border:1px solid #1e2d48;
+    border-radius:12px;
+    padding:16px 22px;
+    box-shadow:0 4px 20px rgba(0,0,0,.4);
+    display:inline-flex;
+    gap:20px;
+    margin:20px 40px 40px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .legend h4{
+    font-size:.7rem;font-weight:600;text-transform:uppercase;
+    letter-spacing:1.2px;color:#8892b0;margin-right:4px;
+  }
+  .legend-item{display:flex;align-items:center;gap:7px}
+  .legend-swatch{width:14px;height:10px;border-radius:3px}
+  .legend-text{font-size:.68rem;color:#a0aec0}
+
+  @media print{
+    body{background:#fff;color:#111}
+  }
+</style>
+</head>
+<body>
+
+<!-- Title Bar -->
+<div class="title-bar">
+  <h1>EdGame <span>—</span> Interface Dependency Graph</h1>
+  <div class="meta">TIE 204 Lab 3 | February 2026</div>
+</div>
+
+<!-- Main SVG Graph -->
+<div class="svg-container">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 850" width="1500" height="850">
+  <defs>
+    <!-- Dependency arrow (cyan) -->
+    <marker id="ah" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#00d4ff"/>
+    </marker>
+    <!-- Bidirectional arrow end (amber) -->
+    <marker id="ahBi" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#fbbf24"/>
+    </marker>
+    <!-- Bidirectional arrow start (amber) -->
+    <marker id="ahBiStart" markerWidth="10" markerHeight="8" refX="0" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M10,0 L0,4 L10,8 Z" fill="#fbbf24"/>
+    </marker>
+    <!-- Auth arrow (green) -->
+    <marker id="ahAuth" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#52b788"/>
+    </marker>
+    <!-- Fonts -->
+    <style>
+      .node-title { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 12px; fill: #ffffff; }
+      .node-desc { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 9px; fill: #a0aec0; }
+      .node-badge { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 7.5px; text-transform: uppercase; letter-spacing: 0.8px; }
+      .node-icon { font-size: 20px; }
+      .sub-item { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 9px; fill: #a0aec0; }
+      .col-header { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: 1.6px; fill: #8892b0; text-anchor: middle; }
+      .arrow-label { font-family: 'JetBrains Mono', monospace; font-size: 8px; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1500" height="850" fill="#0d0d1a"/>
+
+  <!-- ===== COLUMN HEADERS ===== -->
+  <text class="col-header" x="120" y="30">External</text>
+  <line x1="40" y1="38" x2="200" y2="38" stroke="#1e2d48" stroke-width="1"/>
+
+  <text class="col-header" x="370" y="30">Client Layer</text>
+  <line x1="270" y1="38" x2="470" y2="38" stroke="#1e2d48" stroke-width="1"/>
+
+  <text class="col-header" x="620" y="30">Cloud Layer</text>
+  <line x1="530" y1="38" x2="710" y2="38" stroke="#1e2d48" stroke-width="1"/>
+
+  <text class="col-header" x="920" y="30">Backend Layer</text>
+  <line x1="820" y1="38" x2="1020" y2="38" stroke="#1e2d48" stroke-width="1"/>
+
+  <text class="col-header" x="1250" y="30">Output Layer</text>
+  <line x1="1140" y1="38" x2="1360" y2="38" stroke="#1e2d48" stroke-width="1"/>
+
+
+  <!-- ===================================================================== -->
+  <!-- COLUMN 1: EXTERNAL NODES                                               -->
+  <!-- ===================================================================== -->
+
+  <!-- Student Node (x=40, y=80) -->
+  <rect x="40" y="80" width="160" height="85" rx="12" fill="#12182a" stroke="#4a5568" stroke-width="2" stroke-dasharray="6,4"/>
+  <text x="120" y="108" text-anchor="middle" class="node-icon">&#127891;</text>
+  <text x="120" y="128" text-anchor="middle" class="node-title" fill="#8892b0" style="font-weight:600">Student</text>
+  <text x="120" y="143" text-anchor="middle" class="node-desc">Browser input</text>
+
+  <!-- Teacher Node (x=40, y=450) -->
+  <rect x="40" y="450" width="160" height="85" rx="12" fill="#12182a" stroke="#4a5568" stroke-width="2" stroke-dasharray="6,4"/>
+  <text x="120" y="478" text-anchor="middle" class="node-icon">&#9989;</text>
+  <text x="120" y="498" text-anchor="middle" class="node-title" fill="#8892b0" style="font-weight:600">Teacher</text>
+  <text x="120" y="513" text-anchor="middle" class="node-desc">Dashboard interactions</text>
+
+  <!-- Google Classroom Node (x=40, y=680) -->
+  <rect x="40" y="680" width="160" height="85" rx="12" fill="#12182a" stroke="#4a5568" stroke-width="2" stroke-dasharray="6,4"/>
+  <text x="120" y="708" text-anchor="middle" class="node-icon">&#128279;</text>
+  <text x="120" y="728" text-anchor="middle" class="node-title" fill="#8892b0" style="font-weight:600">Google Classroom</text>
+  <text x="120" y="743" text-anchor="middle" class="node-desc">LTI 1.3 platform</text>
+
+
+  <!-- ===================================================================== -->
+  <!-- COLUMN 2: CLIENT LAYER                                                 -->
+  <!-- ===================================================================== -->
+
+  <!-- Game Client composite node (x=270, y=80, tall) -->
+  <rect x="270" y="80" width="200" height="250" rx="12" fill="url(#clientGrad)" stroke="#1d3557" stroke-width="1.5"/>
+  <defs><linearGradient id="clientGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#152d48"/><stop offset="100%" stop-color="#122640"/></linearGradient></defs>
+  <!-- Badge -->
+  <rect x="282" y="92" width="115" height="16" rx="3" fill="#1d3557"/>
+  <text x="340" y="103" text-anchor="middle" class="node-badge" fill="#a8dadc">KAPLAY.JS + NEXT.JS</text>
+  <!-- Name -->
+  <text x="370" y="128" text-anchor="middle" class="node-title">Game Client</text>
+  <text x="370" y="143" text-anchor="middle" class="node-desc">Browser-side game engine and UI</text>
+  <!-- Sub-items -->
+  <circle cx="293" cy="168" r="3" fill="#1d3557"/>
+  <text x="302" y="171" class="sub-item">Event Collector</text>
+  <circle cx="293" cy="188" r="3" fill="#1d3557"/>
+  <text x="302" y="191" class="sub-item">Question Engine</text>
+  <circle cx="293" cy="208" r="3" fill="#1d3557"/>
+  <text x="302" y="211" class="sub-item">Combat System</text>
+  <circle cx="293" cy="228" r="3" fill="#1d3557"/>
+  <text x="302" y="231" class="sub-item">Adaptive Difficulty</text>
+  <circle cx="293" cy="248" r="3" fill="#1d3557"/>
+  <text x="302" y="251" class="sub-item">Progression System</text>
+
+
+  <!-- ===================================================================== -->
+  <!-- COLUMN 3: CLOUD LAYER                                                  -->
+  <!-- ===================================================================== -->
+
+  <!-- Vercel API Routes (x=530, y=100) -->
+  <rect x="530" y="100" width="180" height="100" rx="12" fill="url(#cloudGrad)" stroke="#2d6a4f" stroke-width="1.5"/>
+  <defs><linearGradient id="cloudGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a2a18"/><stop offset="100%" stop-color="#162016"/></linearGradient></defs>
+  <rect x="542" y="112" width="72" height="16" rx="3" fill="#2d6a4f"/>
+  <text x="578" y="123" text-anchor="middle" class="node-badge" fill="#b7e4c7">VERCEL EDGE</text>
+  <text x="620" y="148" text-anchor="middle" class="node-title">Vercel API Routes</text>
+  <text x="620" y="163" text-anchor="middle" class="node-desc">Next.js serverless endpoints</text>
+  <text x="620" y="176" text-anchor="middle" class="node-desc">REST API; rate limiting; CORS</text>
+
+  <!-- Supabase Auth (x=530, y=360) -->
+  <rect x="530" y="360" width="180" height="100" rx="12" fill="url(#cloudGrad)" stroke="#2d6a4f" stroke-width="1.5"/>
+  <rect x="542" y="372" width="62" height="16" rx="3" fill="#2d6a4f"/>
+  <text x="573" y="383" text-anchor="middle" class="node-badge" fill="#b7e4c7">SUPABASE</text>
+  <text x="620" y="408" text-anchor="middle" class="node-title">Supabase Auth</text>
+  <text x="620" y="423" text-anchor="middle" class="node-desc">JWT tokens; Google OAuth</text>
+  <text x="620" y="436" text-anchor="middle" class="node-desc">Magic links; RLS enforcement</text>
+
+
+  <!-- ===================================================================== -->
+  <!-- COLUMN 4: BACKEND LAYER                                                -->
+  <!-- ===================================================================== -->
+
+  <!-- Supabase Database (x=820, y=80) -->
+  <rect x="820" y="80" width="200" height="100" rx="12" fill="url(#backendGrad)" stroke="#e76f51" stroke-width="1.5"/>
+  <defs><linearGradient id="backendGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3d2418"/><stop offset="100%" stop-color="#2e1e16"/></linearGradient></defs>
+  <rect x="832" y="92" width="72" height="16" rx="3" fill="#e76f51"/>
+  <text x="868" y="103" text-anchor="middle" class="node-badge" fill="#ffffff">POSTGRESQL</text>
+  <text x="920" y="128" text-anchor="middle" class="node-title">Supabase Database</text>
+  <text x="920" y="143" text-anchor="middle" class="node-desc">Users, sessions, metrics,</text>
+  <text x="920" y="156" text-anchor="middle" class="node-desc">assignments, classes</text>
+
+  <!-- Metric Computation Engine (x=820, y=310) -->
+  <rect x="820" y="310" width="200" height="100" rx="12" fill="url(#backendGrad)" stroke="#e76f51" stroke-width="1.5"/>
+  <rect x="832" y="322" width="86" height="16" rx="3" fill="#e76f51"/>
+  <text x="875" y="333" text-anchor="middle" class="node-badge" fill="#ffffff">SQL FUNCTIONS</text>
+  <text x="920" y="358" text-anchor="middle" class="node-title">Metric Computation</text>
+  <text x="920" y="373" text-anchor="middle" class="node-desc">15 behavioral metrics</text>
+  <text x="920" y="386" text-anchor="middle" class="node-desc">Session-end trigger; daily rollup</text>
+
+  <!-- Insight Generator (x=820, y=530) -->
+  <rect x="820" y="530" width="200" height="100" rx="12" fill="url(#backendGrad)" stroke="#e76f51" stroke-width="1.5"/>
+  <rect x="832" y="542" width="66" height="16" rx="3" fill="#e76f51"/>
+  <text x="865" y="553" text-anchor="middle" class="node-badge" fill="#ffffff">ANALYTICS</text>
+  <text x="920" y="578" text-anchor="middle" class="node-title">Insight Generator</text>
+  <text x="920" y="593" text-anchor="middle" class="node-desc">Top-3 insights; priority ranking</text>
+  <text x="920" y="606" text-anchor="middle" class="node-desc">Class baselines</text>
+
+
+  <!-- ===================================================================== -->
+  <!-- COLUMN 5: OUTPUT LAYER                                                 -->
+  <!-- ===================================================================== -->
+
+  <!-- Teacher Dashboard (x=1140, y=100) -->
+  <rect x="1140" y="100" width="210" height="110" rx="12" fill="url(#outputGrad)" stroke="#7b2cbf" stroke-width="1.5"/>
+  <defs><linearGradient id="outputGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2a1548"/><stop offset="100%" stop-color="#201040"/></linearGradient></defs>
+  <rect x="1152" y="112" width="96" height="16" rx="3" fill="#7b2cbf"/>
+  <text x="1200" y="123" text-anchor="middle" class="node-badge" fill="#e0aaff">REACT + NEXT.JS</text>
+  <text x="1245" y="148" text-anchor="middle" class="node-title">Teacher Dashboard</text>
+  <text x="1245" y="163" text-anchor="middle" class="node-desc">Class overview; student drill-down</text>
+  <text x="1245" y="176" text-anchor="middle" class="node-desc">Insight cards; concept mastery heatmap</text>
+
+  <!-- Supabase Realtime (x=1140, y=360) -->
+  <rect x="1140" y="360" width="210" height="100" rx="12" fill="url(#outputGrad)" stroke="#7b2cbf" stroke-width="1.5"/>
+  <rect x="1152" y="372" width="72" height="16" rx="3" fill="#7b2cbf"/>
+  <text x="1188" y="383" text-anchor="middle" class="node-badge" fill="#e0aaff">WEBSOCKET</text>
+  <text x="1245" y="408" text-anchor="middle" class="node-title">Supabase Realtime</text>
+  <text x="1245" y="423" text-anchor="middle" class="node-desc">Live dashboard updates</text>
+  <text x="1245" y="436" text-anchor="middle" class="node-desc">Submission notifications</text>
+
+
+  <!-- ===================================================================== -->
+  <!-- ARROWS (connections between nodes)                                      -->
+  <!-- ===================================================================== -->
+
+  <!-- ~~~ 1. Student -> Game Client: "user input" ~~~ -->
+  <!-- Student right edge (200,122) -> Game Client left edge (270,155) -->
+  <path d="M200,122 L215,122 L215,155 L270,155" fill="none" stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ah)"/>
+  <rect x="213" y="126" width="52" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="239" y="136" text-anchor="middle" class="arrow-label" fill="#00d4ff" fill-opacity="0.9">user input</text>
+
+  <!-- ~~~ 2. Game Client -> Vercel API: "IF-02: event batches, IF-07: session" ~~~ -->
+  <!-- Game Client right edge (470,150) -> Vercel left edge (530,150) -->
+  <path d="M470,150 L530,150" fill="none" stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ah)"/>
+  <rect x="454" y="131" width="84" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="496" y="141" text-anchor="middle" class="arrow-label" fill="#00d4ff" fill-opacity="0.9" style="font-size:6.5px">IF-02: events, IF-07: session</text>
+
+  <!-- ~~~ 3. Vercel -> Supabase Auth: "token validation" ~~~ -->
+  <!-- Vercel bottom center (620,200) -> Auth top center (620,360) -->
+  <path d="M620,200 L620,360" fill="none" stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ah)"/>
+  <rect x="582" y="270" width="80" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="622" y="280" text-anchor="middle" class="arrow-label" fill="#00d4ff" fill-opacity="0.9">token validation</text>
+
+  <!-- ~~~ 4. Vercel -> Database: "CRUD operations" ~~~ -->
+  <!-- Vercel right edge (710,140) -> Database left edge (820,130) -->
+  <path d="M710,140 L820,130" fill="none" stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ah)"/>
+  <rect x="731" y="121" width="78" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="770" y="131" text-anchor="middle" class="arrow-label" fill="#00d4ff" fill-opacity="0.9">CRUD operations</text>
+
+  <!-- ~~~ 5. Database -> Metric Engine: "IF-08: raw events (session end)" ~~~ -->
+  <!-- Database bottom (900,180) -> Metric top (900,310) -->
+  <path d="M900,180 L900,310" fill="none" stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ah)"/>
+  <rect x="828" y="237" width="140" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="898" y="247" text-anchor="middle" class="arrow-label" fill="#00d4ff" fill-opacity="0.9">IF-08: raw events (session end)</text>
+
+  <!-- ~~~ 6. Metric Engine -> Database: "IF-09: computed metrics" ~~~ -->
+  <!-- Metric top-right (945,310) -> Database bottom-right (945,180) -- offset to avoid overlap with #5 -->
+  <path d="M945,310 L945,180" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ahBi)" marker-start="url(#ahBiStart)"/>
+  <rect x="952" y="237" width="100" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="1002" y="247" text-anchor="middle" class="arrow-label" fill="#fbbf24" fill-opacity="0.9">IF-09: computed metrics</text>
+
+  <!-- ~~~ 7. Database -> Insight Generator: "IF-10: daily metrics + baselines" ~~~ -->
+  <!-- Database bottom-left (870,180) -> go down to y=480 -> then down to Insight top-left (870,530) -->
+  <path d="M870,180 L870,480 L870,530" fill="none" stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ah)"/>
+  <rect x="778" y="465" width="140" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="848" y="475" text-anchor="middle" class="arrow-label" fill="#00d4ff" fill-opacity="0.9">IF-10: daily metrics + baselines</text>
+
+  <!-- ~~~ 8. Insight Generator -> Dashboard: "IF-10: top-3 insights" ~~~ -->
+  <!-- Insight right edge (1020,580) -> route right to x=1080 -> up to y=175 -> Dashboard left (1140,175) -->
+  <path d="M1020,580 L1080,580 L1080,175 L1140,175" fill="none" stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ah)"/>
+  <rect x="1045" y="370" width="90" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="1090" y="380" text-anchor="middle" class="arrow-label" fill="#00d4ff" fill-opacity="0.9">IF-10: top-3 insights</text>
+
+  <!-- ~~~ 9. Database -> Dashboard: "IF-11: dashboard data" ~~~ -->
+  <!-- Database right (1020,130) -> route right to x=1100 -> down to y=145 -> Dashboard left (1140,145) -->
+  <path d="M1020,130 L1100,130 L1100,145 L1140,145" fill="none" stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ah)"/>
+  <rect x="1045" y="118" width="92" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="1091" y="128" text-anchor="middle" class="arrow-label" fill="#00d4ff" fill-opacity="0.9">IF-11: dashboard data</text>
+
+  <!-- ~~~ 10. Realtime -> Dashboard: "IF-15: live updates (WS)" ~~~ -->
+  <!-- Realtime top center (1245,360) -> Dashboard bottom center (1245,210) -->
+  <path d="M1245,360 L1245,210" fill="none" stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ah)"/>
+  <rect x="1189" y="278" width="112" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="1245" y="288" text-anchor="middle" class="arrow-label" fill="#00d4ff" fill-opacity="0.9">IF-15: live updates (WS)</text>
+
+  <!-- ~~~ 11. Teacher -> Dashboard: "interactions" ~~~ -->
+  <!-- Teacher right (200,492) -> route right to x=250 -> up to y=492 is already there; need to go across to Dashboard -->
+  <!-- Teacher right (200,492) -> route to x=250 -> up to y=190 -> right to Dashboard left (1140,190) -->
+  <path d="M200,492 L250,492 L250,190 L1140,190" fill="none" stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ah)"/>
+  <rect x="630" y="177" width="60" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="660" y="187" text-anchor="middle" class="arrow-label" fill="#00d4ff" fill-opacity="0.9">interactions</text>
+
+  <!-- ~~~ 12. Dashboard -> Vercel: "assignment CRUD" ~~~ -->
+  <!-- Dashboard left-bottom (1140,200) -> route left to x=1110 -> down to y=610 -> left to x=680 -> up to Vercel bottom (680,200) -->
+  <path d="M1140,200 L1110,200 L1110,640 L680,640 L680,200" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ahBi)" marker-start="url(#ahBiStart)"/>
+  <rect x="855" y="628" width="82" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="896" y="638" text-anchor="middle" class="arrow-label" fill="#fbbf24" fill-opacity="0.9">assignment CRUD</text>
+
+  <!-- ~~~ 13. Google Classroom -> Vercel: "IF-13: LTI launch" ~~~ -->
+  <!-- Google right (200,715) -> right to x=500 -> up to y=185 -> right to Vercel left (530,185) -->
+  <path d="M200,715 L500,715 L500,185 L530,185" fill="none" stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ah)"/>
+  <rect x="465" y="695" width="80" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="505" y="705" text-anchor="middle" class="arrow-label" fill="#00d4ff" fill-opacity="0.9">IF-13: LTI launch</text>
+
+  <!-- ~~~ 14. Vercel -> Google Classroom: "IF-14: grade passback" ~~~ -->
+  <!-- Vercel left-bottom (530,170) -> left to x=515 -> down to y=740 -> left to Google right (200,740) -->
+  <path d="M530,170 L515,170 L515,740 L200,740" fill="none" stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#ah)"/>
+  <rect x="316" y="728" width="98" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="365" y="738" text-anchor="middle" class="arrow-label" fill="#00d4ff" fill-opacity="0.9">IF-14: grade passback</text>
+
+  <!-- ~~~ 15. Auth -> Game Client: "IF-12: JWT tokens" (auth/dashed) ~~~ -->
+  <!-- Auth left (530,410) -> left to x=490 -> up to y=280 -> right to Game Client right-bottom (470,280) - wait, that goes the wrong way -->
+  <!-- Auth left (530,410) -> left to x=485 -> up to y=310 -> left to Game Client right (470,310) -->
+  <path d="M530,410 L485,410 L485,310 L470,310" fill="none" stroke="#52b788" stroke-width="1.8" stroke-opacity="0.7" stroke-dasharray="6,4" marker-end="url(#ahAuth)"/>
+  <rect x="438" y="354" width="86" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="481" y="364" text-anchor="middle" class="arrow-label" fill="#52b788" fill-opacity="0.9">IF-12: JWT tokens</text>
+
+  <!-- ~~~ 16. Auth -> Dashboard: "IF-12: JWT tokens" (auth/dashed) ~~~ -->
+  <!-- Auth right (710,400) -> right to x=1130 -> up to y=200 -> right to Dashboard left (1140,200) -->
+  <!-- Using a more direct route: Auth right (710,400) -> right+up to x=1130 y=160 -> Dashboard left (1140,160) -->
+  <path d="M710,400 L1125,400 L1125,160 L1140,160" fill="none" stroke="#52b788" stroke-width="1.8" stroke-opacity="0.7" stroke-dasharray="6,4" marker-end="url(#ahAuth)"/>
+  <rect x="877" y="388" width="86" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="920" y="398" text-anchor="middle" class="arrow-label" fill="#52b788" fill-opacity="0.9">IF-12: JWT tokens</text>
+
+  <!-- ~~~ 17. Auth -> Vercel: "IF-12: JWT" (auth/dashed) ~~~ -->
+  <!-- Auth top (640,360) -> Vercel bottom (640,200) -- offset from #3 which uses x=620 -->
+  <path d="M640,360 L640,200" fill="none" stroke="#52b788" stroke-width="1.8" stroke-opacity="0.7" stroke-dasharray="6,4" marker-end="url(#ahAuth)"/>
+  <rect x="647" y="270" width="56" height="14" rx="3" fill="#0d0d1a" fill-opacity="0.92"/>
+  <text x="675" y="280" text-anchor="middle" class="arrow-label" fill="#52b788" fill-opacity="0.9">IF-12: JWT</text>
+
+</svg>
+</div>
+
+<!-- Analysis Section -->
+<div class="analysis-section">
+
+  <!-- Cycle Check -->
+  <div class="cycle-check-box">
+    <h3>
+      <span class="check-icon">&#10003;</span>
+      CYCLE CHECK: NO CYCLES DETECTED
+    </h3>
+    <p>The dependency graph is a <strong style="color:#52b788">Directed Acyclic Graph (DAG)</strong>.</p>
+    <p>Data flows unidirectionally through the system:</p>
+    <div class="flow-line">Student &#8594; Game Client &#8594; API &#8594; Database &#8594; Analytics &#8594; Dashboard &#8594; Teacher</div>
+    <p style="margin-top:10px">No two subsystems mutually wait on each other in a blocking fashion.</p>
+    <p>All bidirectional interfaces (<span style="color:#fbbf24;font-family:'JetBrains Mono',monospace;font-size:.72rem">IF-03, IF-07, IF-10, IF-12, IF-13</span>) are request-response with timeouts.</p>
+  </div>
+
+  <!-- Deadlock Analysis -->
+  <div class="deadlock-box">
+    <h3>Concurrency Analysis</h3>
+
+    <!-- Deadlock: NO -->
+    <div class="status-row green">
+      <div class="status-icon green">&#10007;</div>
+      <div class="status-label green">Deadlock:</div>
+      <div class="status-value green">NO</div>
+      <div class="status-detail">All interfaces have timeouts (8s MCQ, 5s API, 10s Auth, 15s LTI)</div>
+    </div>
+
+    <!-- Livelock: THEORETICAL -->
+    <div class="status-row yellow">
+      <div class="status-icon yellow">&#9888;</div>
+      <div class="status-label yellow">Livelock:</div>
+      <div class="status-value yellow">THEORETICAL</div>
+      <div class="status-detail">Adaptive difficulty oscillation, mitigated by smoothing</div>
+    </div>
+
+    <!-- Starvation: NO -->
+    <div class="status-row green">
+      <div class="status-icon green">&#10003;</div>
+      <div class="status-label green">Starvation:</div>
+      <div class="status-value green">NO</div>
+      <div class="status-detail">Equal access, rate limiting, bounded retries</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <h4>Legend:</h4>
+  <div class="legend-item">
+    <svg width="24" height="14"><rect x="1" y="1" width="22" height="12" rx="4" fill="none" stroke="#4a5568" stroke-width="2" stroke-dasharray="4,3"/></svg>
+    <div class="legend-text">External</div>
+  </div>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background:#1d3557"></div>
+    <div class="legend-text">Client</div>
+  </div>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background:#2d6a4f"></div>
+    <div class="legend-text">Cloud</div>
+  </div>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background:#e76f51"></div>
+    <div class="legend-text">Backend</div>
+  </div>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background:#7b2cbf"></div>
+    <div class="legend-text">Output</div>
+  </div>
+  <div style="width:1px;height:16px;background:#1e2d48;margin:0 4px"></div>
+  <div class="legend-item">
+    <svg width="30" height="10"><line x1="0" y1="5" x2="24" y2="5" stroke="#00d4ff" stroke-width="2"/><polygon points="24,2 30,5 24,8" fill="#00d4ff"/></svg>
+    <div class="legend-text">Dependency</div>
+  </div>
+  <div class="legend-item">
+    <svg width="30" height="10"><polygon points="0,2 6,5 0,8" fill="#fbbf24"/><line x1="6" y1="5" x2="24" y2="5" stroke="#fbbf24" stroke-width="2"/><polygon points="24,2 30,5 24,8" fill="#fbbf24"/></svg>
+    <div class="legend-text">Bidirectional</div>
+  </div>
+  <div class="legend-item">
+    <svg width="30" height="10"><line x1="0" y1="5" x2="24" y2="5" stroke="#52b788" stroke-width="2" stroke-dasharray="4,3"/><polygon points="24,2 30,5 24,8" fill="#52b788"/></svg>
+    <div class="legend-text">Auth (JWT)</div>
+  </div>
+</div>
+
+</body>
+</html>

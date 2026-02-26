@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adaptive Difficulty Algorithm — Finite State Machine</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:14px}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:#0d0d1a;color:#e0e0e0;
+    min-height:100vh;padding:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .title-bar{
+    background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);
+    padding:28px 48px;border-bottom:3px solid #0f3460;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .title-bar h1{font-size:1.65rem;font-weight:700;color:#fff;letter-spacing:-.3px}
+  .title-bar h1 span{color:#00d4ff;font-weight:300}
+  .title-bar .meta{font-size:.85rem;color:#8892b0;font-weight:400;text-align:right;line-height:1.5}
+
+  .canvas{
+    display:flex;gap:28px;
+    max-width:1860px;margin:0 auto;padding:32px 40px 48px;
+  }
+  .fsm-area{flex:1;position:relative;}
+  .side-panel{
+    width:320px;flex-shrink:0;
+  }
+
+  /* ── FSM SVG ── */
+  svg.fsm{width:100%;height:auto;display:block;}
+
+  /* ── State boxes ── */
+  .state{cursor:default}
+  .state rect{
+    rx:12;ry:12;
+    stroke-width:2;
+    filter:drop-shadow(0 3px 8px rgba(0,0,0,.4));
+  }
+  .state text.name{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13px;
+    fill:#fff;
+  }
+  .state text.desc{
+    font-family:'JetBrains Mono',monospace;font-weight:400;font-size:9.5px;
+    fill:#a0aec0;
+  }
+
+  /* ── Arrows ── */
+  .arrow{stroke-width:2;fill:none}
+  .arrow.green{stroke:#4ade80}
+  .arrow.red{stroke:#f87171}
+  .arrow.blue{stroke:#60a5fa}
+  .arrow.gray{stroke:#6b7280}
+  .arrow.cyan{stroke:#00d4ff}
+
+  .arrow-label{
+    font-family:'JetBrains Mono',monospace;font-size:9px;
+    fill:#a0aec0;
+  }
+  .arrow-label.green{fill:#4ade80}
+  .arrow-label.red{fill:#f87171}
+  .arrow-label.gray{fill:#6b7280}
+  .arrow-label.blue{fill:#60a5fa}
+
+  /* ── Side Panel ── */
+  .info-card{
+    background:linear-gradient(135deg,#12182a,#0f1a30);
+    border:1px solid #1e2d48;border-radius:14px;
+    padding:24px;margin-bottom:20px;
+    box-shadow:0 4px 20px rgba(0,0,0,.4);
+  }
+  .info-card h3{
+    font-size:.9rem;font-weight:600;color:#00d4ff;margin-bottom:12px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .info-card p{font-size:.78rem;color:#a0aec0;line-height:1.6}
+  .info-card .highlight{
+    color:#fbbf24;font-weight:500;
+  }
+
+  .color-key{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+  .color-key .item{display:flex;align-items:center;gap:10px;font-size:.75rem;color:#a0aec0}
+  .color-key .swatch{width:28px;height:4px;border-radius:2px}
+
+  .callout{
+    background:#0f3460;border-left:4px solid #00d4ff;
+    border-radius:0 10px 10px 0;padding:16px 20px;
+  }
+  .callout p{font-size:.78rem;color:#c0d0e8;line-height:1.65;font-style:italic}
+
+  @media print{
+    body{background:#fff;color:#111}
+    .info-card,.callout{background:#f5f5f5;border-color:#ccc}
+  }
+</style>
+</head>
+<body>
+
+<div class="title-bar">
+  <h1>EdGame <span>—</span> Adaptive Difficulty Algorithm <span>— Finite State Machine</span></h1>
+  <div class="meta">TIE 204 Lab 2<br>February 2026</div>
+</div>
+
+<div class="canvas">
+
+  <!-- FSM Diagram -->
+  <div class="fsm-area">
+    <svg class="fsm" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4ade80"/></marker>
+        <marker id="arrowRed" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#f87171"/></marker>
+        <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#60a5fa"/></marker>
+        <marker id="arrowGray" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#6b7280"/></marker>
+        <marker id="arrowCyan" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#00d4ff"/></marker>
+      </defs>
+
+      <!--
+        LAYOUT GRID (approximate positions):
+        Row 0 (y=40):   S1 (x=120), S2 (x=480)
+        Row 1 (y=160):  S3 (x=480) — centered under S2
+        Row 2 (y=290):  S4 (x=120), S5 (x=480), S6 (x=880)
+        Row 3 (y=420):  S7 (x=480) — centered
+        Row 4 (y=530):  S8 (x=400), S9 (x=830)
+        Row 5 (y=650):  S10 (x=480) — centered
+        Row 6 (y=780):  S11 (x=480) — centered
+        Left margin for loop-back: x=50
+      -->
+
+      <!-- ═══════════════ ROW 0: States 1 & 2 ═══════════════ -->
+
+      <!-- S1: Initialize (double border = start state, cyan) -->
+      <g class="state" transform="translate(100,30)">
+        <rect x="0" y="0" width="210" height="64" fill="#12182a" stroke="#00d4ff" stroke-width="3"/>
+        <rect x="4" y="4" width="202" height="56" fill="none" stroke="#00d4ff" stroke-width="1" rx="10" ry="10"/>
+        <text class="name" x="105" y="28" text-anchor="middle">1. Initialize</text>
+        <text class="desc" x="105" y="48" text-anchor="middle">skillRating=3.0, streaks=0</text>
+      </g>
+
+      <!-- S2: Wait for Trigger (blue) -->
+      <g class="state" transform="translate(420,30)">
+        <rect x="0" y="0" width="230" height="64" fill="#12182a" stroke="#60a5fa"/>
+        <text class="name" x="115" y="28" text-anchor="middle">2. Wait for Trigger</text>
+        <text class="desc" x="115" y="48" text-anchor="middle">Ability activated by player</text>
+      </g>
+
+      <!-- ═══════════════ ROW 1: State 3 ═══════════════ -->
+
+      <!-- S3: Compute Desired Difficulty (blue) -->
+      <g class="state" transform="translate(390,155)">
+        <rect x="0" y="0" width="280" height="64" fill="#12182a" stroke="#60a5fa"/>
+        <text class="name" x="140" y="28" text-anchor="middle">3. Compute Desired Difficulty</text>
+        <text class="desc" x="140" y="48" text-anchor="middle">base = skillRating, apply bias</text>
+      </g>
+
+      <!-- ═══════════════ ROW 2: States 4, 5, 6 (spread wide) ═══════════════ -->
+
+      <!-- S4: Adjust Up (green) -->
+      <g class="state" transform="translate(100,300)">
+        <rect x="0" y="0" width="240" height="64" fill="#0a2a1a" stroke="#4ade80"/>
+        <text class="name" x="120" y="28" text-anchor="middle" fill="#4ade80">4. Adjust Up</text>
+        <text class="desc" x="120" y="48" text-anchor="middle">correctStreak &ge; 3 &rarr; diff + 1</text>
+      </g>
+
+      <!-- S5: Adjust Down (red) -->
+      <g class="state" transform="translate(430,300)">
+        <rect x="0" y="0" width="240" height="64" fill="#2a0a0a" stroke="#f87171"/>
+        <text class="name" x="120" y="28" text-anchor="middle" fill="#f87171">5. Adjust Down</text>
+        <text class="desc" x="120" y="48" text-anchor="middle">wrongStreak &ge; 2 &rarr; diff - 1</text>
+      </g>
+
+      <!-- S6: Maintain Level (gray) -->
+      <g class="state" transform="translate(780,300)">
+        <rect x="0" y="0" width="220" height="64" fill="#1a1a2a" stroke="#6b7280"/>
+        <text class="name" x="110" y="28" text-anchor="middle" fill="#9ca3af">6. Maintain Level</text>
+        <text class="desc" x="110" y="48" text-anchor="middle">No streak threshold met</text>
+      </g>
+
+      <!-- ═══════════════ ROW 3: State 7 ═══════════════ -->
+
+      <!-- S7: Clamp to Range (blue) -->
+      <g class="state" transform="translate(430,430)">
+        <rect x="0" y="0" width="220" height="64" fill="#12182a" stroke="#60a5fa"/>
+        <text class="name" x="110" y="28" text-anchor="middle">7. Clamp to Range</text>
+        <text class="desc" x="110" y="48" text-anchor="middle">[1, 5]</text>
+      </g>
+
+      <!-- ═══════════════ ROW 4: States 8 & 9 ═══════════════ -->
+
+      <!-- S8: Filter Questions (blue) -->
+      <g class="state" transform="translate(390,550)">
+        <rect x="0" y="0" width="260" height="64" fill="#12182a" stroke="#60a5fa"/>
+        <text class="name" x="130" y="28" text-anchor="middle">8. Filter Questions</text>
+        <text class="desc" x="130" y="48" text-anchor="middle">Match difficulty, exclude seen</text>
+      </g>
+
+      <!-- S9: Fallback (yellow dashed) -->
+      <g class="state" transform="translate(820,550)">
+        <rect x="0" y="0" width="250" height="64" fill="#1a1520" stroke="#fbbf24" stroke-dasharray="6,3"/>
+        <text class="name" x="125" y="28" text-anchor="middle" fill="#fbbf24">9. Fallback</text>
+        <text class="desc" x="125" y="48" text-anchor="middle">Any unseen &rarr; random from all</text>
+      </g>
+
+      <!-- ═══════════════ ROW 5: State 10 ═══════════════ -->
+
+      <!-- S10: Present Question (cyan) -->
+      <g class="state" transform="translate(400,670)">
+        <rect x="0" y="0" width="260" height="64" fill="#12182a" stroke="#00d4ff"/>
+        <text class="name" x="130" y="28" text-anchor="middle">10. Present Question</text>
+        <text class="desc" x="130" y="48" text-anchor="middle">MCQ overlay displayed</text>
+      </g>
+
+      <!-- ═══════════════ ROW 6: State 11 ═══════════════ -->
+
+      <!-- S11: Record Result (blue) -->
+      <g class="state" transform="translate(370,790)">
+        <rect x="0" y="0" width="310" height="64" fill="#12182a" stroke="#60a5fa"/>
+        <text class="name" x="155" y="28" text-anchor="middle">11. Record Result</text>
+        <text class="desc" x="155" y="48" text-anchor="middle">Update skillRating, streaks, accuracy</text>
+      </g>
+
+      <!-- ═══════════════════════════════════════════════ -->
+      <!-- ═══ ARROWS ═══ -->
+      <!-- ═══════════════════════════════════════════════ -->
+
+      <!-- 1 → 2 (blue) -->
+      <path class="arrow blue" d="M310,62 L420,62" marker-end="url(#arrowBlue)"/>
+
+      <!-- 2 → 3 (blue, downward) -->
+      <path class="arrow blue" d="M535,94 L535,155" marker-end="url(#arrowBlue)"/>
+
+      <!-- 3 → 4 (green, branch left-down) -->
+      <path class="arrow green" d="M430,219 L300,300" marker-end="url(#arrowGreen)"/>
+      <!-- label: correctStreak >= 3 -->
+      <rect x="275" y="247" width="128" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.9"/>
+      <text class="arrow-label green" x="339" y="259" text-anchor="middle">correctStreak &ge; 3</text>
+
+      <!-- 3 → 5 (red, branch straight down) -->
+      <path class="arrow red" d="M530,219 L550,300" marker-end="url(#arrowRed)"/>
+      <!-- label: wrongStreak >= 2 -->
+      <rect x="534" y="250" width="110" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.9"/>
+      <text class="arrow-label red" x="589" y="262" text-anchor="middle">wrongStreak &ge; 2</text>
+
+      <!-- 3 → 6 (gray, branch right-down) -->
+      <path class="arrow gray" d="M650,219 L840,300" marker-end="url(#arrowGray)"/>
+      <!-- label: else -->
+      <rect x="750" y="247" width="36" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.9"/>
+      <text class="arrow-label gray" x="768" y="259" text-anchor="middle">else</text>
+
+      <!-- 4 → 7 (green) -->
+      <path class="arrow green" d="M300,364 Q380,400 470,430" marker-end="url(#arrowGreen)"/>
+
+      <!-- 5 → 7 (red) -->
+      <path class="arrow red" d="M550,364 L550,430" marker-end="url(#arrowRed)"/>
+
+      <!-- 6 → 7 (gray) -->
+      <path class="arrow gray" d="M830,364 Q700,400 620,430" marker-end="url(#arrowGray)"/>
+
+      <!-- 7 → 8 (blue) -->
+      <path class="arrow blue" d="M540,494 L530,550" marker-end="url(#arrowBlue)"/>
+
+      <!-- 8 → 9 (blue, label "if empty") -->
+      <path class="arrow blue" d="M650,582 L820,582" marker-end="url(#arrowBlue)"/>
+      <!-- label: if empty -->
+      <rect x="701" y="567" width="62" height="16" rx="3" fill="#0d0d1a" fill-opacity="0.9"/>
+      <text class="arrow-label blue" x="732" y="579" text-anchor="middle">if empty</text>
+
+      <!-- 8 → 10 (blue, straight down) -->
+      <path class="arrow blue" d="M530,614 L530,670" marker-end="url(#arrowBlue)"/>
+
+      <!-- 9 → 10 (blue, curves down-left) -->
+      <path class="arrow blue" d="M945,614 Q945,650 660,685" marker-end="url(#arrowBlue)"/>
+
+      <!-- 10 → 11 (blue) -->
+      <path class="arrow blue" d="M530,734 L530,790" marker-end="url(#arrowBlue)"/>
+
+      <!-- 11 → 2 (blue dashed, loop-back along LEFT margin) -->
+      <!--
+        Path: from left side of S11 → go left to x=55 → go straight up to
+        y=62 (S2 vertical center) → go right into S2 left edge
+      -->
+      <path class="arrow blue"
+            d="M370,822 L55,822 L55,62 L420,62"
+            marker-end="url(#arrowBlue)"
+            stroke-dasharray="8,4"/>
+      <!-- label: loop back to Wait (placed along the left vertical segment) -->
+      <rect x="16" y="410" width="16" height="120" rx="3" fill="#0d0d1a" fill-opacity="0.9"/>
+      <text class="arrow-label blue" x="26" y="480" text-anchor="middle" transform="rotate(-90,26,480)">loop back to Wait</text>
+
+    </svg>
+  </div>
+
+  <!-- Side Panel -->
+  <div class="side-panel">
+
+    <div class="info-card callout">
+      <h3>&#127919; Purpose</h3>
+      <p>Keep students in their <span class="highlight">Zone of Proximal Development</span>.</p>
+      <p style="margin-top:10px">
+        Too easy &rarr; boredom (engagement drops).<br>
+        Too hard &rarr; frustration (persistence drops).<br><br>
+        The adaptive engine finds the <span class="highlight">sweet spot</span> where challenge matches ability, maximizing learning and motivation.
+      </p>
+    </div>
+
+    <div class="info-card">
+      <h3>&#128736; Parameters</h3>
+      <p>
+        <strong>skillRating:</strong> 1.0 &ndash; 5.0 (init 3.0)<br>
+        <strong>correctStreak:</strong> threshold = 3<br>
+        <strong>wrongStreak:</strong> threshold = 2<br>
+        <strong>Difficulty range:</strong> [1, 5] clamped<br>
+        <strong>Question pool:</strong> filtered by difficulty, excludes previously seen
+      </p>
+    </div>
+
+    <div class="info-card">
+      <h3>&#127912; Color Key</h3>
+      <div class="color-key">
+        <div class="item"><div class="swatch" style="background:#4ade80"></div> Skill Up path (correct streak)</div>
+        <div class="item"><div class="swatch" style="background:#f87171"></div> Skill Down path (wrong streak)</div>
+        <div class="item"><div class="swatch" style="background:#60a5fa"></div> Neutral / system flow</div>
+        <div class="item"><div class="swatch" style="background:#6b7280"></div> Maintain (no change)</div>
+        <div class="item"><div class="swatch" style="background:#fbbf24;height:4px;border-top:2px dashed #fbbf24"></div> Fallback (dashed)</div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h3>&#128260; State Flow</h3>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.8;color:#60a5fa">
+        1 &rarr; 2 &rarr; 3 &rarr; {4|5|6}<br>
+        &rarr; 7 &rarr; 8 &rarr; (9 if empty)<br>
+        &rarr; 10 &rarr; 11 &rarr; 2 (loop)
+      </p>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
