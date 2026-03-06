@@ -41,36 +41,39 @@ EdGame is a game-based learning analytics platform for K-12 classrooms. Phase 1 
 - Smaller community than Phaser — fewer third-party plugins available.
 - Team owns more low-level game infrastructure (asset loading, scene management).
 
-### 3. Supabase as Backend-as-a-Service
+### 3. SurrealDB as Database
 
-**Choice:** Supabase (PostgreSQL + Auth + Realtime + Storage).
-
-**Rationale:**
-- Managed PostgreSQL with Row-Level Security (RLS) provides data isolation between schools/teachers without application-level authorization code.
-- Supabase Auth handles JWT issuance, social OAuth, magic links, and RBAC out of the box.
-- Supabase Realtime enables live dashboard updates (teacher sees student progress in near-real-time).
-- Storage bucket for game assets, student uploads, and exported reports.
-- Generous free tier for development; predictable pricing at scale.
-- Full SQL access — no ORM lock-in, can run raw queries and database functions.
-
-**Consequences:**
-- Vendor coupling to Supabase — mitigated by using standard PostgreSQL and keeping business logic in SQL functions and Next.js API routes (portable).
-- Self-hosting option available via Supabase's open-source stack if needed.
-
-### 4. Vercel for Hosting
-
-**Choice:** Vercel for all web infrastructure.
+**Choice:** SurrealDB as the primary database.
 
 **Rationale:**
-- Native Next.js support with zero-config deployment.
-- Edge Functions for API routes (low latency globally).
-- Automatic preview deployments per pull request.
-- Built-in analytics and Web Vitals monitoring.
-- CDN for static assets (combined with Cloudflare for DDoS protection in production).
+- Multi-model database (document, graph, relational) — fits our mixed data needs (structured schemas for users/classes, semi-structured JSONB-like payloads for game events, graph relations for class membership).
+- Built-in permissions system (`DEFINE TABLE ... PERMISSIONS`) provides data isolation between schools/teachers without application-level authorization code.
+- SurrealQL is expressive and supports record links, subqueries, and computed fields natively.
+- Easy to deploy as a single service on Railway — no managed service vendor lock-in.
+- Built-in functions and live queries for real-time dashboard updates.
+- Authentication handled via NextAuth.js at the application layer, with SurrealDB storing user records.
 
 **Consequences:**
-- Serverless function limits (10s default timeout, 50MB bundle) — sufficient for Phase 1 API routes.
-- Must architect long-running jobs (daily rollups, insight generation) as Supabase database functions or cron triggers, not Vercel functions.
+- Newer database with a smaller ecosystem than PostgreSQL — fewer ORMs, tools, and community resources.
+- Auth is handled at the Next.js layer (NextAuth.js) rather than database-level.
+- Team must learn SurrealQL syntax (similar to SQL but with differences).
+
+### 4. Railway for Hosting
+
+**Choice:** Railway for all web infrastructure and database hosting.
+
+**Rationale:**
+- Simple deployment from GitHub with automatic builds.
+- Supports Next.js natively (Nixpacks builder auto-detects).
+- Can host both the Next.js app and SurrealDB as separate services in one Railway project.
+- Persistent volumes for SurrealDB data.
+- No serverless cold-start latency — runs as a persistent process.
+- Simpler configuration than Vercel for monorepo + database co-hosting.
+
+**Consequences:**
+- No edge functions — API routes run from a single region (acceptable for Phase 1).
+- Must configure Railway services manually (Next.js service + SurrealDB service).
+- Long-running jobs (daily rollups) can run as cron jobs within the Next.js service or as SurrealDB functions.
 
 ### 5. pnpm Monorepo with Turborepo
 
@@ -84,7 +87,7 @@ EdGame is a game-based learning analytics platform for K-12 classrooms. Phase 1 
 
 **Consequences:**
 - Slightly higher setup complexity vs. a single-package repo.
-- CI must be configured for Turborepo caching (Vercel Remote Cache or self-hosted).
+- CI must be configured for Turborepo caching.
 
 ### 6. Phased Scaling Strategy
 
@@ -92,9 +95,9 @@ EdGame is a game-based learning analytics platform for K-12 classrooms. Phase 1 
 
 | Phase | Users | Infrastructure | Key Changes |
 |-------|-------|---------------|-------------|
-| **Phase 1** (Launch) | 0–5,000 | Vercel + Supabase Free/Pro | Single Supabase project, client-side telemetry batching, daily metric rollups via pg_cron |
-| **Phase 2** (5K–50K) | 5,000–50,000 | Vercel Pro + Supabase Pro + dedicated Postgres | Separate analytics database, event queue (Supabase Realtime → dedicated consumer), Redis caching for dashboards |
-| **Phase 3** (50K+) | 50,000+ | Multi-region Vercel + Supabase Enterprise or self-hosted | Read replicas, CDN edge caching for game assets, data warehouse for longitudinal analytics, potential migration to dedicated infrastructure |
+| **Phase 1** (Launch) | 0–5,000 | Railway (Next.js + SurrealDB) | Single SurrealDB instance, client-side telemetry batching, daily metric rollups via cron |
+| **Phase 2** (5K–50K) | 5,000–50,000 | Railway Pro + dedicated SurrealDB | Separate analytics namespace, event queue, Redis caching for dashboards |
+| **Phase 3** (50K+) | 50,000+ | Multi-service Railway or dedicated infrastructure | SurrealDB cluster, CDN edge caching for game assets, data warehouse for longitudinal analytics |
 
 **Rationale:**
 - Avoids premature optimization — Phase 1 keeps infrastructure simple and cheap.
@@ -109,6 +112,6 @@ EdGame is a game-based learning analytics platform for K-12 classrooms. Phase 1 
 - `docs_markdown/spec-v1.0.md` — Original specification
 - `PulseRealms/main.js` — KAPLAY import and game bootstrap
 - `PulseRealms/src/systems/telemetry.js` — Event format used in prototype
-- `docs/architecture/data-model.sql` — Phase 1 database schema
+- `docs/architecture/data-model.surql` — Phase 1 database schema (SurrealQL)
 - `docs/architecture/api-routes.md` — Phase 1 API route inventory
 - `docs/architecture/monorepo-structure.md` — Directory layout

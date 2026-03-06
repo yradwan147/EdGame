@@ -25,7 +25,7 @@ edgame/
 │   │   │   ├── layout.tsx            # Root layout
 │   │   │   └── page.tsx              # Landing page
 │   │   ├── components/               # App-specific components
-│   │   ├── lib/                      # App-specific utilities (supabase client, etc.)
+│   │   ├── lib/                      # App-specific utilities (SurrealDB client, auth, etc.)
 │   │   ├── next.config.js
 │   │   ├── tailwind.config.ts
 │   │   ├── tsconfig.json
@@ -53,6 +53,7 @@ edgame/
 │   │   │   ├── types/                # TypeScript types (User, Session, Event, Metric schemas)
 │   │   │   ├── constants/            # Shared constants (dimensions, roles, subjects)
 │   │   │   ├── validators/           # Zod schemas for API request/response validation
+│   │   │   ├── db/                   # SurrealDB client factory
 │   │   │   └── utils/                # Pure utility functions
 │   │   ├── tsconfig.json
 │   │   └── package.json
@@ -117,7 +118,7 @@ apps/web
   ├── @edgame/shared        (types, validators, constants)
   ├── @edgame/ui             (UI components)
   ├── next, react
-  ├── @supabase/supabase-js
+  ├── surrealdb
   └── tailwindcss, shadcn/ui primitives
 
 apps/games/pulse-realms

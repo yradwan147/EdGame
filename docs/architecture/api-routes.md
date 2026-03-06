@@ -1,12 +1,12 @@
 # Phase 1 API Routes
 
-All endpoints are Next.js Route Handlers deployed on Vercel Edge Functions.
-Authentication via Supabase JWT (passed as `Authorization: Bearer <token>`).
+All endpoints are Next.js Route Handlers deployed on Railway.
+Authentication via NextAuth.js session tokens (passed as cookie or `Authorization: Bearer <token>`).
 
 ## Auth
 
-### `POST /api/auth/callback`
-Supabase Auth callback handler (OAuth, magic link confirmation).
+### `POST /api/auth/[...nextauth]`
+NextAuth.js auth handler (Google OAuth, credentials).
 
 - **Auth:** Public
 - **Response:** Redirect to dashboard or game
