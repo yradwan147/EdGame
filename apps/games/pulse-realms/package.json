@@ -1,0 +1,12 @@
+{
+  "name": "@edgame/pulse-realms",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Pulse Realms: open index.html in browser or use a local dev server'",
+    "build": "echo 'No build step — served as static files'"
+  },
+  "dependencies": {
+    "@edgame/shared": "workspace:*"
+  }
+}
