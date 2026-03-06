@@ -1,0 +1,14 @@
+{
+  "questions": [
+    { "id": "sci_001", "subject": "science", "difficulty": 1, "text": "What is H2O commonly known as?", "options": ["Hydrogen", "Water", "Oxygen", "Salt"], "correctIndex": 1 },
+    { "id": "sci_002", "subject": "science", "difficulty": 1, "text": "Which planet is known as the Red Planet?", "options": ["Mars", "Venus", "Jupiter", "Mercury"], "correctIndex": 0 },
+    { "id": "sci_003", "subject": "science", "difficulty": 2, "text": "What force pulls objects toward Earth?", "options": ["Friction", "Magnetism", "Gravity", "Tension"], "correctIndex": 2 },
+    { "id": "sci_004", "subject": "science", "difficulty": 2, "text": "Which part of a cell contains DNA?", "options": ["Nucleus", "Membrane", "Cytoplasm", "Ribosome"], "correctIndex": 0 },
+    { "id": "sci_005", "subject": "science", "difficulty": 3, "text": "What is the chemical symbol for gold?", "options": ["Ag", "Au", "Gd", "Go"], "correctIndex": 1 },
+    { "id": "sci_006", "subject": "science", "difficulty": 3, "text": "What is the basic unit of electrical current?", "options": ["Volt", "Watt", "Ampere", "Ohm"], "correctIndex": 2 },
+    { "id": "sci_007", "subject": "science", "difficulty": 4, "text": "Which process converts glucose into energy in cells?", "options": ["Respiration", "Photosynthesis", "Diffusion", "Mutation"], "correctIndex": 0 },
+    { "id": "sci_008", "subject": "science", "difficulty": 4, "text": "What is the pH of a neutral solution?", "options": ["0", "5", "7", "14"], "correctIndex": 2 },
+    { "id": "sci_009", "subject": "science", "difficulty": 5, "text": "What particle has a negative charge?", "options": ["Proton", "Neutron", "Electron", "Photon"], "correctIndex": 2 },
+    { "id": "sci_010", "subject": "science", "difficulty": 5, "text": "Which law states energy cannot be created or destroyed?", "options": ["Newton's First Law", "Law of Conservation of Energy", "Ohm's Law", "Boyle's Law"], "correctIndex": 1 }
+  ]
+}

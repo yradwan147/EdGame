@@ -1,0 +1,14 @@
+{
+  "questions": [
+    { "id": "math_001", "subject": "math", "difficulty": 1, "text": "What is 9 + 6?", "options": ["13", "15", "16", "14"], "correctIndex": 1 },
+    { "id": "math_002", "subject": "math", "difficulty": 1, "text": "What is 7 x 8?", "options": ["54", "56", "64", "48"], "correctIndex": 1 },
+    { "id": "math_003", "subject": "math", "difficulty": 2, "text": "What is 144 divided by 12?", "options": ["10", "11", "12", "13"], "correctIndex": 2 },
+    { "id": "math_004", "subject": "math", "difficulty": 2, "text": "What is 15% of 200?", "options": ["20", "25", "30", "35"], "correctIndex": 2 },
+    { "id": "math_005", "subject": "math", "difficulty": 3, "text": "Solve: 3(x + 2) = 18", "options": ["x = 2", "x = 4", "x = 6", "x = 8"], "correctIndex": 1 },
+    { "id": "math_006", "subject": "math", "difficulty": 3, "text": "The square root of 169 is:", "options": ["11", "12", "13", "14"], "correctIndex": 2 },
+    { "id": "math_007", "subject": "math", "difficulty": 4, "text": "What is the slope of a line through (1,2) and (5,10)?", "options": ["1", "2", "3", "4"], "correctIndex": 1 },
+    { "id": "math_008", "subject": "math", "difficulty": 4, "text": "What is the area of a triangle with base 10 and height 6?", "options": ["60", "30", "16", "20"], "correctIndex": 1 },
+    { "id": "math_009", "subject": "math", "difficulty": 5, "text": "If f(x)=2x^2-3x+1, what is f(3)?", "options": ["8", "10", "12", "14"], "correctIndex": 1 },
+    { "id": "math_010", "subject": "math", "difficulty": 5, "text": "What is the derivative of x^3?", "options": ["x^2", "2x", "3x^2", "3x"], "correctIndex": 2 }
+  ]
+}
