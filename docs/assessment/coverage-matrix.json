@@ -1,0 +1,69 @@
+{
+  "description": "5-games × 6-dimensions analytics coverage matrix",
+  "source": "plans/plan1.md lines 218-234",
+  "dimensions": [
+    { "id": "D1", "name": "Cognitive Knowledge" },
+    { "id": "D2", "name": "Behavioral Engagement" },
+    { "id": "D3", "name": "Strategic Behavior & Agency" },
+    { "id": "D4", "name": "Social & Collaborative" },
+    { "id": "D5", "name": "Affective & SEL" },
+    { "id": "D6", "name": "Temporal & Longitudinal" }
+  ],
+  "games": [
+    { "id": "pulse-realms", "name": "Pulse Realms", "type": "Team Arena" },
+    { "id": "concept-cascade", "name": "Concept Cascade", "type": "Tower Defense" },
+    { "id": "lab-explorer", "name": "Lab Explorer", "type": "Virtual Science Lab" },
+    { "id": "knowledge-quest", "name": "Knowledge Quest", "type": "Turn-Based RPG" },
+    { "id": "survival-equation", "name": "Survival Equation", "type": "Collaborative Puzzle Survival" }
+  ],
+  "coverage": {
+    "pulse-realms": {
+      "D1": { "strength": "strong", "notes": "Every ability gated behind MCQ — correctness, response time, speed-accuracy profile" },
+      "D2": { "strength": "strong", "notes": "Match loop encourages replay; XP/level progression drives return visits" },
+      "D3": { "strength": "medium", "notes": "Role choice (attacker/healer/builder) reveals risk tolerance; action cooldown management" },
+      "D4": { "strength": "medium", "notes": "3v3 with AI allies; Phase 2 adds real multiplayer communication metrics" },
+      "D5": { "strength": "medium", "notes": "Combat pressure creates authentic stress; response patterns after missed questions" },
+      "D6": { "strength": "medium", "notes": "Adaptive difficulty + session history tracks accuracy improvement over time" }
+    },
+    "concept-cascade": {
+      "D1": { "strength": "strong", "notes": "Enemy types map to knowledge components — which get through reveals concept gaps" },
+      "D2": { "strength": "strong", "notes": "Dropout heatmaps show which wave/level causes frustration" },
+      "D3": { "strength": "primary", "notes": "Resource allocation (tower investment), problem-solving path analysis via upgrade order" },
+      "D4": { "strength": "weak", "notes": "Single-player tower defense — minimal social interaction" },
+      "D5": { "strength": "medium", "notes": "Impulse control (rushing vs. planning), persistence when enemies break through" },
+      "D6": { "strength": "strong", "notes": "Revisiting concept-towers after time gap reveals knowledge decay" }
+    },
+    "lab-explorer": {
+      "D1": { "strength": "strong", "notes": "Calculation accuracy, measurement precision, hypothesis quality" },
+      "D2": { "strength": "medium", "notes": "Exploration breadth — how many variables/tools explored beyond minimum" },
+      "D3": { "strength": "primary", "notes": "Experimentation rate, process mining of experimental steps, self-correction rate" },
+      "D4": { "strength": "medium", "notes": "Collaborative lab partner mode in Phase 2" },
+      "D5": { "strength": "medium", "notes": "Risk-taking with experiments, boredom indicators from minimal effort" },
+      "D6": { "strength": "strong", "notes": "Skill transfer — apply learned principles to new experiments" }
+    },
+    "knowledge-quest": {
+      "D1": { "strength": "strong", "notes": "Hint/help usage patterns, BKT mastery tracking across story chapters" },
+      "D2": { "strength": "strong", "notes": "Narrative hook drives longer sessions; voluntary replay indicates intrinsic motivation" },
+      "D3": { "strength": "strong", "notes": "Dialogue choice diversity, risk-taking (harder quests for better rewards)" },
+      "D4": { "strength": "medium", "notes": "NPC interaction patterns; Phase 2 co-op mode" },
+      "D5": { "strength": "primary", "notes": "Branching choices between helping NPCs vs. self-interest; emotion regulation under story pressure; growth mindset from retry behavior" },
+      "D6": { "strength": "strong", "notes": "Story chapters map to curriculum progression; longitudinal arc across full story" }
+    },
+    "survival-equation": {
+      "D1": { "strength": "strong", "notes": "Math/science applied to authentic survival problems (water purification ratios, structural load)" },
+      "D2": { "strength": "strong", "notes": "Survival narrative creates compelling engagement; dropout heatmaps per scenario" },
+      "D3": { "strength": "strong", "notes": "Resource allocation with limited supplies; multiple valid approaches per challenge" },
+      "D4": { "strength": "primary", "notes": "Unique specialist roles requiring information sharing; communication frequency, quality, role adoption, team contribution equity" },
+      "D5": { "strength": "strong", "notes": "Empathy (sharing scarce resources), impulse control (waiting for team consensus), social initiation" },
+      "D6": { "strength": "strong", "notes": "Skill transfer across survival scenarios; improvement trajectory" }
+    }
+  },
+  "primaryFocusMap": {
+    "D1": ["pulse-realms", "concept-cascade", "lab-explorer", "knowledge-quest", "survival-equation"],
+    "D2": ["pulse-realms", "concept-cascade", "knowledge-quest", "survival-equation"],
+    "D3": ["concept-cascade", "lab-explorer"],
+    "D4": ["survival-equation"],
+    "D5": ["knowledge-quest"],
+    "D6": ["concept-cascade", "lab-explorer", "knowledge-quest", "survival-equation"]
+  }
+}

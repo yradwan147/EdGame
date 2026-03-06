@@ -1,0 +1,247 @@
+{
+  "description": "Maps 15 core metrics to PulseRealms telemetry events and computed fields",
+  "game": "pulse-realms",
+  "telemetrySource": "PulseRealms/src/systems/telemetry.js",
+  "eventFormat": {
+    "id": "evt_{timestamp}_{random}",
+    "type": "string (event_type)",
+    "ts": "number (Date.now())",
+    "payload": "object (event-specific fields)"
+  },
+  "metrics": [
+    {
+      "dimension": "D1",
+      "dimensionName": "Cognitive Knowledge",
+      "metrics": [
+        {
+          "id": "D1.1",
+          "name": "Correctness Rate",
+          "description": "Percentage of in-game questions answered correctly",
+          "sourceEvent": "question_answered",
+          "sourceField": "payload.correct",
+          "computation": "COUNT(correct=true) / COUNT(*) per session",
+          "outputColumn": "computed_metrics.correctness_rate",
+          "codeReference": "combatSystem.js:71 — telemetry.event('question_answered', { correct })"
+        },
+        {
+          "id": "D1.2",
+          "name": "Response Time",
+          "description": "Time between question presentation and answer submission (ms)",
+          "sourceEvent": "question_answered",
+          "sourceField": "payload.responseTimeMs",
+          "computation": "AVG(responseTimeMs) per session",
+          "outputColumn": "computed_metrics.avg_response_time_ms",
+          "codeReference": "combatSystem.js:76 — responseTimeMs included in question_answered payload"
+        },
+        {
+          "id": "D1.3",
+          "name": "Speed-Accuracy Profile",
+          "description": "Joint classification of response time and correctness",
+          "sourceEvents": ["question_answered"],
+          "sourceFields": ["payload.correct", "payload.responseTimeMs"],
+          "computation": "Classify each answer: fast+correct='fluent', slow+correct='deliberate', fast+wrong='guessing', slow+wrong='struggling'. Session profile = dominant category.",
+          "thresholds": {
+            "fastThresholdMs": 3000,
+            "slowThresholdMs": 6000
+          },
+          "outputColumn": "computed_metrics.speed_accuracy_profile",
+          "codeReference": "combatSystem.js:4-6 — speedMultiplier(responseTimeMs) uses 5000ms as midpoint"
+        }
+      ]
+    },
+    {
+      "dimension": "D2",
+      "dimensionName": "Behavioral Engagement",
+      "metrics": [
+        {
+          "id": "D2.1",
+          "name": "Play Time",
+          "description": "Total time spent in game session",
+          "sourceEvent": "session_lifecycle",
+          "sourceFields": ["session.startedAt", "session.endedAt"],
+          "computation": "endedAt - startedAt (from telemetry.beginSession / telemetry.endSession)",
+          "outputColumn": "computed_metrics.total_time_seconds",
+          "codeReference": "telemetry.js:27 — startedAt = Date.now() in beginSession(); telemetry.js:47 — endedAt = Date.now() in endSession()"
+        },
+        {
+          "id": "D2.2",
+          "name": "Session Duration",
+          "description": "Length of individual play session",
+          "sourceEvent": "session_lifecycle",
+          "computation": "(endedAt - startedAt) / 1000 seconds",
+          "outputColumn": "game_sessions.duration_seconds",
+          "codeReference": "telemetry.js:47 — endedAt set in endSession()"
+        },
+        {
+          "id": "D2.3",
+          "name": "Return Rate",
+          "description": "Number of distinct sessions per student over time period",
+          "sourceEvent": "session_lifecycle",
+          "computation": "COUNT(DISTINCT session_id) per student per time window from telemetry.getAllSessions()",
+          "outputColumn": "student_metrics_daily.session_count",
+          "codeReference": "telemetry.js:58-60 — getAllSessions() returns all stored sessions"
+        }
+      ]
+    },
+    {
+      "dimension": "D3",
+      "dimensionName": "Strategic Behavior & Agency",
+      "metrics": [
+        {
+          "id": "D3.1",
+          "name": "Strategy Classification",
+          "description": "Player's dominant play style based on role choice and action distribution",
+          "sourceEvent": "action_performed",
+          "sourceField": "payload.actionType",
+          "computation": "Categorize by most frequent actionType: attack/powerStrike='aggressive', heal/shield='support', buildBarrier/deployTurret='builder'. Cross-reference with role selection.",
+          "validValues": ["attack", "powerStrike", "heal", "shield", "buildBarrier", "deployTurret"],
+          "outputColumn": "computed_metrics.strategy_classification",
+          "codeReference": "combatSystem.js:97-104 — telemetry.event('action_performed', { actionType, role }); constants.js:39-46 — ACTION_IDS enum"
+        },
+        {
+          "id": "D3.2",
+          "name": "Action Variation Index",
+          "description": "Diversity of actions taken (Shannon entropy normalized to 0-1)",
+          "sourceEvent": "action_performed",
+          "sourceField": "payload.actionType",
+          "computation": "Shannon entropy of actionType distribution / log2(n_action_types). 0 = always same action, 1 = perfectly diverse.",
+          "outputColumn": "computed_metrics.action_variation_index",
+          "codeReference": "combatSystem.js:98 — actionType captured per action; constants.js:39-46 — 6 possible action types"
+        },
+        {
+          "id": "D3.3",
+          "name": "Role Choice",
+          "description": "Which role the student selects at match start",
+          "sourceEvent": "session_meta",
+          "sourceField": "session.meta.role",
+          "computation": "Direct capture from session metadata at game start",
+          "validValues": ["attacker", "healer", "builder"],
+          "outputColumn": "computed_metrics.role_chosen",
+          "codeReference": "telemetry.js:24-29 — beginSession(meta) stores meta; constants.js:33-37 — ROLE_IDS enum"
+        }
+      ]
+    },
+    {
+      "dimension": "D4",
+      "dimensionName": "Social & Collaborative",
+      "metrics": [
+        {
+          "id": "D4.1",
+          "name": "Teammate Interactions",
+          "description": "Count of actions targeting allied team members (heal, shield)",
+          "sourceEvent": "action_performed",
+          "sourceFields": ["payload.actionType", "payload.targetId", "payload.effectType"],
+          "computation": "COUNT where effectType IN ('heal', 'shield', 'barrier') — indicates prosocial actions toward teammates",
+          "outputColumn": "computed_metrics.teammate_interactions",
+          "codeReference": "combatSystem.js:97-104 — action_performed event with effectType; combatSystem.js:23-36 — heal/shield/barrier effects"
+        },
+        {
+          "id": "D4.2",
+          "name": "Heal Actions Given",
+          "description": "Count of heal actions performed on allies",
+          "sourceEvent": "action_performed",
+          "sourceFields": ["payload.actionType", "payload.effectType"],
+          "computation": "COUNT where actionType='heal' AND success=true",
+          "outputColumn": "computed_metrics.heal_actions",
+          "codeReference": "combatSystem.js:24-26 — heal effect; constants.js:43 — ACTION_IDS.HEAL"
+        },
+        {
+          "id": "D4.3",
+          "name": "Shield Actions Given",
+          "description": "Count of shield/barrier actions performed",
+          "sourceEvent": "action_performed",
+          "sourceFields": ["payload.actionType", "payload.effectType"],
+          "computation": "COUNT where actionType IN ('shield', 'buildBarrier') AND success=true",
+          "outputColumn": "computed_metrics.shield_actions",
+          "codeReference": "combatSystem.js:27-34 — shield and barrier effects; constants.js:44-45 — SHIELD, BUILD_BARRIER"
+        }
+      ]
+    },
+    {
+      "dimension": "D5",
+      "dimensionName": "Affective & SEL",
+      "metrics": [
+        {
+          "id": "D5.1",
+          "name": "Persistence After Failure",
+          "description": "Ratio of continued engagement after incorrect answers",
+          "sourceEvents": ["question_answered", "action_performed"],
+          "sourceFields": ["payload.correct", "payload.ts"],
+          "computation": "After each incorrect answer, check if student continues to perform actions within 30 seconds. persistence = actions_after_failure / total_failures. High value = resilient.",
+          "outputColumn": "computed_metrics.persistence_after_failure",
+          "codeReference": "combatSystem.js:71-79 — question_answered with correct field; gameState.js pushPulseRecord tracks {correct, responseTimeMs} sequence"
+        },
+        {
+          "id": "D5.2",
+          "name": "Performance Under Pressure",
+          "description": "Accuracy when HP is low (stress indicator for emotional regulation)",
+          "sourceEvents": ["question_answered", "damage_taken"],
+          "sourceFields": ["payload.correct", "payload.responseTimeMs", "damage_taken.payload.amount"],
+          "computation": "Compare correctness_rate when cumulative damage > 60% of baseHp (120) vs. when healthy. Large accuracy drop under pressure = low emotional regulation.",
+          "outputColumn": "computed_metrics.frustration_score",
+          "codeReference": "combatSystem.js:107-113 — damage_taken event with amount; constants.js:21 — baseHp: 120"
+        }
+      ]
+    },
+    {
+      "dimension": "D6",
+      "dimensionName": "Temporal & Longitudinal",
+      "metrics": [
+        {
+          "id": "D6.1",
+          "name": "Response Consistency",
+          "description": "Standard deviation of response times within a session",
+          "sourceEvent": "question_answered",
+          "sourceField": "payload.responseTimeMs",
+          "computation": "STDDEV(responseTimeMs) across all question_answered events in session. Low stddev = consistent pace. High stddev = variable attention.",
+          "outputColumn": "computed_metrics.response_consistency",
+          "codeReference": "combatSystem.js:76 — responseTimeMs in every question_answered event"
+        },
+        {
+          "id": "D6.2",
+          "name": "Learning Velocity",
+          "description": "Rate of accuracy change across a session (early vs. late questions)",
+          "sourceEvent": "question_answered",
+          "sourceFields": ["payload.correct", "ts"],
+          "computation": "Split session questions into first-half and second-half by timestamp. learning_velocity = accuracy_second_half - accuracy_first_half. Positive = improving within session.",
+          "outputColumn": "computed_metrics.learning_velocity",
+          "codeReference": "combatSystem.js:71-79 — question_answered events with ts and correct; questionEngine.js:92-111 — adaptive difficulty adjusts based on correctStreak/wrongStreak"
+        }
+      ]
+    }
+  ],
+  "telemetryEventCatalog": {
+    "question_answered": {
+      "emittedBy": "combatSystem.js:71",
+      "payload": {
+        "questionId": "string — unique question identifier",
+        "subject": "string — 'math' | 'science' | 'general'",
+        "difficulty": "number — 1 to 5",
+        "correct": "boolean",
+        "responseTimeMs": "number — milliseconds to answer",
+        "actionType": "string — which ability triggered the question",
+        "powerMultiplier": "number — speed-based damage multiplier"
+      }
+    },
+    "action_performed": {
+      "emittedBy": "combatSystem.js:97",
+      "payload": {
+        "actionType": "string — 'attack' | 'powerStrike' | 'heal' | 'shield' | 'buildBarrier' | 'deployTurret'",
+        "role": "string — 'attacker' | 'healer' | 'builder'",
+        "targetId": "string | null — target actor ID",
+        "success": "boolean — whether the action connected",
+        "value": "number — effect magnitude",
+        "effectType": "string — 'damage' | 'heal' | 'shield' | 'barrier' | 'miss' | 'none'"
+      }
+    },
+    "damage_taken": {
+      "emittedBy": "combatSystem.js:107",
+      "payload": {
+        "amount": "number — damage dealt",
+        "sourceId": "string — attacker actor ID",
+        "sourceRole": "string — attacker's role",
+        "targetId": "string — target actor ID"
+      }
+    }
+  }
+}
