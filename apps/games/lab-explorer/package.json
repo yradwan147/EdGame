@@ -1,0 +1,12 @@
+{
+  "name": "@edgame/lab-explorer",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Lab Explorer: open index.html in browser or use a local dev server'",
+    "build": "echo 'No build step — served as static files'"
+  },
+  "dependencies": {
+    "@edgame/shared": "workspace:*"
+  }
+}
