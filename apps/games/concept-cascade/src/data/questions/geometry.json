@@ -1,0 +1,124 @@
+{
+  "questions": [
+    {
+      "id": "geo1",
+      "subject": "geometry",
+      "difficulty": 1,
+      "text": "The Geometry Guard tower base is a square. How many sides does a square have?",
+      "options": ["4", "3", "5", "6"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo2",
+      "subject": "geometry",
+      "difficulty": 1,
+      "text": "An enemy walks in a straight line. What type of geometric line never ends in both directions?",
+      "options": ["Line", "Ray", "Segment", "Point"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo3",
+      "subject": "geometry",
+      "difficulty": 1,
+      "text": "The tower's range forms a circle around it. What shape is that?",
+      "options": ["Circle", "Square", "Triangle", "Rectangle"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo4",
+      "subject": "geometry",
+      "difficulty": 2,
+      "text": "A tower's range covers a full turn around it. How many degrees is a full turn?",
+      "options": ["360", "180", "90", "270"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo5",
+      "subject": "geometry",
+      "difficulty": 2,
+      "text": "The map tile is a square with sides of 64 pixels. What is its perimeter?",
+      "options": ["256", "128", "320", "64"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo6",
+      "subject": "geometry",
+      "difficulty": 2,
+      "text": "Two walls meet at a corner forming a right angle. How many degrees is a right angle?",
+      "options": ["90", "45", "180", "60"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo7",
+      "subject": "geometry",
+      "difficulty": 3,
+      "text": "A rectangular build zone is 5 tiles wide and 3 tiles tall. What is its area in tiles?",
+      "options": ["15", "16", "12", "8"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo8",
+      "subject": "geometry",
+      "difficulty": 3,
+      "text": "The splash radius of a mortar is a circle with radius 60 pixels. What is the diameter?",
+      "options": ["120", "60", "30", "180"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo9",
+      "subject": "geometry",
+      "difficulty": 3,
+      "text": "A triangular synergy zone has angles of 60 and 80 degrees. What is the third angle?",
+      "options": ["40", "50", "30", "60"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo10",
+      "subject": "geometry",
+      "difficulty": 4,
+      "text": "The Geometry Guard's range is a circle with radius 280 pixels. What is the area? (Use pi = 3.14, round to nearest whole number)",
+      "options": ["246,176", "175,840", "879", "1,758"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo11",
+      "subject": "geometry",
+      "difficulty": 4,
+      "text": "A Golem is a cube-shaped enemy with 4-unit edges. What is its volume?",
+      "options": ["64", "16", "48", "24"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo12",
+      "subject": "geometry",
+      "difficulty": 4,
+      "text": "Two towers form a line 150 px apart. A third tower makes a right triangle with legs 90 and 120 px. What is the hypotenuse?",
+      "options": ["150", "130", "160", "210"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo13",
+      "subject": "geometry",
+      "difficulty": 5,
+      "text": "A freeze aura is a circle of radius 80 px. A cannon splash is a circle of radius 60 px. What is the ratio of the aura area to the splash area?",
+      "options": ["16/9", "4/3", "80/60", "2/1"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo14",
+      "subject": "geometry",
+      "difficulty": 5,
+      "text": "The map is 1280 x 704 pixels. Each tile is 64 x 64. A diagonal path from corner to corner crosses how many pixels? (Round to nearest whole number)",
+      "options": ["1461", "1984", "1280", "704"],
+      "correctIndex": 0
+    },
+    {
+      "id": "geo15",
+      "subject": "geometry",
+      "difficulty": 5,
+      "text": "A tower shoots a projectile at 600 px/sec. The enemy is 280 px away and moving perpendicular at 120 px/sec. At what angle (in degrees, rounded) should the tower lead its shot?",
+      "options": ["11", "15", "9", "20"],
+      "correctIndex": 0
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "questions": [
+    {
+      "id": "ns1",
+      "subject": "number_sense",
+      "difficulty": 1,
+      "text": "A swarm of 7 Number Sprites joins 5 more. How many sprites total?",
+      "options": ["12", "11", "13", "10"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns2",
+      "subject": "number_sense",
+      "difficulty": 1,
+      "text": "Count the enemies: 1, 2, 3, ___, 5. What number is missing?",
+      "options": ["4", "6", "3", "7"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns3",
+      "subject": "number_sense",
+      "difficulty": 1,
+      "text": "Which number is greater: 9 or 6?",
+      "options": ["9", "6", "They are equal", "Neither"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns4",
+      "subject": "number_sense",
+      "difficulty": 2,
+      "text": "Your tower scored 47 points in round 1 and 35 in round 2. What is the total?",
+      "options": ["82", "72", "81", "92"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns5",
+      "subject": "number_sense",
+      "difficulty": 2,
+      "text": "In the number 364, what digit is in the tens place?",
+      "options": ["6", "3", "4", "36"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns6",
+      "subject": "number_sense",
+      "difficulty": 2,
+      "text": "Which is the largest: 89, 98, 91, or 79?",
+      "options": ["98", "91", "89", "79"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns7",
+      "subject": "number_sense",
+      "difficulty": 3,
+      "text": "Round 687 to the nearest hundred.",
+      "options": ["700", "690", "600", "680"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns8",
+      "subject": "number_sense",
+      "difficulty": 3,
+      "text": "Find the pattern: 5, 10, 20, 40, ___. What comes next?",
+      "options": ["80", "60", "50", "100"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns9",
+      "subject": "number_sense",
+      "difficulty": 3,
+      "text": "Estimate: 49 + 52 is closest to which number?",
+      "options": ["100", "90", "110", "80"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns10",
+      "subject": "number_sense",
+      "difficulty": 4,
+      "text": "The Concept Dragon has 600 HP. Which of these is NOT a factor of 600?",
+      "options": ["7", "8", "5", "12"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns11",
+      "subject": "number_sense",
+      "difficulty": 4,
+      "text": "Which of these numbers is prime?",
+      "options": ["29", "27", "33", "39"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns12",
+      "subject": "number_sense",
+      "difficulty": 4,
+      "text": "What is the greatest common factor (GCF) of 36 and 48?",
+      "options": ["12", "6", "8", "24"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns13",
+      "subject": "number_sense",
+      "difficulty": 5,
+      "text": "Tower damage follows the sequence 2, 6, 18, 54, ___. What comes next?",
+      "options": ["162", "108", "72", "216"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns14",
+      "subject": "number_sense",
+      "difficulty": 5,
+      "text": "What is the least common multiple (LCM) of 12 and 18?",
+      "options": ["36", "24", "48", "72"],
+      "correctIndex": 0
+    },
+    {
+      "id": "ns15",
+      "subject": "number_sense",
+      "difficulty": 5,
+      "text": "A tower's power doubles each upgrade. Starting at 3, after 6 upgrades the power is 3 x 2^6. What is that?",
+      "options": ["192", "128", "256", "96"],
+      "correctIndex": 0
+    }
+  ]
+}

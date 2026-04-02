@@ -1,0 +1,124 @@
+{
+  "questions": [
+    {
+      "id": "fr1",
+      "subject": "fractions",
+      "difficulty": 1,
+      "text": "A Fraction Phantom is half invisible. What fraction is that?",
+      "options": ["1/2", "1/3", "1/4", "2/3"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr2",
+      "subject": "fractions",
+      "difficulty": 1,
+      "text": "You used 1 out of 4 tower slots. What fraction of slots are used?",
+      "options": ["1/4", "1/2", "3/4", "4/4"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr3",
+      "subject": "fractions",
+      "difficulty": 1,
+      "text": "Which fraction is bigger: 1/3 or 1/2?",
+      "options": ["1/2", "1/3", "They are equal", "Cannot tell"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr4",
+      "subject": "fractions",
+      "difficulty": 2,
+      "text": "The Freezer slows enemies to 2/5 of their speed. What fraction of speed is lost?",
+      "options": ["3/5", "2/5", "1/5", "4/5"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr5",
+      "subject": "fractions",
+      "difficulty": 2,
+      "text": "Which is greater: 3/8 or 5/8?",
+      "options": ["5/8", "3/8", "They are equal", "Cannot tell"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr6",
+      "subject": "fractions",
+      "difficulty": 2,
+      "text": "You completed 6 out of 8 waves. Simplify that fraction.",
+      "options": ["3/4", "2/3", "6/8", "1/2"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr7",
+      "subject": "fractions",
+      "difficulty": 3,
+      "text": "Your tower's accuracy is 1/3, and an upgrade adds 1/6 more. What is the new accuracy?",
+      "options": ["1/2", "2/9", "2/6", "1/3"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr8",
+      "subject": "fractions",
+      "difficulty": 3,
+      "text": "An enemy is 3/4 through the path. It retreats 1/8 of the path. How far along is it now?",
+      "options": ["5/8", "7/8", "1/2", "3/8"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr9",
+      "subject": "fractions",
+      "difficulty": 3,
+      "text": "Convert 0.75 to a fraction.",
+      "options": ["3/4", "7/5", "7/10", "4/3"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr10",
+      "subject": "fractions",
+      "difficulty": 4,
+      "text": "The Shatter bonus triples damage on frozen enemies. If base damage is 2/3 of max, what fraction of max damage does Shatter deal?",
+      "options": ["2", "3/3", "6/3", "2/9"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr11",
+      "subject": "fractions",
+      "difficulty": 4,
+      "text": "A Phantom flickers for 2/5 of each second. In 15 seconds, how many total seconds is it invisible?",
+      "options": ["6", "5", "8", "3"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr12",
+      "subject": "fractions",
+      "difficulty": 4,
+      "text": "Tower A hits 3/4 of the time. Tower B hits 2/3 of the time. What is the product of their hit rates?",
+      "options": ["1/2", "5/7", "6/12", "5/12"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr13",
+      "subject": "fractions",
+      "difficulty": 5,
+      "text": "A Golem splits at 1/2 HP into 2 fragments. Each fragment has 1/5 of the original HP. What fraction of total HP do both fragments represent?",
+      "options": ["2/5", "1/5", "1/2", "3/5"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr14",
+      "subject": "fractions",
+      "difficulty": 5,
+      "text": "Your freeze slows enemies by 2/5. An upgrade boosts the slow by 1/4 of the current amount. What is the new slow factor?",
+      "options": ["1/2", "3/5", "9/20", "7/20"],
+      "correctIndex": 0
+    },
+    {
+      "id": "fr15",
+      "subject": "fractions",
+      "difficulty": 5,
+      "text": "Wave 7 sends enemies at 3/4 the usual interval. If normal interval is 2/3 seconds, what is the new interval?",
+      "options": ["1/2", "3/7", "5/12", "9/12"],
+      "correctIndex": 0
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+import { COLORS, SUBJECT_IDS } from "./constants.js";
+
+export const ENEMY_TYPES = {
+    numberSprite: {
+        id: "numberSprite",
+        name: "Number Sprite",
+        hp: 40,
+        speed: 80,
+        reward: 8,
+        liveCost: 1,
+        color: COLORS.numberSprite,
+        size: 14,
+        knowledgeComponent: SUBJECT_IDS.NUMBER_SENSE,
+        behavior: "swarm",  // scatter when one dies
+        description: "Quick little critters. Come in swarms.",
+    },
+    operationOgre: {
+        id: "operationOgre",
+        name: "Operation Ogre",
+        hp: 110,
+        speed: 48,
+        reward: 15,
+        liveCost: 2,
+        color: COLORS.operationOgre,
+        size: 22,
+        knowledgeComponent: SUBJECT_IDS.OPERATIONS,
+        behavior: "lockstep", // march together, sometimes flex
+        description: "Tough and proud. March in formation.",
+    },
+    fractionPhantom: {
+        id: "fractionPhantom",
+        name: "Fraction Phantom",
+        hp: 55,
+        speed: 120,
+        reward: 12,
+        liveCost: 1,
+        color: COLORS.fractionPhantom,
+        size: 16,
+        knowledgeComponent: SUBJECT_IDS.FRACTIONS,
+        behavior: "flicker",  // phase in/out, afterimages
+        flickerInterval: 1.5,
+        flickerDuration: 0.4,
+        description: "Blink in and out. Hard to hit when flickering.",
+    },
+    geometryGolem: {
+        id: "geometryGolem",
+        name: "Geometry Golem",
+        hp: 200,
+        speed: 30,
+        reward: 25,
+        liveCost: 3,
+        color: COLORS.geometryGolem,
+        size: 28,
+        knowledgeComponent: SUBJECT_IDS.GEOMETRY,
+        behavior: "crack", // cracks at 50%, splits into fragments
+        splitAt: 0.5,
+        splitCount: 2,
+        splitHp: 40,
+        splitSpeed: 60,
+        description: "Slow tanks. Crack into fragments at half health.",
+    },
+    conceptDragon: {
+        id: "conceptDragon",
+        name: "Concept Dragon",
+        hp: 600,
+        speed: 25,
+        reward: 100,
+        liveCost: 10,
+        color: COLORS.boss,
+        size: 40,
+        knowledgeComponent: null, // mixed
+        behavior: "boss",
+        phases: [
+            { hpThreshold: 1.0, spawnType: "numberSprite", spawnCount: 3, spawnInterval: 4 },
+            { hpThreshold: 0.6, spawnType: "operationOgre", spawnCount: 2, spawnInterval: 5, speedBoost: 1.3 },
+            { hpThreshold: 0.3, spawnType: "fractionPhantom", spawnCount: 4, spawnInterval: 3, speedBoost: 1.6 },
+        ],
+        description: "The final challenge. Spawns minions as it weakens.",
+    },
+};

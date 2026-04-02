@@ -1,0 +1,124 @@
+{
+  "questions": [
+    {
+      "id": "op1",
+      "subject": "operations",
+      "difficulty": 1,
+      "text": "Your cannon fires 3 shots, then 4 more. How many shots total?",
+      "options": ["7", "6", "8", "5"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op2",
+      "subject": "operations",
+      "difficulty": 1,
+      "text": "You had 10 gold and spent 4 on a bolt. How much gold is left?",
+      "options": ["6", "5", "7", "14"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op3",
+      "subject": "operations",
+      "difficulty": 1,
+      "text": "Each enemy drops 2 gold. You defeat 5 enemies. How much gold do you earn?",
+      "options": ["10", "7", "12", "8"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op4",
+      "subject": "operations",
+      "difficulty": 2,
+      "text": "A tower costs 70 gold. You have 100 gold. After buying it, how much remains?",
+      "options": ["30", "40", "20", "170"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op5",
+      "subject": "operations",
+      "difficulty": 2,
+      "text": "You defeat 6 ogres worth 15 gold each. What is your total reward?",
+      "options": ["90", "85", "80", "75"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op6",
+      "subject": "operations",
+      "difficulty": 2,
+      "text": "24 sprites split evenly into 4 groups. How many sprites per group?",
+      "options": ["6", "8", "5", "7"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op7",
+      "subject": "operations",
+      "difficulty": 3,
+      "text": "Tower damage is 22. An upgrade adds 12, then another adds 8. What is the final damage?",
+      "options": ["42", "34", "40", "44"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op8",
+      "subject": "operations",
+      "difficulty": 3,
+      "text": "You earn 15 gold per wave for 8 waves, then spend 75 on an upgrade. How much gold do you have?",
+      "options": ["45", "55", "35", "50"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op9",
+      "subject": "operations",
+      "difficulty": 3,
+      "text": "A wave sends 12 enemies. Each takes 3 hits to defeat. How many total hits are needed?",
+      "options": ["36", "30", "42", "24"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op10",
+      "subject": "operations",
+      "difficulty": 4,
+      "text": "Cannon splash hits 5 enemies for 22 damage each. One survives with 8 HP. What was its starting HP?",
+      "options": ["30", "22", "28", "36"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op11",
+      "subject": "operations",
+      "difficulty": 4,
+      "text": "You have 3 towers, each firing 14 bolts/sec. One gets a 40% speed boost. What is the combined fire rate?",
+      "options": ["47.6", "42", "56", "44.8"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op12",
+      "subject": "operations",
+      "difficulty": 4,
+      "text": "An enemy has 200 HP. Tower A deals 45 damage every 3 seconds. How many seconds to defeat it?",
+      "options": ["15", "12", "9", "18"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op13",
+      "subject": "operations",
+      "difficulty": 5,
+      "text": "A tower costs 100 gold. Each upgrade costs 1.5 times the previous. First upgrade is 55. What does the third upgrade cost?",
+      "options": ["123.75", "110", "82.5", "165"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op14",
+      "subject": "operations",
+      "difficulty": 5,
+      "text": "You earn 5% interest on 200 gold saved. Then you earn a 30% early-call bonus on the interest. What is your total bonus gold?",
+      "options": ["13", "10", "15", "11"],
+      "correctIndex": 0
+    },
+    {
+      "id": "op15",
+      "subject": "operations",
+      "difficulty": 5,
+      "text": "Boss has 600 HP. Tower deals 45 damage/hit at 0.35 hits/sec. Freezer slows boss for 2s, letting tower get 1 extra hit. How many normal hits (without slow bonus) to finish?",
+      "options": ["13", "14", "12", "15"],
+      "correctIndex": 0
+    }
+  ]
+}
