@@ -4,28 +4,26 @@
 
 ### Concept Cascade (Tower Defense) — Issue #14
 
-**Status: In Progress — Setup & Config Complete**
+**Status: COMPLETE — 32 files, ~5,600 lines**
 
 #### Completed
-- Created directory structure: `apps/games/concept-cascade/`
-- Wrote `index.html`, `main.js`, `package.json` (bootstrap)
-- Copied shared systems from Pulse Realms: `telemetry.js`, `questionEngine.js`
-- Wrote adapted `progression.js` with tower defense badges (cascade_defender, tower_architect, synergy_seeker, combo_master, tower_specialist, etc.) and tower mastery tracking
-- Wrote `gameState.js` with TD-specific state (gold, lives, waves, towers, synergies, early calls)
-- Wrote all config files:
-  - `constants.js` — game settings, tile sizes, economy, colors
-  - `towers.js` — 4 tower types with 3-tier branching upgrades + `getTowerStats()` utility
-  - `enemies.js` — 5 enemy types (Number Sprite, Operation Ogre, Fraction Phantom, Geometry Golem, Concept Dragon boss) with unique behaviors
-  - `waves.js` — 8 waves + boss wave
-  - `synergies.js` — 5 tower synergies (Chain Calculation, Shatter Shot, Knowledge Nexus, Frost Cannon, Fortified Line)
-- Wrote 2 map definitions (`map1.js` Serpentine Valley, `map2.js` Crossroads)
-- Wrote 60 math questions across 4 subject files (number_sense, operations, fractions, geometry) — 15 each, difficulties 1-5, tower-defense themed
+- Created full directory structure: `apps/games/concept-cascade/` (32 files)
+- Bootstrap: `index.html`, `main.js`, `package.json`
+- Shared systems from Pulse Realms: `telemetry.js`, `questionEngine.js`
+- Adapted `progression.js` with TD badges + tower mastery tracking
+- `gameState.js` with TD-specific state
+- Config: `constants.js`, `towers.js` (4 types, 3-tier branching upgrades), `enemies.js` (5 types with behaviors), `waves.js` (8 + boss), `synergies.js` (5 combos)
+- Maps: `map1.js` Serpentine Valley, `map2.js` Crossroads
+- Questions: 60 math questions across 4 subjects (difficulties 1-5)
+- Components (2,099 lines): enemyComp (5 behaviors), towerComp (targeting/rotation/firing), projectileComp (homing/splash), questionOverlay, hudRenderer, actionEffects (9 effects)
+- Systems (1,001 lines): waveManager, towerSystem (question-gated building), synergySystem, assessmentEngine (D1-D6)
+- Scenes (1,959 lines): menu (animated), battlefield (956-line core scene wiring everything), waveResults (star ratings, concept gaps), postGame (assessment highlights, badges)
 
 #### Next Steps
-- Build components: towerComp, enemyComp, projectileComp, questionOverlay, hudRenderer, actionEffects
-- Build systems: waveManager, towerSystem, synergySystem, assessmentEngine
-- Build scenes: menu, battlefield, waveResults, postGame
-- Integrate full game loop and test
+- Browser test and debug
+- Update ECD doc from DRAFT
+- Close issue #14
+- Start Game 2: Knowledge Quest
 
 #### Design Decisions
 - Tower synergies are discoverable (not documented) — rewards experimentation
