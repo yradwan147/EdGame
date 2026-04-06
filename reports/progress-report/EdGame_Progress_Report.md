@@ -1,7 +1,7 @@
 # EdGame Analytics Platform - Progress Report
 
-**Author:** Yousef Radwan | **Course:** TIE 251 - Capstone Computing Studies | **Institution:** KAUST  
-**Date:** April 2026 | **Version:** 1.0
+**Author:** Yousef Radwan | **Course:** TIE 251 - Capstone Computing Studies | **Institution:** KAUST
+**Date:** April 2026 | **Version:** 2.0
 
 ---
 
@@ -9,11 +9,44 @@
 
 The EdGame Analytics Platform has reached a major milestone: **all five educational games are now fully implemented** as playable KAPLAY.js browser games. Each game embeds stealth assessment through Evidence-Centered Design (ECD), measuring student competencies across six analytics dimensions without interrupting gameplay. A total of **164 source files** comprising approximately **32,100 lines of code** deliver five distinct game experiences spanning tower defense, turn-based RPG, virtual science lab, and collaborative puzzle survival genres.
 
-This report presents each game with live screenshots, asset samples, and a detailed breakdown of the mechanics that make them both genuinely fun and pedagogically valuable.
+This report presents each game with live gameplay screenshots, details the telemetry pipeline that converts every player action into a learning insight, and explains the ECD framework that makes it all invisible to students.
 
 ---
 
-## Platform Overview
+## How Stealth Assessment Works
+
+The core innovation of EdGame is that **assessment and gameplay are indistinguishable**. Students never see a test -- they play games. Every click, every decision, every hesitation is silently captured and analyzed.
+
+### The Telemetry Pipeline
+
+![Telemetry Pipeline](images/telemetry_pipeline.png)
+
+*Every game action flows through five stages: from a student clicking an answer, through structured telemetry events, metric computation, assessment modeling, and finally into actionable teacher insights. All of this happens invisibly during normal gameplay.*
+
+The pipeline works in real-time:
+1. **Game Action**: A student answers a math question to build a tower, casts an RPG spell, or adjusts an experiment variable
+2. **Telemetry Event**: The action is captured as a structured JSON event with context (e.g., `{correct: true, responseTimeMs: 2400, difficulty: 3, context: "tower_build"}`)
+3. **Metric Computation**: Raw events are aggregated into meaningful metrics (correctness rate, response time trends, strategy diversity)
+4. **Assessment Model**: Metrics are mapped to the six analytics dimensions using Evidence-Centered Design (e.g., D1 Cognitive: Proficient, D3 Strategic: Advanced)
+5. **Teacher Insight**: Dimension scores become actionable recommendations (e.g., "Maria has mastered fractions but struggles with geometry")
+
+### Evidence-Centered Design Framework
+
+![ECD Framework](images/ecd_framework_visual.png)
+
+*The four interconnected ECD models: the Assembly Model sequences game tasks adaptively, the Task Model creates situations that elicit evidence (e.g., tower placement decisions, dialogue choices), the Evidence Model interprets observations (e.g., fast+correct = "fluent"), and the Student Model maintains probabilistic mastery estimates.*
+
+### Sample Session Analytics
+
+![Sample Session Metrics](images/sample_session_metrics.png)
+
+*A sample analytics dashboard for one student's Concept Cascade session showing: session summary (72% accuracy, 7/8 waves), dimension scores (D1-D6 as colored bars), and key insights including concept-specific mastery gaps, strategy indicators, and growth mindset observations.*
+
+---
+
+## The Five Games
+
+### Platform Metrics
 
 | Metric | Value |
 |--------|-------|
@@ -23,245 +56,196 @@ This report presents each game with live screenshots, asset samples, and a detai
 | Total Question Bank | 410 questions across 10 JSON files |
 | Analytics Dimensions Covered | All 6 (D1-D6) |
 | Engine | KAPLAY.js (browser-based, no install required) |
-| Architecture | pnpm + Turborepo monorepo |
-
-### Analytics Dimensions
-
-| ID | Dimension | Primary Game |
-|----|-----------|-------------|
-| D1 | Cognitive Knowledge | All games (question-gated mechanics) |
-| D2 | Behavioral Engagement | All games (progression systems) |
-| D3 | Strategic Behavior & Agency | Concept Cascade, Lab Explorer |
-| D4 | Social & Collaborative | Pulse Realms, Survival Equation |
-| D5 | Affective & SEL | Knowledge Quest |
-| D6 | Temporal & Longitudinal | All games (session-over-session tracking) |
 
 ---
 
 ## Game 1: Pulse Realms - Team Arena
 
-**Genre:** 3v3 Team Arena | **Subject:** Math & Science | **Primary Dimension:** D4 Social  
-**Status:** Complete | **Files:** 25 | **Duration:** 5 minutes per match
+**Genre:** 3v3 Team Arena | **Subject:** Math & Science | **Primary Dimension:** D4 Social
+**Duration:** 5 min per match | **Files:** 25
 
-![Pulse Realms Menu](images/pr_menu.png)
+![Pulse Realms Arena](images/pr_arena.png)
 
-*Pulse Realms main menu showing the Omniverse Trials theme with progression tracking.*
+*Live gameplay: The arena scene showing the player (Vanguard role) with HP/Pulse bars, two abilities (Pulse Shot and Power Strike), team status (Lyra the healer, Orion the builder), objective circle, match timer, and a -32 damage number from combat. Walls create tactical cover positions.*
 
-### Gameplay Mechanics
+### How It Plays
 
-Players choose one of three combat roles (Attacker, Healer, Builder) and join a 3v3 team battle against AI opponents. Every ability -- attacks, heals, and shields -- is gated behind a multiple-choice question. Answering correctly activates the ability; answering quickly amplifies its power through a speed multiplier system.
+Players choose one of three combat roles and join a 3v3 team battle. Every ability is gated behind an MCQ -- answering correctly fires the ability, and answering *quickly* amplifies its power up to 2x through a speed multiplier. The central objective must be held to score points.
 
-**Key Features:**
-- **Role-based gameplay** with three distinct playstyles (Attacker, Healer, Builder)
-- **Speed multiplier system:** fast correct answers deal up to 2x damage
-- **Adaptive difficulty:** question difficulty adjusts based on player performance via Bayesian-inspired skill tracking
-- **Real-time combat** with AI teammates and opponents using state-machine behavior
-- **Objective control:** teams compete to hold a central capture point for score
+### What It Measures (Invisibly)
 
-### Assessment Integration
+Every combat action generates telemetry that feeds the assessment pipeline:
 
-Every combat action generates telemetry: question accuracy, response time, role choice, team support actions (heals/shields on allies), and persistence after taking damage. The speed-accuracy profile classifies students as fluent, deliberate, guessing, or struggling.
-
-![Pulse Realms Warrior Asset](images/pr_warrior.png) ![Pulse Realms Spell Asset](images/pr_spell.png)
-
-*Sample character assets: Guardian warrior (left) and Mage spellcaster (right) representing the combat roles.*
+| Player Action | Telemetry Event | What It Reveals |
+|--------------|----------------|-----------------|
+| Answers MCQ correctly in 2.1s | `question_answered {correct: true, responseTimeMs: 2100}` | Speed-accuracy profile: "fluent" |
+| Heals teammate instead of attacking | `action_performed {actionType: "heal", targetId: "ally_bot_1"}` | Prosocial behavior (D4) |
+| Keeps fighting after taking damage | `action_performed` events after `damage_taken` | Persistence under pressure (D5) |
+| Chooses Healer role 3 sessions in a row | `game_started {role: "healer"}` across sessions | Strategic preference (D3) |
 
 ---
 
 ## Game 2: Concept Cascade - Tower Defense
 
-**Genre:** Tower Defense | **Subject:** Mathematics | **Primary Dimension:** D3 Strategic  
-**Status:** Complete | **Files:** 32 | **Lines:** ~5,600 | **Duration:** 10-15 minutes
+**Genre:** Tower Defense | **Subject:** Mathematics | **Primary Dimension:** D3 Strategic
+**Duration:** 10-15 min | **Files:** 32 | **Lines:** ~5,600
 
-![Concept Cascade Menu](images/cc_menu.png)
+![Concept Cascade Battlefield](images/cc_battlefield.png)
 
-*Concept Cascade menu showing tower mastery tracking for all four tower types and the XP progression system.*
+*Live gameplay: The tower defense battlefield during Wave 1 prep phase (12 seconds remaining). The tile grid shows buildable areas (dark green), path tiles (brown), spawn point (left), and Knowledge Core (right, gold circle). Bottom panel shows four tower types with costs: Number Bastion (40 KC), Operation Cannon (70 KC), Fraction Freezer (55 KC), Geometry Guard (100 KC). Right side has Early Call, Study, and Pause buttons.*
 
-### Gameplay Mechanics
+### How It Plays
 
-Players defend a Knowledge Core against waves of math-themed enemies by building and upgrading towers. Building a tower requires answering a math question correctly -- wrong answers refund half the cost rather than punishing harshly. The game is designed around the principle that **failure is a learning signal, not a punishment**.
+Players defend a Knowledge Core against 8 waves of math-themed enemies by building towers. Each tower build requires answering a math question. Wrong answers refund half the cost -- failure is a learning signal, not a punishment. Towers near each other can trigger hidden synergy combos (e.g., "Shatter Shot": frozen enemies take 3x damage from the sniper tower).
 
-**Key Features:**
-- **4 tower types** mapped to math knowledge components: Number Bastion (number sense), Operation Cannon (arithmetic operations), Fraction Freezer (fractions), Geometry Guard (geometry)
-- **Tower synergy discovery system** (inspired by Bloons TD 6): placing certain towers near each other triggers combo effects like "Chain Calculation" (2x damage) or "Shatter Shot" (3x damage on frozen enemies). Synergies are NOT documented -- players discover them through experimentation
-- **Risk/reward mechanics:** "Early Call" sends the next wave early for +30% bonus gold; "Risky Upgrade" attempts a harder question for a free upgrade but risks losing a tower level on failure
-- **8 waves + boss wave** with progressive difficulty
-- **5% interest** on unspent gold between waves (rewards strategic saving)
+### What It Measures (Invisibly)
 
-![Tower Upgrades](images/cc_tower.png)
+| Player Action | Assessment Signal |
+|--------------|------------------|
+| Builds only Number Bastions | Tower diversity: 0.0 -- rigid, single-strategy thinking |
+| Discovers 3 synergy combos | Systems thinking -- understands emergent interactions |
+| Uses Early Call on 5/7 waves | Risk-taking propensity -- willing to gamble for rewards |
+| Changes tower mix after Wave 5 leak | Strategy adaptation -- productive persistence |
+| Fraction Phantoms keep breaking through | Concept gap: fractions (correlate with question accuracy per subject) |
 
-*Tower upgrade progression showing four levels of the Archer Tower, from basic wooden structure to fortified stone tower with flags -- illustrating the visual progression system in Concept Cascade.*
-
-### Enemy Types and Assessment
-
-Each enemy type maps to a specific mathematical knowledge component. When enemies break through defenses, the system identifies which concept the student struggles with:
-
-| Enemy | Knowledge Component | Behavior |
-|-------|-------------------|----------|
-| Number Sprite | Number Sense | Fast swarms that scatter when one dies |
-| Operation Ogre | Operations | March in formation, pause to "flex" |
-| Fraction Phantom | Fractions | Flicker in/out of visibility (hard to hit) |
-| Geometry Golem | Geometry | Crack at 50% HP, split into fragments |
-| Concept Dragon | Mixed (Boss) | 3 phases, spawns minions as it weakens |
-
-![Enemy Knight Asset](images/cc_enemy.png)
-
-*Medieval knight enemy asset representing the armored Operation Ogre -- tough, proud, and marching in formation.*
-
-### Assessment Metrics (D3 Strategic Behavior)
-
-- **Tower diversity:** Shannon entropy of tower type distribution (0 = one type only, 1 = perfectly diverse)
-- **Strategy shifts:** detected when tower composition changes significantly between waves
-- **Resource efficiency:** gold spent on towers vs. total gold earned
-- **Synergy discovery count:** systems thinking indicator
-- **Early call usage:** risk-taking propensity
+**Key insight:** The game distinguishes between "bad strategy" (wrong tower placement) and "knowledge gap" (wrong answers on fraction questions) by correlating tower choices with per-subject accuracy.
 
 ---
 
 ## Game 3: Knowledge Quest - Turn-Based RPG
 
-**Genre:** Turn-Based RPG | **Subject:** Math & Science | **Primary Dimension:** D5 Affective/SEL  
-**Status:** Complete | **Files:** 38 | **Lines:** ~10,200 | **Duration:** 15-25 min per chapter
+**Genre:** Turn-Based RPG | **Subject:** Math & Science | **Primary Dimension:** D5 Affective/SEL
+**Duration:** 15-25 min per chapter | **Files:** 38 | **Lines:** ~10,200
 
-![Knowledge Quest Menu](images/kq_menu.png)
+![Knowledge Quest Chapter Map](images/kq_chaptermap.png)
 
-*Knowledge Quest menu with the golden RPG title, companion collection progress (0/8), and chapter tracking (0/3).*
+*Live gameplay: The Slay-the-Spire-style branching chapter map for "The Withering Forest." Color-coded nodes show different encounter types: red exclamation marks (combat), gold dollar sign (shop/Wandering Peddler), blue question marks (mystery/Forest Gate, Riverside Camp), green plus (rest/Moonlit Grove), purple star (special/Ancient Tree), and dark X (boss/Heart of the Blight). Player stats at top: HP 100/100, MP 20/20, Lv.1, 3 Hints, 0 Gold.*
 
-### Gameplay Mechanics
+### How It Plays
 
-A story-driven RPG where students traverse branching chapter maps (inspired by Slay the Spire), engage in turn-based combat with question-gated spells, collect Knowledge Companions (inspired by Pokemon), and make meaningful dialogue choices that affect the game world (inspired by Undertale).
+Students traverse branching maps choosing their path through combat, dialogue, shops, and mystery events. Combat uses question-gated spells with a Paper Mario-style timing minigame (PERFECT = 2x damage). Eight collectible Knowledge Companions level up as students answer questions in their domain. Six social dilemmas test empathy vs. self-interest with visible world consequences.
 
-**Key Features:**
-- **Paper Mario-style timed casts:** after answering a question correctly, a timing minigame determines spell power (PERFECT = 2x, GOOD = 1.5x, OK = 1x, MISS = 0.7x). Six timing patterns keep combat physically engaging
-- **8 collectible Knowledge Companions** (Pythos the Triangle, Reactia the Molecule, Algebrix the Variable, etc.) that provide passive buffs and evolve as students answer questions in their domain
-- **Branching chapter maps** with combat, dialogue, shop, mystery, rest, and boss nodes -- visible from the start for strategic route planning
-- **5 enemy types with personality:** Ignorance Imps argue with each other; Confusion Crawlers shuffle your spell menu; Doubt Shades whisper discouragement; Apathy Giants fall asleep (non-violent defeat option); Boss Riddlers ask YOU riddles
-- **Professor Sage mentor:** a witty owl character who provides conceptual hints (not answers) with humorous commentary
+### What It Measures (Invisibly)
 
-**6 Social Dilemmas** across 3 chapters present genuine moral choices:
-- Help a lost merchant (costs time, future reward) vs. ignore vs. trade
-- Teach a struggling student (hard MCQ for YOU) vs. ignore vs. trade answer
-- Negotiate with a dragon (hardest MCQ but keep everything) vs. sacrifice vs. refuse
+| Player Action | Assessment Signal |
+|--------------|------------------|
+| Helps the lost merchant (costs time) | Prosocial choice -- empathy indicator (D5) |
+| Takes the harder mountain path | Risk-taking, growth mindset (D5) |
+| Uses all 3 hints in first combat | Help-seeking: dependent pattern (D5) |
+| Uses 1 hint, then solves alone | Help-seeking: strategic pattern (D5) |
+| Spares the sleeping Apathy Giant | Non-violent approach -- empathy (D5) |
+| Accuracy drops when HP is low | Emotional regulation under pressure (D5) |
+| Retries after combat loss with new strategy | Growth mindset indicator (D5) |
 
-![RPG Monster Asset](images/kq_monster.png)
-
-*Golem creature asset representing the Apathy Giant -- a slow, powerful enemy that falls asleep if you don't attack, offering a non-violent path.*
-
-### Assessment Metrics (D5 Affective & SEL)
-
-- **Empathy score:** ratio of prosocial to self-interest dialogue choices
-- **Help-seeking pattern:** when hints are used (proactive vs. after failure vs. under time pressure)
-- **Growth mindset:** chose harder paths + retried after failure + sought help then tried alone
-- **Emotional regulation:** accuracy when HP is low vs. when healthy
-- **Persistence:** continued engagement after combat losses
+**Key insight:** The social dilemma choices create a hidden "empathy score" -- the ratio of prosocial to self-interest decisions across all encounters. This score is never shown to the student; it appears only on the teacher dashboard.
 
 ---
 
 ## Game 4: Lab Explorer - Virtual Science Lab
 
-**Genre:** Science Simulation | **Subject:** Chemistry & Physics | **Primary Dimension:** D3 Strategic  
-**Status:** Complete | **Files:** 31 | **Lines:** ~5,700 | **Duration:** 15-20 minutes
+**Genre:** Science Simulation | **Subject:** Chemistry & Physics | **Primary Dimension:** D3 Strategic
+**Duration:** 15-20 min | **Files:** 31 | **Lines:** ~5,700
 
-![Lab Explorer Menu](images/le_menu.png)
+![Lab Explorer Experiment Selection](images/le_labselect.png)
 
-*Lab Explorer menu with animated bubbling beakers, experiment progress tracking, and the Discovery Journal button.*
+*Live gameplay: The experiment selection screen showing five science experiments: "Acid-Base Neutralization" (Chemistry, 1 star), "Mystery Object Density" (Physics, 2 stars), "Light the Bulb" (Physics, 2 stars), "The Pendulum Lab" (Physics, 3 stars), and "Best Insulator Challenge" (Physics/Chemistry, 3 stars). Each card shows subject, difficulty, and lock state -- later experiments unlock as earlier ones are completed.*
 
-### Gameplay Mechanics
+### How It Plays
 
-Students conduct five real science experiments through a six-phase loop: Hypothesis, Equipment Selection, Variable Manipulation, Run Experiment, Observe Results, Draw Conclusions. The game emphasizes that **failure is the best teacher** -- wrong experiments produce spectacular, entertaining animations rather than boring error messages.
+Students conduct five real experiments through a six-phase loop: form hypothesis, select equipment, manipulate variables, run experiment, observe results, draw conclusions. Wrong experiments produce spectacular failures (foam eruptions, sparks, string breaks) that are entertaining and educational -- collected in a "Disaster Gallery" as achievements. Hidden discoveries reward exploration beyond the minimum.
 
-**5 Experiments:**
+### What It Measures (Invisibly)
 
-| Experiment | Subject | Key Concept |
-|-----------|---------|-------------|
-| Acid-Base Balancing | Chemistry | pH neutralization |
-| Density Detective | Physics | Mass/volume relationships |
-| Simple Circuits | Physics | Ohm's law (V = IR) |
-| Pendulum Period | Physics | Only length affects period (not mass!) |
-| Heat Transfer | Physics/Chemistry | Insulation and thermal conductivity |
+| Player Action | Assessment Signal |
+|--------------|------------------|
+| Changes only one variable per run | Systematic experimentation (D3) -- strong scientific process |
+| Changes 3 variables simultaneously | Random experimentation (D3) -- needs scaffolding |
+| Tries pH = 1 (extreme value) | Curiosity-driven exploration (D3) |
+| Adjusts approach after unexpected result | Self-correction rate (D3) |
+| Selects thermometer for pH experiment | Equipment knowledge gap (D1) -- triggers educational MCQ |
+| Forgets safety goggles | Safety awareness metric (D5) |
+| Finds "Galileo's Insight" discovery | Explored beyond minimum -- intrinsic motivation (D2) |
 
-**Key Features:**
-- **Spectacular failure states** (inspired by Kerbal Space Program): foam eruptions when mixing too much acid, sparks flying from short circuits, pendulum strings breaking, beakers dissolving -- each failure is unique, animated, and teaches something
-- **Disaster Gallery:** collectible failure achievements (encourages experimentation!)
-- **Real-time visual feedback:** solution colors change smoothly as variables adjust, pendulums swing with accurate physics, circuit diagrams light up as current flows
-- **Discovery Journal:** 15 hidden findings across all experiments (e.g., "Does mass affect pendulum period?" -- discovering it doesn't earns "Galileo's Insight")
-- **Professor Challenge mode:** harder versions of completed experiments for replay value
-- **Multiple valid solutions:** density can be measured via water displacement OR comparison to known materials
-
-![Lab Building Asset](images/le_lab.png)
-
-*Workshop building asset representing the science laboratory environment -- a detailed medieval workshop with chimney and timber framing.*
-
-![Mage Tower Upgrades](images/le_experiment.png)
-
-*Crystal structure progression showing four stages of magical experimentation -- representing the visual evolution of experiments from simple to complex.*
-
-### Assessment Metrics (D3 Strategic Behavior)
-
-- **Systematic experimentation:** did the student change only one variable at a time? (process mining from full action log)
-- **Equipment selection quality:** chose correct tools from a shelf of options
-- **Exploration breadth:** variables tried beyond the minimum required
-- **Self-correction rate:** adjusted approach after unexpected results
-- **Measurement accuracy:** how close results are to correct values
+**Key insight:** The system logs the complete action sequence ("process trace") for each experiment. Process mining algorithms detect whether students follow systematic scientific method or trial-and-error approaches.
 
 ---
 
 ## Game 5: Survival Equation - Collaborative Puzzle Survival
 
-**Genre:** Cooperative Puzzle | **Subject:** Applied Math & Science | **Primary Dimension:** D4 Social  
-**Status:** Complete | **Files:** 38 | **Lines:** ~6,700 | **Duration:** 15-20 min per scenario
+**Genre:** Cooperative Puzzle | **Subject:** Applied Math & Science | **Primary Dimension:** D4 Social
+**Duration:** 15-20 min per scenario | **Files:** 38 | **Lines:** ~6,700
 
-![Survival Equation Menu](images/se_menu.png)
+![Survival Equation Scenarios](images/se_scenarios.png)
 
-*Survival Equation menu with the "Collaborate. Calculate. Survive." tagline and the core gameplay loop description.*
+*Live gameplay: Scenario selection showing three survival environments -- "Desert Island" (Beginner, 15-20 min), "Space Station" (Intermediate), and "Underwater Base" (Advanced). Each card describes the scenario premise and has a difficulty rating and BEGIN button.*
 
-### Gameplay Mechanics
+![Survival Equation Roles](images/se_roles.png)
 
-A team of four specialists -- Engineer, Scientist, Medic, Navigator -- are stranded in a hostile environment. Each has exclusive information that others cannot see. Puzzles are literally unsolvable alone; students must communicate with AI teammates to share data and solve survival challenges. Inspired by Keep Talking and Nobody Explodes (information asymmetry) and Overcooked (escalating chaos).
+*Live gameplay: Role assignment screen with four specialist roles. Each card shows the team member's name, portrait, expertise, and description: Raza the Engineer (materials and structures), Juno the Scientist (formulas and analysis), Kit the Medic (health and safety), Navi the Navigator (terrain and weather). Players choose one role; AI fills the rest.*
 
-**3 Scenarios:**
-- **Desert Island:** water purification, shelter construction, rescue signal
-- **Space Station:** oxygen recycling, hull repair, escape pod launch
-- **Underwater Base:** pressure seals, desalination, emergency buoy
+### How It Plays
 
-**Key Features:**
-- **Information asymmetry IS the game:** the Engineer sees material specs, the Scientist sees formulas, the Medic sees health requirements, the Navigator sees terrain maps -- no single role has enough information to solve any puzzle
-- **AI partners with personality:** Raza (Engineer, confident/overestimates), Juno (Scientist, precise/wordy), Kit (Medic, nervous/caring), Navi (Navigator, adventurous/risk-taking)
-- **Varied mini-puzzles:** drag-and-drop filter layers, beam placement physics, circuit wiring, math allocation sliders, map navigation
-- **Escalating daily events:** storms, teammate sickness, rival camps, final rescue countdown
-- **Resource management:** shared food/water/materials with daily consumption -- allocation decisions are tracked for fairness
-- **Day countdown timer:** sky darkens as time runs low, creating natural dramatic tension
+Four specialists with exclusive information must communicate to solve survival puzzles. The Engineer sees material specs but not formulas; the Scientist sees formulas but not terrain maps. No single role can solve any puzzle alone. AI partners respond with personality-driven dialogue (the confident Engineer overestimates, the nervous Medic double-checks everything). A day countdown creates natural dramatic tension.
 
-![Shelter Asset](images/se_shelter.png)
+### What It Measures (Invisibly)
 
-*Elevated survival shelter with reinforced stone pillars and shingled roof -- representing the shelter construction puzzle in the Desert Island scenario.*
+| Player Action | Assessment Signal |
+|--------------|------------------|
+| Asks "What materials do we have?" | Information request -- proactive communication (D4) |
+| Shares own data without being asked | Proactive information sharing (D4) |
+| Makes 70% of the proposals | Leadership pattern -- high initiative (D4) |
+| Distributes food equally | Resource fairness -- equity-oriented (D5) |
+| Takes extra rations for self | Resource hoarding -- self-interest (D5) |
+| Waits for team input before solving | Patience indicator -- collaborative mindset (D4) |
+| Rushes solution without asking team | Impulsive behavior -- needs collaboration practice (D4) |
 
-![Terrain Asset](images/se_terrain.png)
+**Key insight:** The Gini coefficient is computed on team contribution (messages, proposals, solutions per role). A Gini of 0 means perfectly equal contribution; a Gini approaching 1 means one person did everything. This measures authentic collaborative behavior, not just correctness.
 
-*Terrain platform asset showing the rocky survival environment where teams must build and survive.*
+---
 
-### Assessment Metrics (D4 Social & Collaborative)
+## Analytics Dimension Coverage
 
-- **Communication quality:** on-task message ratio, information sharing frequency
-- **Team contribution equity:** Gini coefficient measuring how evenly work is distributed
-- **Leadership patterns:** proposals made, questions asked, directions given
-- **Information sharing:** proactive vs. reactive information exchange
-- **Resource fairness:** equal distribution vs. hoarding behavior
-- **Role adoption:** leader, supporter, executor, or observer classification
+Every dimension has at least one game as its primary source:
+
+|  | D1 Cognitive | D2 Engagement | D3 Strategic | D4 Social | D5 Affective | D6 Temporal |
+|--|-------------|---------------|-------------|-----------|-------------|-------------|
+| Pulse Realms | Strong | Strong | Medium | **Primary** | Medium | Medium |
+| Concept Cascade | Strong | Strong | **Primary** | Weak | Medium | Strong |
+| Knowledge Quest | Strong | Strong | Strong | Medium | **Primary** | Strong |
+| Lab Explorer | Strong | Medium | **Primary** | Medium | Medium | Strong |
+| Survival Equation | Strong | Strong | Strong | **Primary** | Strong | Strong |
+
+### What Teachers See
+
+The teacher dashboard translates dimension scores into three weekly action items per student:
+
+- *"Ahmed mastered operations (94% accuracy, <2s response) but fraction questions need review (41% accuracy). Recommend: targeted fraction practice."*
+- *"Sara shows strong empathy (helped NPCs 5/6 times) but avoids hard paths (chose easy route in all 3 chapters). Recommend: encourage risk-taking with growth mindset framing."*
+- *"Team 3 has uneven contribution (Gini 0.62). Omar made 80% of proposals. Recommend: assign rotating leadership roles next session."*
+
+---
+
+## Question Bank
+
+| Game | Files | Questions | Subjects |
+|------|-------|-----------|----------|
+| Concept Cascade | 4 | 60 | Number sense, Operations, Fractions, Geometry |
+| Knowledge Quest | 2 | 150 | Math (75), Science (75) |
+| Lab Explorer | 2 | 100 | Chemistry (50), Physics (50) |
+| Survival Equation | 2 | 100 | Applied Math (50), Applied Science (50) |
+| **Total** | **10** | **410** | |
+
+All questions are themed to their game context and span difficulties 1-5, with adaptive selection based on student performance.
 
 ---
 
 ## Technical Architecture
 
-### Shared Infrastructure
+All five games share three core systems:
 
-All five games share three core systems copied from Pulse Realms:
-
-1. **Telemetry System** (`telemetry.js`): Event capture with localStorage backup and REST API batch flush every 10 seconds. Supports offline play with automatic sync when connectivity returns.
-
-2. **Question Engine** (`questionEngine.js`): Adaptive difficulty using skill rating (1-5), streak tracking (3 correct = difficulty up, 2 wrong = difficulty down), and subject-specific question banks loaded from JSON files.
-
-3. **Progression System** (`progression.js`): XP, levels, and badges with per-game customization. XP formula: `baseXP * difficultyMultiplier * speedBonus * correctnessFactor`.
+1. **Telemetry System** (`telemetry.js`): Event capture with localStorage backup and REST API batch flush every 10 seconds. Supports offline play.
+2. **Question Engine** (`questionEngine.js`): Adaptive difficulty using skill rating (1-5) with streak tracking (3 correct = harder, 2 wrong = easier).
+3. **Progression System** (`progression.js`): XP, levels, and per-game badges. Formula: `baseXP * difficultyMultiplier * speedBonus * correctnessFactor`.
 
 ### Monorepo Structure
 
@@ -274,61 +258,15 @@ apps/games/
   survival-equation/ 38 files   (Collaborative Puzzle)
 ```
 
-Each game follows an identical internal architecture:
-```
-src/
-  config/       Game constants, entity definitions
-  data/         Questions (JSON), story scripts, maps
-  systems/      Game logic (state, combat, assessment)
-  components/   KAPLAY.js UI components and entities
-  scenes/       Scene registration and game flow
-```
-
----
-
-## Question Bank Summary
-
-| Game | Files | Total Questions | Subjects |
-|------|-------|----------------|----------|
-| Concept Cascade | 4 | 60 | Number sense, Operations, Fractions, Geometry |
-| Knowledge Quest | 2 | 150 | Math (75), Science (75) |
-| Lab Explorer | 2 | 100 | Chemistry (50), Physics (50) |
-| Survival Equation | 2 | 100 | Applied Math (50), Applied Science (50) |
-| **Total** | **10** | **410** | |
-
-All questions are themed to their game context -- tower defense math problems, RPG spell-casting challenges, lab experiment questions, and survival-scenario word problems. Each file contains questions across difficulty levels 1-5 (easiest to hardest).
-
----
-
-## Evidence-Centered Design Coverage
-
-Every game has a complete ECD mapping document specifying:
-- **Competency Model:** what knowledge, skills, and attributes are measured
-- **Evidence Model:** telemetry events and evidence rules connecting behavior to competencies
-- **Task Model:** game mechanics calibrated to specific difficulty and skill targets
-- **Assembly Model:** mastery thresholds and adaptive difficulty parameters
-
-### Coverage Matrix
-
-|  | D1 Cognitive | D2 Engagement | D3 Strategic | D4 Social | D5 Affective | D6 Temporal |
-|--|-------------|---------------|-------------|-----------|-------------|-------------|
-| Pulse Realms | Strong | Strong | Medium | **Primary** | Medium | Medium |
-| Concept Cascade | Strong | Strong | **Primary** | Weak | Medium | Strong |
-| Knowledge Quest | Strong | Strong | Strong | Medium | **Primary** | Strong |
-| Lab Explorer | Strong | Medium | **Primary** | Medium | Medium | Strong |
-| Survival Equation | Strong | Strong | Strong | **Primary** | Strong | Strong |
-
-Every analytics dimension has at least one game as its primary source, ensuring comprehensive coverage of student competencies.
-
 ---
 
 ## Next Steps
 
 1. **Browser Testing & Debugging:** Systematic playtesting of all four new games
-2. **Pilot Study Design:** Prepare for classroom testing in Saudi Arabian K-12 schools
-3. **Teacher Dashboard Integration:** Connect game telemetry to real-time analytics dashboards
-4. **Tablet Adaptation:** Test Pulse Realms on iPad/Android for cross-platform assessment equivalence
-5. **AI Question Generation:** Implement the teacher-upload-to-MCQ pipeline
+2. **Teacher Dashboard Integration:** Connect game telemetry to real-time analytics dashboards
+3. **Pilot Study:** Prepare for classroom testing in Saudi Arabian K-12 schools
+4. **Tablet Adaptation:** Test Pulse Realms on iPad/Android for cross-platform fairness
+5. **AI Question Generation:** Implement teacher-upload-to-MCQ pipeline
 6. **SpacetimeDB Integration:** Add real-time multiplayer for Pulse Realms and Survival Equation
 
 ---
