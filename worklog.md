@@ -64,9 +64,46 @@ Assessment: D4 via communication quality scoring, team contribution equity (Gini
 | Survival Equation | 2 | 100 | applied_math (50), applied_science (50) |
 | **Total** | **10** | **410** | |
 
+### Completed Post-Implementation (2026-04-06)
+
+- Closed GitHub issues #14, #20, #27, #28 with detailed comments
+- Pushed all commits to remote (master branch)
+- Regenerated EdGame_Living_Document.docx (2.2 MB with embedded diagram screenshots)
+- Updated all 4 ECD docs from DRAFT to IMPLEMENTED
+- Coverage matrix verified accurate
+
+### Progress Report (2026-04-06)
+
+Created `reports/progress-report/` with illustrated progress report:
+- 6 live gameplay screenshots captured via headless Chrome (arena combat, TD battlefield, RPG chapter map, lab experiment select, survival scenarios + roles)
+- 3 analytics pipeline diagrams generated via Python/Pillow:
+  - Telemetry pipeline: Game Action → Event → Metric → Model → Insight
+  - Sample session metrics dashboard with D1-D6 bars
+  - ECD framework visual (4 models with game-specific examples)
+- Markdown source + styled 878 KB PDF (14 pages)
+- Report focuses on how game actions convert to learning insights with "What It Measures (Invisibly)" tables per game
+
+### Git History (this session)
+
+| Commit | Description |
+|--------|-------------|
+| f4a418a | Scaffold Concept Cascade (#14) |
+| 469e67b | Concept Cascade components + systems |
+| be77763 | Concept Cascade scenes — complete game |
+| 1e2d3c4 | Save game implementation plan |
+| 926cd52 | Update worklog + ECD doc for CC |
+| a42d755 | Knowledge Quest — complete game (#27) |
+| 89939d2 | Lab Explorer — complete game (#20) |
+| ef546a3 | Survival Equation — complete game (#28) |
+| 0789140 | Update all ECD docs + worklog |
+| dc8f9d6 | Progress report v1 |
+| 6e115ad | Progress report v2 (gameplay + analytics) |
+
 ### Next Steps
 
-- Browser testing and debugging for all 4 games
-- Close GitHub issues #14, #20, #27, #28
-- Push to remote
-- Regenerate EdGame_Living_Document.docx with updated content
+- Browser testing and debugging for all 4 new games
+- Teacher dashboard integration (connect telemetry → dashboard)
+- Pilot study design for Saudi K-12 classrooms
+- Tablet adaptation (Pulse Realms on iPad/Android)
+- AI question generation pipeline
+- SpacetimeDB multiplayer for Pulse Realms + Survival Equation
