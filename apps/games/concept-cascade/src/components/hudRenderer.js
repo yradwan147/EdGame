@@ -10,8 +10,13 @@
 
 import { GAME_CONFIG, COLORS } from "../config/constants.js";
 import { TOWER_TYPES } from "../config/towers.js";
+import { SYNERGIES } from "../config/synergies.js";
 
 export function createHudRenderer(k, { progression }) {
+    // Tower tooltip state — shown on hover over a tower button
+    let tooltipObjs = [];
+    let tooltipFor = null; // towerType currently showing tooltip
+    let discoveredSynergyIds = new Set();
     // References to KAPLAY objects (created in init)
     let topBar = null;
     let bottomBar = null;
@@ -232,6 +237,12 @@ export function createHudRenderer(k, { progression }) {
             btnBg.onClick(() => {
                 selectedTower = tKey;
                 btnBg.trigger("tower_selected", { towerType: tKey });
+            });
+
+            // Tooltip on hover
+            btnBg.onHover(() => showTowerTooltip(tKey, bx, by));
+            btnBg.onHoverEnd(() => {
+                if (tooltipFor === tKey) hideTowerTooltip();
             });
 
             towerButtons.push({
@@ -495,6 +506,165 @@ export function createHudRenderer(k, { progression }) {
     }
 
     // =========================================================================
+    //  Tower tooltip (hover over tower button)
+    // =========================================================================
+    function clearTooltip() {
+        for (const obj of tooltipObjs) {
+            try { k.destroy(obj); } catch { /* ignore */ }
+        }
+        tooltipObjs = [];
+    }
+
+    function hideTowerTooltip() {
+        clearTooltip();
+        tooltipFor = null;
+    }
+
+    /** Returns an array of synergy hint strings for the given tower type. */
+    function synergyHintsFor(towerKey) {
+        const hints = [];
+        for (const syn of SYNERGIES) {
+            const req = syn.requires;
+            let involvesThisTower = false;
+            let partnerLabel = "";
+
+            if (req === "any3") {
+                involvesThisTower = true;
+                partnerLabel = "with any 2 other towers in a triangle";
+            } else if (Array.isArray(req)) {
+                if (req.includes(towerKey)) {
+                    involvesThisTower = true;
+                    if (req[0] === req[1]) {
+                        partnerLabel = "with another " + (TOWER_TYPES[req[0]]?.name || req[0]);
+                    } else {
+                        const partner = req.find((r) => r !== towerKey) ?? req.find((r) => r === towerKey);
+                        const partnerName = TOWER_TYPES[partner]?.name || partner;
+                        partnerLabel = "with " + partnerName + " nearby";
+                    }
+                }
+            }
+
+            if (!involvesThisTower) continue;
+
+            if (discoveredSynergyIds.has(syn.id)) {
+                // Full reveal
+                hints.push(`★ ${syn.name}: ${syn.description}`);
+            } else {
+                // Hint only
+                hints.push(`• Combo ${partnerLabel}?`);
+            }
+        }
+        return hints;
+    }
+
+    function showTowerTooltip(towerKey, anchorX, anchorY) {
+        clearTooltip();
+        tooltipFor = towerKey;
+
+        const tDef = TOWER_TYPES[towerKey];
+        if (!tDef) return;
+
+        const hints = synergyHintsFor(towerKey);
+
+        const tipW = 320;
+        const padding = 12;
+        const innerW = tipW - padding * 2;
+        const gap = 4;      // extra space between lines
+        const spacerH = 6;  // height of empty spacer lines
+
+        // Assemble text line descriptors
+        const lines = [];
+        lines.push({ text: tDef.name, size: 16, color: tDef.color });
+        lines.push({ text: tDef.description || "", size: 12, color: [210, 215, 235] });
+        lines.push({ spacer: true });
+        lines.push({ text: `Cost: ${tDef.cost} KC`, size: 11, color: COLORS.gold });
+        lines.push({ text: `Range: ${tDef.range}  ·  Damage: ${tDef.damage}  ·  Rate: ${tDef.fireRate}/s`, size: 10, color: [160, 170, 200] });
+        if (tDef.splashRadius) {
+            lines.push({ text: `Splash radius: ${tDef.splashRadius}`, size: 10, color: [160, 170, 200] });
+        }
+        if (tDef.slowFactor) {
+            lines.push({ text: `Slow: ${Math.round(tDef.slowFactor * 100)}% for ${tDef.slowDuration}s`, size: 10, color: [160, 170, 200] });
+        }
+        lines.push({ spacer: true });
+        lines.push({ text: "SYNERGIES", size: 10, color: [120, 130, 160] });
+        if (hints.length === 0) {
+            lines.push({ text: "(none for this tower)", size: 11, color: [120, 130, 160] });
+        } else {
+            for (const h of hints) {
+                const isRevealed = h.startsWith("★");
+                lines.push({
+                    text: h,
+                    size: 11,
+                    color: isRevealed ? COLORS.gold : [180, 190, 220],
+                });
+            }
+        }
+
+        // --- Pass 1: create text objects off-screen so KAPLAY can lay them
+        //             out (wrapping long strings inside innerW) and expose
+        //             the real `.height` property on each.
+        const SANDBOX_X = -5000;
+        const SANDBOX_Y = -5000;
+        const measured = [];
+        let contentH = 0;
+
+        for (const line of lines) {
+            if (line.spacer) {
+                measured.push({ spacer: true, height: spacerH });
+                contentH += spacerH;
+                continue;
+            }
+            const txt = k.add([
+                k.text(line.text, { size: line.size, width: innerW }),
+                k.pos(SANDBOX_X, SANDBOX_Y),
+                k.color(...(line.color || [230, 230, 255])),
+                k.fixed(),
+                k.z(Z_HUD + 101),
+            ]);
+            // KAPLAY exposes .height on text objects after being added.
+            const h = (typeof txt.height === "number" && txt.height > 0)
+                ? txt.height
+                : line.size * 1.3;
+            measured.push({ obj: txt, height: h });
+            contentH += h + gap;
+        }
+
+        const tipH = contentH + padding * 2;
+
+        // --- Position tooltip above the hovered button, clamped to screen
+        let tipX = anchorX;
+        let tipY = anchorY - tipH - 8;
+        if (tipX + tipW > W - 10) tipX = W - tipW - 10;
+        if (tipX < 10) tipX = 10;
+        if (tipY < 10) tipY = 10;
+
+        // --- Backdrop (drawn behind text; lower z than text objects)
+        const bg = k.add([
+            k.rect(tipW, tipH, { radius: 6 }),
+            k.pos(tipX, tipY),
+            k.color(14, 18, 32),
+            k.outline(2, k.rgb(...tDef.color)),
+            k.opacity(0.95),
+            k.fixed(),
+            k.z(Z_HUD + 100),
+        ]);
+        tooltipObjs.push(bg);
+
+        // --- Pass 2: reposition the measured text objects into their
+        //             final slots using the actual heights.
+        let ly = tipY + padding;
+        for (const ml of measured) {
+            if (ml.spacer) {
+                ly += ml.height;
+                continue;
+            }
+            ml.obj.pos = k.vec2(tipX + padding, ly);
+            tooltipObjs.push(ml.obj);
+            ly += ml.height + gap;
+        }
+    }
+
+    // =========================================================================
     //  Public interface
     // =========================================================================
     return {
@@ -502,6 +672,14 @@ export function createHudRenderer(k, { progression }) {
         update,
         showWaveBanner,
         showSynergyDiscovery,
+
+        /**
+         * Called by the scene to pass in the current set of discovered
+         * synergy IDs so tooltips reveal full text once a combo is found.
+         */
+        setDiscoveredSynergies(ids) {
+            discoveredSynergyIds = new Set(ids);
+        },
 
         getSelectedTower() {
             return selectedTower;

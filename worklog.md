@@ -99,9 +99,138 @@ Created `reports/progress-report/` with illustrated progress report:
 | dc8f9d6 | Progress report v1 |
 | 6e115ad | Progress report v2 (gameplay + analytics) |
 
+## 2026-04-14 — Concept Cascade Debug Mode + Playtest Fixes
+
+Built a live ECD profile viewer for Concept Cascade and fixed a long chain of bugs
+discovered during the first real playthrough. This is the game that will be
+demoed with the debug mode showing the stealth-assessment pipeline in action.
+
+### Debug mode (new feature)
+
+- **`src/systems/telemetry.js`** — added `subscribe(callback)` / `unsubscribe()`
+  API so observers receive events as they fire (not only at session end).
+- **`src/systems/debugBridge.js`** (new, 130 lines) — forwards telemetry events,
+  session_start, session_end, and 500 ms state snapshots to a second window
+  via `BroadcastChannel('edgame-debug')`. Also handles popup-window opening
+  and backfill replay when the debug window connects after the game has already
+  started.
+- **`debug.html` + `debug.js`** (new, ~650 lines total) — standalone viewer
+  with dark-themed panels: Student Profile (D1-D6 bars with animated pulse on
+  update), Knowledge Components (per-subject mastery via weighted difficulty),
+  Evidence Trace (event log with human-readable explanations per event),
+  Session Snapshot (phase, wave, gold, lives, towers). Runs its own lite
+  metrics computation so it stays decoupled from the game's assessment engine.
+- **`main.js`** — reads `?debug=1` URL param, initializes the bridge.
+- **Battlefield scene** — added `enemy_killed` and `enemy_leaked` telemetry
+  events (they were previously only KAPLAY component events, invisible to
+  the assessment engine).
+
+### Playtest bug fixes (in order discovered)
+
+1. **Tower placement silently hung forever.** `towerSystem.askQuestion()`
+   passed a callback to `questionOverlay.show(question, callback)`, but the
+   overlay signature is `show(question)` and returns a Promise. The callback
+   was silently ignored, the inner promise never resolved, and `buildTower`
+   awaited it forever. Pre-existing bug, not introduced by debug mode.
+   **Fix:** rewrote `askQuestion` as a clean `async/await` that awaits
+   `overlay.show()` and reads `result.correct` directly. One fix unblocks
+   all four question-gated actions (build, upgrade, risky upgrade, study).
+
+2. **Game crashed on first projectile hit** with *"component 'lifespan'
+   requires component 'opacity'"*. `projectileComp.js` impact flash added
+   `k.lifespan(0.15, { fade: 0.1 })` without `k.opacity()`, and the flash's
+   `onDraw` even referenced `flash.opacity`. **Fix:** added `k.opacity(1)`.
+   Scanned all other `k.add` blocks with a regex — 0 other sites affected.
+
+3. **Stuck on wave 1 forever.** Old code called `k.go("waveResults", ...)`
+   between waves; on `k.go("battlefield")` return the scene re-ran
+   `gameStateStore.startGame()` which wiped gold, lives, towers, and
+   `currentWaveIndex = -1`, so wave 1 always restarted. Also the old
+   `actionEffects.waveClear()` animation rendered "blue blob" overlapping
+   the separate scene's text. **Fix:** ripped out the separate
+   `waveResults` scene, replaced with an in-battlefield modal overlay
+   that preserves all state. Added `waveResultsShowing` guard to stop
+   `handleWaveComplete` from firing repeatedly every frame.
+
+4. **Bottom HUD button clicks triggered ghost tower builds.** Tile-build
+   handler was a global `k.onClick(() => {...})` that fired on every
+   canvas click and only checked if coords fell inside the map grid.
+   The HUD bottom bar at y=660-720 mapped to tile row 10, and the map
+   grid row 10 `"XXXPBBBBBBBBBBBXBBBB"` was full of buildable tiles, so
+   clicking any HUD tower button placed a tower on row 10. **Fix:**
+   reserved y-ranges `[0, 40)` (top HUD) and `[660, 720)` (bottom HUD)
+   as HUD-only zones; tile-click handler ignores clicks in those strips.
+
+5. **Waves ended before all enemies died.** `waveManager.isWaveComplete()`
+   tracked event counters (`spawnedCount`, `killedCount`, `leakedCount`)
+   which didn't account for Geometry Golem splits or boss minions spawned
+   mid-wave. **Fix:** moved wave-complete check into the battlefield's
+   update loop: `allSpawned && k.get("enemy").length === 0`. Also added
+   a safety sweep at the start of each `startCombatPhase` that destroys
+   any stray `"enemy"` or `"projectile"` objects lingering from the
+   previous wave.
+
+6. **Wave 6 frozen hell, 300k gold.** Geometry Golem fragments spawned
+   via `spawnEnemy("geometryGolem", ...)` inherited the full golem
+   config including `behavior: "crack"`, so fragments split recursively
+   forever — 2 → 4 → 8 → 16 → ... — and each one awarded the full 25 KC
+   golem bounty. **Fix:** added `isFragment: true` override to
+   `spawnEnemy`; when set, `runtimeConfig.behavior = "none"` suppresses
+   the crack check, `reward = max(4, round(parentReward/3))` (25→8 KC),
+   `liveCost = max(1, floor(parentLiveCost/2))` (3→1). Wave 6 golem
+   total is now 2×25 + 4×8 = 82 KC.
+
+7. **Correct answer was always in slot A.** All 60 question JSON files
+   had `correctIndex: 0`. Rather than rewriting the data (which would
+   regress again on future AI-generated question banks), added a
+   `shuffleOptions()` Fisher-Yates shuffle in `questionEngine.js` that
+   runs on every `getQuestion()` call. Verified across 200 samples:
+   A=46, B=55, C=57, D=42 — uniformly distributed.
+
+8. **Tooltip text overlapping itself.** Added tower tooltips on hover
+   (show description, stats, synergy hints — undiscovered synergies
+   show as intriguing question marks like *"Combo with Operation Cannon
+   nearby?"*, discovered ones upgrade to gold-highlighted full reveals).
+   Initial implementation reserved fixed `size + 4px` per line, but
+   KAPLAY wraps long lines inside `width:` causing overlap. **Fix:**
+   rendered text off-screen first to measure actual `.height`, then
+   stacked with dynamic line heights and repositioned into the final
+   tooltip. Also widened to 320 px and clamped to left edge.
+
+### New / modified files
+
+| File | Change |
+|------|--------|
+| `apps/games/concept-cascade/src/systems/telemetry.js` | Added subscribe API |
+| `apps/games/concept-cascade/src/systems/debugBridge.js` | **New** — BroadcastChannel forwarder |
+| `apps/games/concept-cascade/debug.html` | **New** — debug viewer layout |
+| `apps/games/concept-cascade/debug.js` | **New** — debug viewer logic + lite metrics |
+| `apps/games/concept-cascade/main.js` | `?debug=1` wiring, removed unused waveResults registration |
+| `apps/games/concept-cascade/src/scenes/battlefield.js` | In-scene wave results overlay, wave completion via live enemy count, tile click HUD guards, fragment overrides |
+| `apps/games/concept-cascade/src/systems/towerSystem.js` | `askQuestion` promise fix |
+| `apps/games/concept-cascade/src/systems/questionEngine.js` | Fisher-Yates option shuffle |
+| `apps/games/concept-cascade/src/components/projectileComp.js` | `k.opacity(1)` on impact flash |
+| `apps/games/concept-cascade/src/components/hudRenderer.js` | Tower hover tooltips with synergy hints |
+| `apps/games/concept-cascade/src/config/waves.js` | Rebalanced waves 6-8 to account for fragments |
+
+### README (new)
+
+Added a **`README.md`** at the repo root with:
+- Game roster, file counts, and primary dimensions
+- Three quick-start options for running the games (Python http.server,
+  npx serve, per-game `pnpm dev`)
+- Debug mode instructions (`?debug=1`)
+- Per-game controls reference
+- Architecture overview + shared infrastructure explanation
+- ECD dimension table + pointers to all documentation
+
 ### Next Steps
 
-- Browser testing and debugging for all 4 new games
+- Browser testing for the other 4 games (Pulse Realms, Knowledge Quest,
+  Lab Explorer, Survival Equation — all have similar architectural bugs
+  likely, e.g. they probably all have `correctIndex: 0` skew)
+- Extend debug mode to the other 4 games (copy `debugBridge.js` +
+  `debug.html` / `debug.js` templates, adjust lite metrics computation)
 - Teacher dashboard integration (connect telemetry → dashboard)
 - Pilot study design for Saudi K-12 classrooms
 - Tablet adaptation (Pulse Realms on iPad/Android)

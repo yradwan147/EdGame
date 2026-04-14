@@ -31,43 +31,42 @@ export function createTowerSystem({
     /*  Helpers                                                            */
     /* ------------------------------------------------------------------ */
 
-    /** Ask a question and return { correct, responseTimeMs, questionId } via Promise. */
-    function askQuestion(subjectId, requestedDifficulty, context) {
-        return new Promise(async (resolve) => {
-            const question = await questionEngine.getQuestion({
-                playerId,
-                subjectId,
-                requestedDifficulty,
-                seenQuestionIds: seenQuestions,
-            });
-            seenQuestions.add(question.id);
-
-            questionOverlay.show(question, (result) => {
-                const correct = result.selectedIndex === question.correctIndex;
-                const responseTimeMs = result.responseTimeMs;
-
-                // Record in engine + progression
-                questionEngine.recordResult({ playerId, correct });
-                gameStateStore.recordQuestion(correct);
-                progression.grantQuestionXp({
-                    difficulty: question.difficulty,
-                    responseTimeMs,
-                    correct,
-                });
-
-                // Telemetry
-                telemetry.event("question_answered", {
-                    questionId: question.id,
-                    subject: subjectId,
-                    difficulty: question.difficulty,
-                    correct,
-                    responseTimeMs,
-                    context,
-                });
-
-                resolve({ correct, responseTimeMs, questionId: question.id });
-            });
+    /** Ask a question and return { correct, responseTimeMs, questionId }. */
+    async function askQuestion(subjectId, requestedDifficulty, context) {
+        const question = await questionEngine.getQuestion({
+            playerId,
+            subjectId,
+            requestedDifficulty,
+            seenQuestionIds: seenQuestions,
         });
+        seenQuestions.add(question.id);
+
+        // questionOverlay.show() returns a Promise resolving to
+        //   { correct, responseTimeMs, answerIndex, timedOut }
+        const result = await questionOverlay.show(question);
+        const correct = Boolean(result.correct);
+        const responseTimeMs = result.responseTimeMs;
+
+        // Record in engine + progression
+        questionEngine.recordResult({ playerId, correct });
+        gameStateStore.recordQuestion(correct);
+        progression.grantQuestionXp({
+            difficulty: question.difficulty,
+            responseTimeMs,
+            correct,
+        });
+
+        // Telemetry
+        telemetry.event("question_answered", {
+            questionId: question.id,
+            subject: subjectId,
+            difficulty: question.difficulty,
+            correct,
+            responseTimeMs,
+            context,
+        });
+
+        return { correct, responseTimeMs, questionId: question.id };
     }
 
     /** Compute effective cost after optional speed bonus. */

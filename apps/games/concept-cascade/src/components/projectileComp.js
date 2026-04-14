@@ -119,6 +119,7 @@ export function projectileComp({
         const flash = k.add([
             k.pos(hitPos),
             k.anchor("center"),
+            k.opacity(1),
             k.lifespan(0.15, { fade: 0.1 }),
             k.z(350),
         ]);

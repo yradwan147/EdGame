@@ -116,6 +116,12 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
         let synergyBeamTimer = 0;
         const SYNERGY_BEAM_INTERVAL = 0.8; // seconds between beam redraws
 
+        // Wave-results overlay state (shown in-scene, not a separate scene,
+        // so the battlefield keeps towers / gold / lives between waves)
+        let waveResultsShowing = false;
+        let waveResultsElements = [];
+        let waveResultsKeyHandlers = [];
+
         // Tower game object lookup by towerId
         const towerObjects = new Map();
 
@@ -333,6 +339,12 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
                 return;
             }
 
+            // Safety net: destroy any stale enemies / projectiles that
+            // somehow survived the previous wave. Prevents ghost enemies
+            // from causing perf problems or damaging the core mid-transition.
+            for (const e of k.get("enemy")) k.destroy(e);
+            for (const p of k.get("projectile")) k.destroy(p);
+
             const waveCfg = WAVES[currentWaveIndex];
             gameStateStore.nextWave();
             hudRenderer.setWaveTitle(waveCfg.title || "");
@@ -378,7 +390,9 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
         }
 
         function handleWaveComplete() {
+            if (waveResultsShowing || gameEnded) return;
             if (!waveManager || !waveManager.isWaveComplete()) return;
+            waveResultsShowing = true;
 
             const waveCfg = WAVES[currentWaveIndex];
             const progress = waveManager.getWaveProgress();
@@ -396,9 +410,7 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
                 gameStateStore.addGold(bonusGold);
             }
 
-            actionEffects.waveClear(`Wave ${waveCfg.number} Clear!`);
             progression.recordWaveCleared();
-
             telemetry.event("wave_completed", {
                 waveNumber: waveCfg.number,
                 enemiesKilled: progress.killed,
@@ -407,28 +419,232 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
                 bonusGold,
             });
 
-            // Check win condition (last wave cleared)
-            if (currentWaveIndex >= TOTAL_WAVES - 1) {
-                k.wait(1.5, () => endGame(true));
-                return;
+            const isLastWave = currentWaveIndex >= TOTAL_WAVES - 1;
+            showWaveResultsOverlay({
+                waveCfg,
+                progress,
+                interest,
+                bonusGold,
+                isLastWave,
+            });
+        }
+
+        // =================================================================
+        //  11b. WAVE RESULTS OVERLAY (in-scene, preserves state)
+        // =================================================================
+        function dismissWaveResultsOverlay() {
+            for (const el of waveResultsElements) {
+                if (el && typeof el.destroy === "function") {
+                    try { el.destroy(); } catch { /* ignore */ }
+                } else if (el) {
+                    try { k.destroy(el); } catch { /* ignore */ }
+                }
+            }
+            waveResultsElements = [];
+
+            for (const cancel of waveResultsKeyHandlers) {
+                if (typeof cancel === "function") cancel();
+                else if (cancel && typeof cancel.cancel === "function") cancel.cancel();
+            }
+            waveResultsKeyHandlers = [];
+
+            waveResultsShowing = false;
+        }
+
+        function showWaveResultsOverlay({ waveCfg, progress, interest, bonusGold, isLastWave }) {
+            const Z = 9500;
+
+            // Star rating
+            let stars = 1;
+            if (progress.leaked === 0) stars = 3;
+            else if (progress.leaked < 3) stars = 2;
+            const starLabels = ["Survived!", "Good Defense!", "Perfect Wave!"];
+
+            // Dimmed backdrop
+            const backdrop = k.add([
+                k.rect(W, H),
+                k.pos(0, 0),
+                k.color(0, 0, 0),
+                k.opacity(0.7),
+                k.fixed(),
+                k.z(Z),
+            ]);
+            waveResultsElements.push(backdrop);
+
+            // Modal panel
+            const panelW = 560;
+            const panelH = 440;
+            const panelX = W / 2 - panelW / 2;
+            const panelY = H / 2 - panelH / 2;
+
+            const panel = k.add([
+                k.rect(panelW, panelH),
+                k.pos(panelX, panelY),
+                k.color(...COLORS.panelBg || COLORS.hud),
+                k.outline(3, k.rgb(...COLORS.gold)),
+                k.fixed(),
+                k.z(Z + 1),
+            ]);
+            waveResultsElements.push(panel);
+
+            // Title
+            const title = k.add([
+                k.text(isLastWave ? "VICTORY!" : `Wave ${waveCfg.number} Complete`, { size: 36 }),
+                k.pos(W / 2, panelY + 50),
+                k.anchor("center"),
+                k.color(...COLORS.waveText),
+                k.fixed(),
+                k.z(Z + 2),
+            ]);
+            waveResultsElements.push(title);
+
+            // Stars
+            for (let i = 0; i < 3; i++) {
+                const filled = i < stars;
+                const sx = W / 2 - 50 + i * 50;
+                const sy = panelY + 110;
+                const star = k.add([
+                    k.pos(sx, sy),
+                    k.anchor("center"),
+                    k.fixed(),
+                    k.z(Z + 2),
+                ]);
+                star.onDraw(() => {
+                    k.drawCircle({
+                        pos: k.vec2(0, 0),
+                        radius: 18,
+                        color: filled ? k.rgb(...COLORS.gold) : k.rgb(60, 60, 80),
+                        opacity: filled ? 1 : 0.4,
+                    });
+                    if (filled) {
+                        k.drawCircle({
+                            pos: k.vec2(0, 0),
+                            radius: 10,
+                            color: k.rgb(255, 255, 255),
+                            opacity: 0.4,
+                        });
+                    }
+                });
+                waveResultsElements.push(star);
             }
 
-            // Go to waveResults scene
-            k.wait(1.5, () => {
-                const state = gameStateStore.getState();
-                k.go("waveResults", {
-                    waveNumber: waveCfg.number,
-                    enemiesKilled: progress.killed,
-                    enemiesLeaked: progress.leaked,
-                    goldEarned: bonusGold,
-                    interest,
-                    bonusGold,
-                    mapId,
-                    nextWaveIndex: currentWaveIndex + 1,
-                    gold: state.gold,
-                    lives: state.lives,
-                });
-            });
+            // Star label
+            const rank = k.add([
+                k.text(starLabels[stars - 1], { size: 16 }),
+                k.pos(W / 2, panelY + 150),
+                k.anchor("center"),
+                k.color(...COLORS.gold),
+                k.fixed(),
+                k.z(Z + 2),
+            ]);
+            waveResultsElements.push(rank);
+
+            // Stats rows
+            const statY = panelY + 190;
+            const statLines = [
+                { label: "Enemies Killed", value: `${progress.killed}` },
+                { label: "Enemies Leaked", value: `${progress.leaked}`, color: progress.leaked > 0 ? COLORS.lives : COLORS.hudText },
+                { label: "Wave Bonus",    value: `+${bonusGold} KC`, color: COLORS.gold },
+                { label: "Interest",      value: `+${interest} KC`,  color: COLORS.gold },
+            ];
+            for (let i = 0; i < statLines.length; i++) {
+                const s = statLines[i];
+                const sy = statY + i * 30;
+
+                const lbl = k.add([
+                    k.text(s.label, { size: 16 }),
+                    k.pos(panelX + 60, sy),
+                    k.anchor("left"),
+                    k.color(...COLORS.hudText),
+                    k.fixed(),
+                    k.z(Z + 2),
+                ]);
+                waveResultsElements.push(lbl);
+
+                const val = k.add([
+                    k.text(s.value, { size: 16 }),
+                    k.pos(panelX + panelW - 60, sy),
+                    k.anchor("right"),
+                    k.color(...(s.color || COLORS.hudText)),
+                    k.fixed(),
+                    k.z(Z + 2),
+                ]);
+                waveResultsElements.push(val);
+            }
+
+            // Concept gap warning (if anything leaked)
+            if (progress.leaked > 0) {
+                const leakedKcs = new Set();
+                for (const group of waveCfg.enemies) {
+                    const eDef = ENEMY_TYPES[group.type];
+                    if (eDef && eDef.knowledgeComponent) leakedKcs.add(eDef.knowledgeComponent);
+                }
+                const kcMsg = {
+                    number_sense: "Review number sense",
+                    operations:   "Review operations",
+                    fractions:    "Review fractions",
+                    geometry:     "Review geometry",
+                };
+                const msgs = [...leakedKcs].map((k) => kcMsg[k]).filter(Boolean);
+                if (msgs.length) {
+                    const warn = k.add([
+                        k.text("Concept gap: " + msgs.join(", "), { size: 13 }),
+                        k.pos(W / 2, statY + statLines.length * 30 + 12),
+                        k.anchor("center"),
+                        k.color(255, 180, 80),
+                        k.fixed(),
+                        k.z(Z + 2),
+                    ]);
+                    waveResultsElements.push(warn);
+                }
+            }
+
+            // Next wave button
+            const btnW = 240;
+            const btnH = 46;
+            const btnX = W / 2 - btnW / 2;
+            const btnY = panelY + panelH - 70;
+
+            const btn = k.add([
+                k.rect(btnW, btnH),
+                k.pos(btnX, btnY),
+                k.color(60, 140, 80),
+                k.outline(2, k.rgb(...COLORS.gold)),
+                k.area(),
+                k.fixed(),
+                k.z(Z + 2),
+            ]);
+            waveResultsElements.push(btn);
+
+            const btnLabel = k.add([
+                k.text(isLastWave ? "FINISH" : "NEXT WAVE", { size: 20 }),
+                k.pos(W / 2, btnY + btnH / 2),
+                k.anchor("center"),
+                k.color(255, 255, 255),
+                k.fixed(),
+                k.z(Z + 3),
+            ]);
+            waveResultsElements.push(btnLabel);
+
+            btn.onHoverUpdate(() => { btn.color = k.rgb(80, 180, 100); });
+            btn.onHoverEnd(() => { btn.color = k.rgb(60, 140, 80); });
+
+            function proceed() {
+                if (!waveResultsShowing) return;
+                dismissWaveResultsOverlay();
+                if (isLastWave) {
+                    endGame(true);
+                } else {
+                    startPrepPhase();
+                }
+            }
+
+            btn.onClick(proceed);
+            waveResultsKeyHandlers.push(k.onKeyPress("enter", proceed));
+            waveResultsKeyHandlers.push(k.onKeyPress("space", proceed));
+
+            // Auto-advance after a safe delay so the player can see the stats
+            waveResultsKeyHandlers.push(k.wait(6, proceed));
         }
 
         function endGame(won) {
@@ -466,16 +682,27 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
             // Build waypoint list from the override starting index
             const wp = pathWaypoints.slice(wpIndex);
 
+            // Fragment-specific overrides: no further splitting, smaller
+            // reward, smaller size. This is set by the split handler
+            // below so only "first-gen" golem splits award partial gold.
+            const isFragment = Boolean(overrides.isFragment);
+            const runtimeConfig = {
+                ...config,
+                hp: overrides.hp || config.hp,
+                speed: overrides.speed || config.speed,
+                reward: overrides.reward ?? config.reward,
+                liveCost: overrides.liveCost ?? config.liveCost,
+                // Fragments don't split again — suppress crack behavior
+                behavior: isFragment ? "none" : config.behavior,
+                size: isFragment ? Math.round((config.size || 20) * 0.7) : config.size,
+            };
+
             const e = k.add([
                 k.pos(startPos),
                 k.anchor("center"),
                 enemyComp({
                     k,
-                    config: {
-                        ...config,
-                        hp: overrides.hp || config.hp,
-                        speed: overrides.speed || config.speed,
-                    },
+                    config: runtimeConfig,
                     pathWaypoints: wp,
                 }),
                 k.z(100),
@@ -493,6 +720,13 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
                 actionEffects.goldPopup(data.position, data.reward);
                 gameStateStore.pushEvent(`${config.name} defeated! +${data.reward} KC`);
 
+                telemetry.event("enemy_killed", {
+                    enemyType: data.type,
+                    knowledgeComponent: config.knowledgeComponent,
+                    reward: data.reward,
+                    wave: gameStateStore.getState().wave,
+                });
+
                 // Boss hit effect
                 if (config.behavior === "boss") {
                     actionEffects.bossHit(data.position);
@@ -506,13 +740,27 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
                 const dead = gameStateStore.loseLives(data.liveCost);
                 gameStateStore.pushEvent(`${config.name} leaked! -${data.liveCost} lives`);
 
+                telemetry.event("enemy_leaked", {
+                    enemyType: config.id,
+                    knowledgeComponent: config.knowledgeComponent,
+                    liveCost: data.liveCost,
+                    wave: gameStateStore.getState().wave,
+                    livesRemaining: gameStateStore.getState().lives,
+                });
+
                 if (dead) {
                     endGame(false);
                 }
             });
 
             // --- Enemy split event (Geometry Golem) ---
+            // Fragments are flagged so they can't split again (otherwise
+            // splits recurse infinitely, freezing the game and handing the
+            // player absurd amounts of gold).
             e.on("enemy_split", (data) => {
+                // Only full-sized golems split; fragments have their crack
+                // behavior suppressed in runtimeConfig, so this handler
+                // won't fire on them.
                 for (let i = 0; i < data.splitCount; i++) {
                     const offset = k.vec2(
                         (Math.random() - 0.5) * 30,
@@ -523,6 +771,11 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
                         hp: data.splitHp,
                         speed: data.splitSpeed,
                         waypointIndex: data.waypointIndex,
+                        // Fragments give ~1/3 the parent reward and
+                        // cost fewer lives if they leak (they're half-size).
+                        reward: Math.max(4, Math.round(config.reward / 3)),
+                        liveCost: Math.max(1, Math.floor(config.liveCost / 2)),
+                        isFragment: true,
                     });
                 }
             });
@@ -554,10 +807,22 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
         //  13. TOWER BUILDING (click on buildable tile)
         // =================================================================
 
+        // HUD strips reserved for UI; tile clicks inside these y-ranges are
+        // ignored so HUD button clicks can't double-fire as tile builds.
+        const HUD_TOP_H = 40;   // matches hudRenderer TOP_H
+        const HUD_BOT_H = 60;   // matches hudRenderer BOT_H
+        const PLAY_MIN_Y = HUD_TOP_H;
+        const PLAY_MAX_Y = H - HUD_BOT_H;
+
         k.onClick(() => {
             if (questionOverlay.isActive() || paused || gameEnded) return;
+            if (waveResultsShowing) return; // block tile clicks while overlay is up
 
             const mpos = k.mousePos();
+
+            // Ignore clicks that land on the reserved HUD strips
+            if (mpos.y < PLAY_MIN_Y || mpos.y >= PLAY_MAX_Y) return;
+
             const col = Math.floor(mpos.x / TILE);
             const row = Math.floor(mpos.y / TILE);
 
@@ -706,6 +971,9 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
                     gameStateStore.pushEvent(`Synergy: ${synEntry.synergyName}!`);
                 }
                 previousSynergyCount = newCount;
+                // Push newly discovered ids into the HUD so tooltips
+                // can reveal their full description
+                hudRenderer.setDiscoveredSynergies(state.discoveredSynergies);
             }
 
             return activeSynergies;
@@ -888,8 +1156,8 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
 
             gameStateStore.updateElapsed();
 
-            // --- PREP PHASE ---
-            if (state.phase === "prep") {
+            // --- PREP PHASE --- (frozen while wave-results overlay is up)
+            if (state.phase === "prep" && !waveResultsShowing) {
                 prepTimer -= dt;
                 prepLabel.text = `Prep: ${Math.max(0, Math.ceil(prepTimer))}s`;
 
@@ -909,9 +1177,16 @@ export function registerBattlefieldScene({ k, settings, gameStateStore, telemetr
             if (state.phase === "combat") {
                 prepLabel.text = "";
 
-                // Check wave completion
-                if (waveManager && waveManager.isWaveComplete()) {
-                    handleWaveComplete();
+                // Wave completion: ALL spawn groups done AND no live enemies
+                // left on the map (catches Geometry Golem splits and boss
+                // minions that waveManager.totalEnemies doesn't track).
+                if (!waveResultsShowing && waveManager) {
+                    const prog = waveManager.getWaveProgress();
+                    const allSpawned = prog.spawned >= prog.total;
+                    const liveEnemies = k.get("enemy").length;
+                    if (allSpawned && liveEnemies === 0) {
+                        handleWaveComplete();
+                    }
                 }
 
                 // Check game over (lives depleted)

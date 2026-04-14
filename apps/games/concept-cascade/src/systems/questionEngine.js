@@ -90,6 +90,29 @@ export function createQuestionEngine(options = {}) {
         return fallback[Math.floor(Math.random() * fallback.length)];
     }
 
+    /**
+     * Return a copy of the question with options shuffled (Fisher-Yates)
+     * and correctIndex remapped to the new position of the correct answer.
+     * Guarantees the correct answer isn't always in slot A even if the
+     * source data always stores it at index 0.
+     */
+    function shuffleOptions(question) {
+        const opts = question.options || [];
+        if (opts.length < 2) return question;
+        const correctText = opts[question.correctIndex];
+        const shuffled = opts.slice();
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        const newCorrectIndex = shuffled.indexOf(correctText);
+        return {
+            ...question,
+            options: shuffled,
+            correctIndex: newCorrectIndex,
+        };
+    }
+
     return {
         jsonProvider: JSONQuestionProvider,
         apiProvider: APIQuestionProvider,
@@ -105,7 +128,9 @@ export function createQuestionEngine(options = {}) {
             if (!questions.length) {
                 throw new Error(`No questions available for subject "${subjectId}".`);
             }
-            const question = pickQuestion(questions, targetDifficulty, seenQuestionIds);
+            const rawQuestion = pickQuestion(questions, targetDifficulty, seenQuestionIds);
+            // Randomise answer slot so correct option isn't always "A".
+            const question = shuffleOptions(rawQuestion);
             return {
                 ...question,
                 targetDifficulty,
