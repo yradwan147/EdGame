@@ -323,9 +323,41 @@ looks reasonable.
 
 ### Output
 
-- `reports/sample-telemetry/telemetry_events.csv` (target ≥50k rows)
+- **`reports/sample-telemetry/telemetry_events.csv`** — 50,432 events,
+  9.40 MB, 543 sessions, 543 distinct students. Generated in **115 min**
+  of real wall clock across 3 independent headless Chrome instances at
+  `TIME_SCALE=15x`.
 - `tools/play-and-capture.js` — the Puppeteer driver
 - `tools/validate-csv.py` — sanity check / stats
+
+### Dataset stats (validated)
+
+- **50,432 data rows** (37 columns, flat schema)
+- **16 event types** covered with natural distribution:
+  enemy_killed (17956), enemy_leaked (9203), question_answered (6643),
+  tower_placed (6121), wave_started (2281), wave_completed (1839),
+  interest_earned (1749), synergy_discovered (596), tower_upgraded (522),
+  early_call (270), plus per-dimension `assessment_*` summaries emitted
+  at session end (542 each for cognitive/engagement/strategic/affective/
+  temporal/complete).
+- **6 personas** with accuracies matching targets within ~2%:
+  | Persona | Measured | Target |
+  |---|---|---|
+  | strong_student | 92.0% | 92% |
+  | methodical | 86.9% | 85% |
+  | risk_taker | 70.3% | 70% |
+  | average_student | 63.7% | 65% |
+  | struggling_student | 42.1% | 42% |
+  | guesser | 27.7% | 30% |
+- **All 8 waves represented**, with natural drop-off toward the boss
+  (543 → 543 → 383 → 215 → 169 → 147 → 141 → 140 sessions reaching each).
+- **All 4 subjects** present: number_sense (3755), fractions (1277),
+  operations (972), geometry (639).
+- **All 5 difficulty levels**: 846/966/2148/1120/1563 questions.
+- **Response times** 537-8378 ms, median 2240 ms, mean 2934 ms — exactly
+  the realistic spread expected from the mix of fast/methodical/slow
+  personas.
+- **~93 events/session average** (range 30-220+).
 
 ### Next Steps
 
@@ -334,6 +366,8 @@ looks reasonable.
   likely, e.g. they probably all have `correctIndex: 0` skew)
 - Extend debug mode + bot driver to the other 4 games (copy `debugBridge.js`
   + `debug.html` / `debug.js` templates, adjust lite metrics computation)
+- Generate sample telemetry datasets for the other 4 games using the
+  same bot pattern once they have `?bot=1` hooks
 - Teacher dashboard integration (connect telemetry → dashboard)
 - Pilot study design for Saudi K-12 classrooms
 - Tablet adaptation (Pulse Realms on iPad/Android)
