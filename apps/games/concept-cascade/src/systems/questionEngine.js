@@ -131,11 +131,23 @@ export function createQuestionEngine(options = {}) {
             const rawQuestion = pickQuestion(questions, targetDifficulty, seenQuestionIds);
             // Randomise answer slot so correct option isn't always "A".
             const question = shuffleOptions(rawQuestion);
-            return {
+            const result = {
                 ...question,
                 targetDifficulty,
                 timeLimitSec: DEFAULT_SETTINGS.questionTimeLimitSec,
             };
+
+            // Bot mode: expose the current question (with shuffled correctIndex)
+            // so an automated test driver can decide how to answer. Only active
+            // when the URL has ?bot=1 — has no effect during normal play.
+            if (typeof window !== "undefined" &&
+                new URLSearchParams(window.location.search).get("bot") === "1") {
+                window.__edgameBot = window.__edgameBot || {};
+                window.__edgameBot.currentQuestion = result;
+                window.__edgameBot.questionsServed = (window.__edgameBot.questionsServed || 0) + 1;
+            }
+
+            return result;
         },
         recordResult({ playerId, correct }) {
             const playerRecord = ensurePlayer(playerId);

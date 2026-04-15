@@ -24,6 +24,7 @@ const k = kaplay({
 const params = new URLSearchParams(window.location.search);
 const apiBase = params.get("apiBase") || "/api";
 const debugMode = params.get("debug") === "1" || params.get("debug") === "true";
+const botMode   = params.get("bot")   === "1" || params.get("bot")   === "true";
 
 const gameStateStore = createGameStateStore();
 const telemetry = createTelemetry(DEFAULT_SETTINGS.telemetryStorageKey, { apiBase });
@@ -54,5 +55,16 @@ const deps = {
 registerMenuScene(deps);
 registerBattlefieldScene(deps);
 registerPostGameScene(deps);
+
+// Bot mode: expose KAPLAY context + game state for automated test driver.
+// Only active when ?bot=1; has no effect during normal play.
+if (botMode) {
+    window.__edgameBot = window.__edgameBot || {};
+    window.__edgameBot.k = k;
+    window.__edgameBot.gameStateStore = gameStateStore;
+    window.__edgameBot.telemetry = telemetry;
+    window.__edgameBot.progression = progression;
+    console.log("%c[EdGame] Bot mode active — window.__edgameBot exposed", "color:#ffd84d;font-weight:bold");
+}
 
 k.go("menu");
