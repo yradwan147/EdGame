@@ -454,14 +454,35 @@ async function playOneSession(page, persona, studentId, csv, summary, log) {
 }
 
 // ------------------------------------------------------------------
-//  Per-page worker
+//  Browser launch helper
 // ------------------------------------------------------------------
-async function runPageWorker(browser, pageId, csv, summary, stopFlag) {
+async function launchBrowser() {
+    return puppeteer.launch({
+        executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        headless: "new",
+        args: [
+            "--use-gl=angle",
+            "--use-angle=swiftshader",
+            "--enable-webgl",
+            "--ignore-gpu-blocklist",
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+        ],
+    });
+}
+
+// ------------------------------------------------------------------
+//  Per-browser worker (one Chrome process per worker)
+// ------------------------------------------------------------------
+async function runBrowserWorker(workerId, csv, summary, stopFlag) {
+    const browser = await launchBrowser();
     const page = await browser.newPage();
-    page._pageId = pageId;
+    page._pageId = workerId;
     await page.setViewport({ width: 1280, height: 720 });
 
     page.on("pageerror", () => { /* swallow — the bot polls game state directly */ });
+
+    const log = (msg) => process.stdout.write(`[w${workerId}] ${msg}\n`);
 
     // First-time navigation. Install a clock-speedup BEFORE the game
     // module loads. KAPLAY computes dt() from the `t` parameter that
@@ -505,8 +526,8 @@ async function runPageWorker(browser, pageId, csv, summary, stopFlag) {
             { timeout: 10_000 },
         );
     } catch (err) {
-        console.log(`[p${pageId}] Initial load failed: ${err.message}`);
-        await page.close();
+        log(`Initial load failed: ${err.message}`);
+        try { await browser.close(); } catch { }
         return;
     }
 
@@ -514,14 +535,13 @@ async function runPageWorker(browser, pageId, csv, summary, stopFlag) {
     while (!stopFlag.stop && sessionIdx < MAX_SESSIONS_PER_PAGE) {
         sessionIdx++;
         const persona = PERSONAS[Math.floor(Math.random() * PERSONAS.length)];
-        const studentId = `student_${pageId}_${sessionIdx.toString().padStart(3, "0")}`;
-        const log = (msg) => process.stdout.write(`[p${pageId}/${sessionIdx}/${persona.name}] ${msg}\n`);
+        const studentId = `student_w${workerId}_${sessionIdx.toString().padStart(3, "0")}`;
+        const sessionLog = (msg) => process.stdout.write(`[w${workerId}/${sessionIdx}/${persona.name}] ${msg}\n`);
 
         try {
-            await playOneSession(page, persona, studentId, csv, summary, log);
+            await playOneSession(page, persona, studentId, csv, summary, sessionLog);
         } catch (err) {
-            log(`ERROR: ${err.message}`);
-            // If browser disconnected, bail out of this worker
+            sessionLog(`ERROR: ${err.message}`);
             if (err.message.includes("detached") || err.message.includes("Target closed")) {
                 break;
             }
@@ -534,13 +554,14 @@ async function runPageWorker(browser, pageId, csv, summary, stopFlag) {
     }
 
     try { await page.close(); } catch { }
+    try { await browser.close(); } catch { }
 }
 
 // ------------------------------------------------------------------
 //  Main
 // ------------------------------------------------------------------
 (async () => {
-    process.stdout.write(`Target: ${TARGET_ROWS} rows across ${PARALLEL_PAGES} parallel pages\n`);
+    process.stdout.write(`Target: ${TARGET_ROWS} rows across ${PARALLEL_PAGES} independent browsers\n`);
     process.stdout.write(`Output: ${OUTPUT_PATH}\n`);
     process.stdout.write(`Game URL: ${GAME_URL}\n`);
     process.stdout.write(`KAPLAY timeScale: ${TIME_SCALE}x\n\n`);
@@ -548,27 +569,13 @@ async function runPageWorker(browser, pageId, csv, summary, stopFlag) {
     const csv = new CsvWriter(OUTPUT_PATH, CSV_COLUMNS);
     const summary = { sessions: 0, events: 0 };
     const stopFlag = { stop: false };
-
-    const browser = await puppeteer.launch({
-        executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-        headless: "new",
-        args: [
-            "--use-gl=angle",
-            "--use-angle=swiftshader",
-            "--enable-webgl",
-            "--ignore-gpu-blocklist",
-            "--no-sandbox",
-            "--disable-dev-shm-usage",
-        ],
-    });
-
     const startTime = Date.now();
 
-    // Stagger worker starts to avoid CPU spike
+    // Spawn N independent browser workers, staggered to avoid startup spike
     const workers = [];
     for (let i = 0; i < PARALLEL_PAGES; i++) {
-        workers.push(runPageWorker(browser, i + 1, csv, summary, stopFlag));
-        await sleep(500);
+        workers.push(runBrowserWorker(i + 1, csv, summary, stopFlag));
+        await sleep(800);
     }
 
     // Periodic progress reporter
@@ -582,7 +589,6 @@ async function runPageWorker(browser, pageId, csv, summary, stopFlag) {
     clearInterval(progressTimer);
 
     csv.close();
-    try { await browser.close(); } catch { }
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
     process.stdout.write(`\n=== Done ===\n`);
