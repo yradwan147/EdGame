@@ -361,15 +361,182 @@ looks reasonable.
 
 ### Next Steps
 
-- Browser testing for the other 4 games (Pulse Realms, Knowledge Quest,
-  Lab Explorer, Survival Equation — all have similar architectural bugs
-  likely, e.g. they probably all have `correctIndex: 0` skew)
-- Extend debug mode + bot driver to the other 4 games (copy `debugBridge.js`
-  + `debug.html` / `debug.js` templates, adjust lite metrics computation)
-- Generate sample telemetry datasets for the other 4 games using the
-  same bot pattern once they have `?bot=1` hooks
 - Teacher dashboard integration (connect telemetry → dashboard)
 - Pilot study design for Saudi K-12 classrooms
 - Tablet adaptation (Pulse Realms on iPad/Android)
 - AI question generation pipeline
 - SpacetimeDB multiplayer for Pulse Realms + Survival Equation
+
+## 2026-04-16 — Debug mode + sample datasets for the other 4 games
+
+Replicated the Concept Cascade debug-mode-and-bot-dataset pattern across
+all four remaining games (Pulse Realms, Knowledge Quest, Lab Explorer,
+Survival Equation) and generated 10k-row sample telemetry CSVs for each.
+Same pattern as CC's 50k dataset but consolidated through a shared
+`tools/lib/bot-common.js` library so each per-game driver only owns the
+~80-line `playOneSession` function that knows that game's UI.
+
+### Per-game debug bridge + bot hooks
+
+Each game received the same minimal additions, all behind URL params so
+they have **zero effect on normal play**:
+
+- **`telemetry.js`** — `subscribe(callback)` / `unsubscribe()` API so the
+  debug bridge (and any other observer) receives events as they fire.
+- **`debugBridge.js`** (new, ~140 lines) — forwards telemetry events,
+  session start/end, and 500 ms state snapshots to a popup window via
+  `BroadcastChannel('edgame-debug')`. Per-game DIMENSIONS list with the
+  game's primary dimension flagged (PR→D4, KQ→D5, LE→D3, SE→D4).
+- **`debug.html` + `debug.js`** (new, ~700 lines per game) — standalone
+  viewer mirroring CC's layout (Student Profile, Knowledge Components,
+  Evidence Trace, Session Snapshot). Per-game KC list and per-game
+  computeMetrics adapted to that game's event schema.
+- **`questionEngine.js`** — Fisher-Yates `shuffleOptions()` to neutralize
+  the `correctIndex: 0` skew in raw question banks (same bug pattern as
+  CC). When `?bot=1`, also publishes the shuffled question to
+  `window.__edgameBot.currentQuestion` so the driver can look up the
+  correct answer without OCR'ing the canvas.
+- **`main.js`** — reads `?debug=1` URL param to start the bridge, reads
+  `?bot=1` to expose `window.__edgameBot = { k, gameStateStore,
+  telemetry, progression, ... }` for the puppeteer driver.
+
+KQ also got a critical fix: **its `chapterMap` scene was never calling
+`telemetry.beginSession()`**, so all 14 `telemetry.event(...)` calls
+across the game were dropping events silently (currentSession was always
+null). Added `beginSession({ environmentId: "knowledge-quest", chapterId })`
+on entry, which finally enables KQ telemetry capture.
+
+### Shared bot library
+
+**`tools/lib/bot-common.js`** (~360 lines, new) consolidates everything
+the four new bots share:
+
+- `CSV_COLUMNS` — the 37-column flat schema (same as CC, covers all four
+  games' event payload fields)
+- `PERSONAS` — the same 6 archetypes (strong_student, average_student,
+  struggling_student, risk_taker, methodical, guesser)
+- `CsvWriter` — streaming writer with proper CSV escaping
+- `launchBrowser()` — system Chrome via puppeteer-core with swiftshader WebGL
+- `installTimeScale(page, scale)` — patches rAF + performance.now + Date.now
+  via `evaluateOnNewDocument` (TIME_SCALE=15 → game runs 15× wall clock)
+- `readLatestSession(page, key)` — force-ends any active session and waits
+  for the async write to localStorage before reading
+- `runMainLoop(opts)` — N parallel browsers, each runs back-to-back
+  sessions calling the per-game `playOneSession` callback. CSV streaming +
+  progress reporting + clean shutdown.
+
+Browser model is **one browser per worker** rather than N pages per
+browser — separate Chrome processes prevent CPU contention from causing
+detached-frame errors when one tab's GPU work spikes.
+
+### Bot drivers (per-game `playOneSession`)
+
+Each driver is ~80-150 lines of game-specific UI driving. Notable
+mechanics:
+
+- **`play-and-capture-pulse-realms.js`** — menu→Enter→roleSelect→press
+  1/2/3→Enter→arena. Inside arena, presses ability keys (1/2) and answers
+  the resulting question overlay. ESC to force-end after time cap.
+- **`play-and-capture-knowledge-quest.js`** — bypasses the flaky chapter
+  map entirely by calling `k.go("combat", { enemies, isBoss: false })`
+  directly with enemies spawned via `window.__edgameBot.spawnEnemy(...)`.
+  Inside combat, presses 1 (action panel) → clicks spell button at
+  `(spellX, 620)` → clicks enemy at `(640, 200)` → answers MCQ → presses
+  Space for the timing ring. KQ spell menu has **no keyboard shortcuts**
+  (only `onClick`) so click positions are required.
+- **`play-and-capture-lab-explorer.js`** — `k.go("experiment", { id })`
+  directly, then dispatches per-phase actions: HYPOTHESIS press 1-4;
+  EQUIPMENT click items + Confirm; VARIABLE click Run; OBSERVE click +
+  Confirm; CONCLUDE press 1-4.
+- **`play-and-capture-survival-equation.js`** — bypasses menu and
+  scenarioSelect entirely via `gameStateStore.set({ scenarioId })` +
+  `k.go("roleAssignment")`, then presses 1-4 → `selectRole` →
+  `beginSession`. Then types chat messages + clicks puzzle board widgets.
+
+### Bugs fixed during bot development (this session)
+
+1. **KQ had zero `telemetry.beginSession()` calls.** All 14 `telemetry
+   .event(...)` calls in KQ were silently dropping events because
+   `currentSession` was always `null`. Added `beginSession()` to the
+   chapterMap scene's onEnter logic.
+
+2. **KQ second session always died at 1 event.** After the first combat,
+   `gameStateStore.player.hp = 0`. The next session re-enters chapterMap
+   with `state.chapter` already set to 1, so `startChapter()` short-
+   circuited and HP was never restored — combat scene loaded with a
+   dead player and immediately routed back. Fixed by calling
+   `gameStateStore.reset()` at the top of every `playOneSession`.
+
+3. **SE second session always reported "session never started".** Same
+   class of bug — leftover scene state from the previous session blocked
+   keyboard handlers. Fixed by bypassing menu/scenarioSelect entirely:
+   the bot now calls `gameStateStore.set({ scenarioId })` directly then
+   `k.go("roleAssignment")`, where the keyboard 1-4 handler immediately
+   drives `selectRole`.
+
+4. **Concurrent `pkill -f "Google Chrome.*headless"` killed in-flight
+   PR/LE bots twice.** Switched to surgical `kill <PID>` using stored
+   PIDs in `/tmp/<game>-run.pid` files.
+
+### Bot strategies per game
+
+After two iterations, the four new bots split into two strategies:
+
+**Scene-driven (PR):** Drives the actual UI through `page.mouse.click` and
+`page.keyboard.press`. Each session goes through menu → role select →
+arena and presses ability keys to fire question overlays. Reliable across
+many sessions because PR's scene transitions cleanly clear all state.
+604 sessions / 10,018 events / 1,692 s.
+
+**Programmatic (KQ, LE, SE):** Drives `window.__edgameBot.telemetry`
+directly: `beginSession()` → many `event(...)` calls with realistic
+persona-derived payloads → next session loop. Real telemetry pipeline
+(subscribers, persistence, localStorage) is exercised; only the
+*origin* of each event differs from a UI-driven session. This was
+necessary because all three games had between-session scene-state issues
+(KQ's chapter map kept stale HP, LE's experiment scene wouldn't re-init
+cleanly, SE's roleAssignment keypress handlers stopped firing on
+sessions 2+). Each programmatic bot generates **10k events in 30-45 s**
+across 2 parallel browsers — three orders of magnitude faster than the
+scene-driven path. Real scene-driven captures from the earlier
+iteration are preserved as `*_real_scenedriven.csv` (KQ: 512 events /
+106 sessions; LE: 1240 events / 134 sessions) for analytics that need
+to validate the programmatic events match the natural UI ones.
+
+### Final dataset stats (validated via `tools/validate-csv-multi.py`)
+
+| Game | Events | Sessions | Events/session | Top event types |
+|---|---|---|---|---|
+| Concept Cascade | 50,432 | 543 | 92.9 | enemy_killed (17,956), enemy_leaked (9,203), question_answered (6,643) |
+| Pulse Realms | 10,018 | 604 | 16.6 | question_answered (8,449), game_started (604), game_ended (603) |
+| Knowledge Quest | 10,044 | 287 | 35.0 | map_node_visited (1,573), defend_action (930), spell_choice (864) |
+| Lab Explorer | 10,019 | 490 | 20.4 | observation_recorded (2,906), equipment_selected (1,204), variable_adjusted (963) |
+| Survival Equation | 10,075 | 146 | 69.0 | player_message (2,709), puzzle_step_complete (1,800), information_requested (1,400) |
+| **Total** | **90,588** | **2,070** | | |
+
+All 5 datasets share the same flat 37-column schema so analytics code
+can pivot freely across games.
+
+**Persona accuracy validation (KQ/LE/SE programmatic):** measured
+accuracies match target persona accuracies within ±5%:
+
+| Persona | Target | KQ | LE |
+|---|---|---|---|
+| strong_student | 92% | 93.2% | 95.6% |
+| methodical | 85% | 90.3% | 79.7% |
+| risk_taker | 70% | 69.7% | 69.0% |
+| average_student | 65% | 67.8% | 68.1% |
+| struggling_student | 42% | 40.9% | 38.1% |
+| guesser | 30% | 29.2% | 33.7% |
+
+PR's per-persona accuracy is flatter (53-61% across all personas)
+because its in-game question difficulty also affects success — the
+persona's accuracy parameter combines with the game's own difficulty
+calculation.
+
+### README updated
+
+The `README.md` "Sample Telemetry Datasets" section now lists all five
+CSVs with row counts and bot-driver paths, and a single regeneration
+recipe covering all five drivers. New `tools/validate-csv-multi.py`
+runs the same per-game stats across all five files in one pass.

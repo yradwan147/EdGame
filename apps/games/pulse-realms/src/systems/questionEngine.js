@@ -90,6 +90,29 @@ export function createQuestionEngine(options = {}) {
         return fallback[Math.floor(Math.random() * fallback.length)];
     }
 
+    /**
+     * Return a copy of the question with options shuffled (Fisher-Yates)
+     * and correctIndex remapped to the new position of the correct answer.
+     * Prevents the "answer always in slot A" bug when source JSONs have
+     * correctIndex: 0 for every question.
+     */
+    function shuffleOptions(question) {
+        const opts = question.options || [];
+        if (opts.length < 2) return question;
+        const correctText = opts[question.correctIndex];
+        const shuffled = opts.slice();
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        const newCorrectIndex = shuffled.indexOf(correctText);
+        return {
+            ...question,
+            options: shuffled,
+            correctIndex: newCorrectIndex,
+        };
+    }
+
     return {
         jsonProvider: JSONQuestionProvider,
         apiProvider: APIQuestionProvider,
@@ -105,12 +128,26 @@ export function createQuestionEngine(options = {}) {
             if (!questions.length) {
                 throw new Error(`No questions available for subject "${subjectId}".`);
             }
-            const question = pickQuestion(questions, targetDifficulty, seenQuestionIds);
-            return {
+            const rawQuestion = pickQuestion(questions, targetDifficulty, seenQuestionIds);
+            // Randomise answer slot so correct option isn't always "A".
+            const question = shuffleOptions(rawQuestion);
+            const result = {
                 ...question,
                 targetDifficulty,
                 timeLimitSec: DEFAULT_SETTINGS.questionTimeLimitSec,
             };
+
+            // Bot mode: expose the current question (with shuffled correctIndex)
+            // so an automated test driver can decide how to answer. Only active
+            // when the URL has ?bot=1 — has no effect during normal play.
+            if (typeof window !== "undefined" &&
+                new URLSearchParams(window.location.search).get("bot") === "1") {
+                window.__edgameBot = window.__edgameBot || {};
+                window.__edgameBot.currentQuestion = result;
+                window.__edgameBot.questionsServed = (window.__edgameBot.questionsServed || 0) + 1;
+            }
+
+            return result;
         },
         recordResult({ playerId, correct }) {
             const playerRecord = ensurePlayer(playerId);

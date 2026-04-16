@@ -3,6 +3,7 @@ import { DEFAULT_SETTINGS, COLORS } from "./src/config/constants.js";
 import { createGameStateStore } from "./src/systems/gameState.js";
 import { createTelemetry } from "./src/systems/telemetry.js";
 import { createProgressionSystem } from "./src/systems/progression.js";
+import { spawnEnemy as _kqSpawnEnemy } from "./src/config/enemies.js";
 import { registerMenuScene } from "./src/scenes/menu.js";
 import { registerChapterSelectScene } from "./src/scenes/chapterSelect.js";
 import { registerChapterMapScene } from "./src/scenes/chapterMap.js";
@@ -24,10 +25,28 @@ const k = kaplay({
 
 const params = new URLSearchParams(window.location.search);
 const apiBase = params.get("apiBase") || "/api";
+const debugMode = params.get("debug") === "1" || params.get("debug") === "true";
+const botMode   = params.get("bot")   === "1" || params.get("bot")   === "true";
 
 const gameStateStore = createGameStateStore();
 const telemetry = createTelemetry(DEFAULT_SETTINGS.telemetryStorageKey, { apiBase });
 const progression = createProgressionSystem(DEFAULT_SETTINGS.progressionStorageKey);
+
+// Debug mode: open a second window that streams ECD profile updates live.
+if (debugMode) {
+    // Lazy import so production builds don't pull in the bridge unnecessarily
+    import("./src/systems/debugBridge.js").then(({ createDebugBridge }) => {
+        const bridge = createDebugBridge({
+            telemetry,
+            gameStateStore,
+            autoOpen: true,
+            windowUrl: "./debug.html",
+        });
+        bridge.start();
+        window.__edgameDebug = bridge;
+        console.log("%c[EdGame] Debug mode active. Open the debug window for live profile view.", "color:#5ac8fa;font-weight:bold");
+    });
+}
 
 const deps = {
     k,
@@ -44,5 +63,17 @@ registerCombatScene(deps);
 registerDialogueScene(deps);
 registerShopScene(deps);
 registerPostChapterScene(deps);
+
+// Bot mode: expose KAPLAY context + game state for automated test driver.
+// Only active when ?bot=1; has no effect during normal play.
+if (botMode) {
+    window.__edgameBot = window.__edgameBot || {};
+    window.__edgameBot.k = k;
+    window.__edgameBot.gameStateStore = gameStateStore;
+    window.__edgameBot.telemetry = telemetry;
+    window.__edgameBot.progression = progression;
+    window.__edgameBot.spawnEnemy = _kqSpawnEnemy; // KQ-specific helper for bot driver
+    console.log("%c[EdGame] Bot mode active — window.__edgameBot exposed", "color:#ffd84d;font-weight:bold");
+}
 
 k.go("menu");

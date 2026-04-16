@@ -43,6 +43,15 @@ export function registerChapterMapScene({ k, settings, gameStateStore, telemetry
             gameStateStore.startChapter(chapterId);
         }
 
+        /* ---- begin telemetry session if none is active ---- */
+        if (!telemetry.getCurrentSession()) {
+            telemetry.beginSession({
+                environmentId: "knowledge-quest",
+                chapterId,
+            });
+            telemetry.event("chapter_entered", { chapterId });
+        }
+
         const visited = gameStateStore.getState().visitedNodes;
         const currentNodeId = gameStateStore.getState().currentNodeId;
 

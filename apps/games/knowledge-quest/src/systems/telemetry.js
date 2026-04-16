@@ -7,6 +7,13 @@ export function createTelemetry(storageKey = "knowledge_quest_sessions", options
     let pendingEvents = [];
     let flushTimer = null;
     const apiBase = options.apiBase || "/api";
+    const subscribers = new Set();
+
+    function notifySubscribers(type, data) {
+        for (const cb of subscribers) {
+            try { cb(type, data); } catch (err) { console.warn("telemetry subscriber error", err); }
+        }
+    }
 
     function readSessions() {
         try {
@@ -81,6 +88,7 @@ export function createTelemetry(storageKey = "knowledge_quest_sessions", options
             }
 
             startFlushInterval();
+            notifySubscribers("session_start", { session: currentSession });
             return currentSession.id;
         },
 
@@ -98,6 +106,18 @@ export function createTelemetry(storageKey = "knowledge_quest_sessions", options
             if (currentSession.dbSessionId) {
                 pendingEvents.push({ type, ts: evt.ts, payload });
             }
+
+            // Notify in-process subscribers (e.g. debug bridge)
+            notifySubscribers("event", { event: evt, sessionId: currentSession.id });
+        },
+
+        subscribe(callback) {
+            subscribers.add(callback);
+            return () => subscribers.delete(callback);
+        },
+
+        unsubscribe(callback) {
+            subscribers.delete(callback);
         },
 
         async endSession(summary) {
@@ -134,6 +154,7 @@ export function createTelemetry(storageKey = "knowledge_quest_sessions", options
             writeSessions(sessions.slice(0, 80));
 
             const finished = currentSession;
+            notifySubscribers("session_end", { session: finished });
             currentSession = null;
             pendingEvents = [];
             return finished;
