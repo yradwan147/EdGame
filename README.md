@@ -74,10 +74,10 @@ Note that serving from within a single game folder still works because each game
 
 ### Option 4: Public deploy on Railway (one-click)
 
-For a hosted demo URL, the repo is pre-configured for Railway one-click deploy. Push to GitHub, then:
+For a hosted demo URL, the repo ships a single-service `Dockerfile` for Railway. Push to GitHub, then:
 
 1. <https://railway.app> → **New Project** → **Deploy from GitHub repo** → pick this repo.
-2. Railway picks up `nixpacks.toml` + `railway.json` automatically and serves the entire repo via [`serve`](https://www.npmjs.com/package/serve).
+2. Railway sees the `Dockerfile` at repo root and deploys **one service** (not one per workspace package — the Dockerfile suppresses Railway's auto-detected pnpm-workspace splitting).
 3. **Settings** → **Networking** → **Generate Domain** to get a public URL.
 
 Telemetry runs in offline mode on this static deploy (writes to `localStorage` instead of the EdGame backend) — fine for showcase / demos but not classroom use. Full setup with backend + database is a separate deploy. Step-by-step in [`docs/DEPLOY-RAILWAY.md`](docs/DEPLOY-RAILWAY.md).

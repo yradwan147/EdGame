@@ -1,0 +1,35 @@
+# Keep the deploy image lean. We copy almost the whole repo so the
+# games' relative URLs (and the Pulse Realms sprite symlink into
+# /PulseRealms/public/characters/) keep working unchanged.
+
+# Dependencies / build outputs
+node_modules
+.pnpm-store
+.next
+dist
+build
+out
+coverage
+
+# Reference repo (its own git repo, irrelevant to deploy)
+KaplayRepo
+
+# Local env / IDE
+.git
+.cursor
+.vscode
+.idea
+.venv
+venv
+.DS_Store
+
+# Heavy archives we don't want to serve
+reports/progress-report.zip
+
+# Logs
+*.log
+
+# Personal academic folders — not part of the EdGame deploy
+TIE204Assignments
+TIE212
+TIE251CCS_Assignments
