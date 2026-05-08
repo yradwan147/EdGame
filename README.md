@@ -26,6 +26,8 @@ See [`docs/assessment/ecd/`](docs/assessment/ecd/) for the full Evidence-Centere
 
 All five games run in any modern browser. They're plain HTML + ES modules + KAPLAY.js (loaded from CDN), so no bundler or build step is required — you only need a local HTTP server because ES module imports can't be served from `file://`.
 
+A landing page at the repo root (`index.html`) lists all five games as cards — open it instead of bookmarking the per-game URLs.
+
 ### Option 1: Python's built-in server (simplest)
 
 From the repo root:
@@ -69,6 +71,43 @@ pnpm dev          # runs `npx serve .` inside the game folder
 ```
 
 Note that serving from within a single game folder still works because each game's `main.js` only imports from its own `src/` directory and the KAPLAY CDN.
+
+### Option 4: Public deploy on Railway (one-click)
+
+For a hosted demo URL, the repo is pre-configured for Railway one-click deploy. Push to GitHub, then:
+
+1. <https://railway.app> → **New Project** → **Deploy from GitHub repo** → pick this repo.
+2. Railway picks up `nixpacks.toml` + `railway.json` automatically and serves the entire repo via [`serve`](https://www.npmjs.com/package/serve).
+3. **Settings** → **Networking** → **Generate Domain** to get a public URL.
+
+Telemetry runs in offline mode on this static deploy (writes to `localStorage` instead of the EdGame backend) — fine for showcase / demos but not classroom use. Full setup with backend + database is a separate deploy. Step-by-step in [`docs/DEPLOY-RAILWAY.md`](docs/DEPLOY-RAILWAY.md).
+
+---
+
+## Promo Videos
+
+Pre-rendered ~30–45 s MP4 highlight per game lives in [`reports/promo-videos/`](reports/promo-videos/). All five are 1280×720 @ 20 fps, h.264, captured by `tools/record-promo-video.js` driving the actual game UI via Puppeteer + Chrome DevTools `Page.startScreencast` + ffmpeg.
+
+To re-record any clip:
+
+```bash
+# Start the dev server (port 8899) then in another shell:
+node tools/record-promo-video.js --game pulse-realms --duration 45
+node tools/record-promo-video.js --game concept-cascade --duration 50
+node tools/record-promo-video.js --game knowledge-quest --duration 50
+node tools/record-promo-video.js --game lab-explorer --duration 50
+node tools/record-promo-video.js --game survival-equation --duration 50
+```
+
+Each `--game <id>` uses its corresponding [`tools/promo-sessions/<game>.js`](tools/promo-sessions/) script — short scripted UI sequences hitting the most visually engaging moments per game. The recorder runs the games at real-time speed (the dataset bots' 15× rAF speed-up is disabled here).
+
+Requires `puppeteer-core` (in any node_modules dir on `NODE_PATH`) and `ffmpeg` (Homebrew: `brew install ffmpeg`).
+
+---
+
+## Asset Upgrade Checklist
+
+The games currently render most entities as procedural KAPLAY shapes (`k.rect`, `k.circle`). [`docs/ASSET-CHECKLIST.md`](docs/ASSET-CHECKLIST.md) is a per-game shopping list of the sprite / icon / sound / music assets needed to upgrade the look — each entry includes the exact file:line where the placeholder is rendered today and a one-line code-swap pattern.
 
 ---
 

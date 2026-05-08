@@ -30,3 +30,10 @@ pnpm-debug.log*
 
 # Local tool state
 .cursor/
+
+# Python venvs (created during local doc generation, etc.)
+.venv/
+venv/
+
+# Misc local work artifacts
+reports/progress-report.zip

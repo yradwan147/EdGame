@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EdGame — Analytical Learning Games</title>
+    <meta name="description" content="Five KAPLAY.js browser games with stealth assessment for K-12 classrooms. Math, science, SEL, and collaboration." />
+    <style>
+        :root {
+            --bg: #0a1428;
+            --bg-card: #122042;
+            --bg-card-hover: #1a2c5a;
+            --text: #e8eef9;
+            --text-muted: #8a9bb8;
+            --accent: #5ac8fa;
+            --gold: #ffd84d;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+        * { box-sizing: border-box; }
+        html, body {
+            margin: 0; padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+            line-height: 1.5;
+        }
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 0%, #1a2f5a 0%, var(--bg) 60%);
+        }
+        .wrap { max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; }
+        header { text-align: center; margin-bottom: 48px; }
+        h1 {
+            font-size: 56px;
+            margin: 0 0 12px;
+            letter-spacing: -1.5px;
+            background: linear-gradient(180deg, #fff 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .tagline { font-size: 19px; color: var(--text-muted); max-width: 680px; margin: 0 auto; }
+        .meta {
+            display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+            margin-top: 18px; font-size: 14px; color: var(--text-muted);
+        }
+        .meta a { color: var(--accent); text-decoration: none; }
+        .meta a:hover { text-decoration: underline; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+            margin-bottom: 48px;
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: background 0.15s, transform 0.15s, border-color 0.15s;
+            display: block;
+        }
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0 0 4px;
+            color: var(--text);
+        }
+        .card-genre {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin-bottom: 14px;
+        }
+        .card-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 14px; }
+        .card-tags { display: flex; gap: 6px; flex-wrap: wrap; font-size: 11px; }
+        .tag {
+            background: rgba(90, 200, 250, 0.12);
+            color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 99px;
+        }
+        .tag.dim { background: rgba(255, 216, 77, 0.12); color: var(--gold); }
+        .play-btn {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 8px 16px;
+            background: var(--accent);
+            color: #0a1428;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        @media (max-width: 600px) {
+            h1 { font-size: 38px; }
+            .tagline { font-size: 16px; }
+            .wrap { padding: 36px 16px 60px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <header>
+            <h1>EdGame</h1>
+            <p class="tagline">Five KAPLAY.js browser games with stealth assessment for K&nbsp;12 classrooms — math, science, SEL, and collaboration measured invisibly while students play.</p>
+            <div class="meta">
+                <span>Yousef Radwan · KAUST · TIE&nbsp;251 Capstone</span>
+                <a href="https://github.com/yradwan147/EdGame" target="_blank" rel="noopener">GitHub</a>
+                <a href="./README.md">README</a>
+            </div>
+        </header>
+
+        <main class="grid">
+            <a class="card" href="./apps/games/pulse-realms/index.html">
+                <h2 class="card-title">Pulse Realms</h2>
+                <div class="card-genre">3v3 Team Arena</div>
+                <p class="card-desc">Real-time arena combat where ability casts gate STEM questions. Cooperate, communicate, win.</p>
+                <div class="card-tags">
+                    <span class="tag">Math</span><span class="tag">Science</span>
+                    <span class="tag dim">D4 Social</span>
+                </div>
+                <span class="play-btn">Play →</span>
+            </a>
+
+            <a class="card" href="./apps/games/concept-cascade/index.html">
+                <h2 class="card-title">Concept Cascade</h2>
+                <div class="card-genre">Tower Defense</div>
+                <p class="card-desc">Place towers, discover synergies, defend the Knowledge Core. Build choices reveal strategic thinking.</p>
+                <div class="card-tags">
+                    <span class="tag">Math</span>
+                    <span class="tag dim">D3 Strategic</span>
+                </div>
+                <span class="play-btn">Play →</span>
+            </a>
+
+            <a class="card" href="./apps/games/knowledge-quest/index.html">
+                <h2 class="card-title">Knowledge Quest</h2>
+                <div class="card-genre">Turn-Based RPG</div>
+                <p class="card-desc">Cast spells via timed MCQs, collect knowledge companions, branch through Slay-the-Spire chapter maps.</p>
+                <div class="card-tags">
+                    <span class="tag">Math</span><span class="tag">Science</span>
+                    <span class="tag dim">D5 Affective / SEL</span>
+                </div>
+                <span class="play-btn">Play →</span>
+            </a>
+
+            <a class="card" href="./apps/games/lab-explorer/index.html">
+                <h2 class="card-title">Lab Explorer</h2>
+                <div class="card-genre">Virtual Science Lab</div>
+                <p class="card-desc">Hypothesize, experiment, sometimes fail spectacularly. Discovery journal tracks your scientific reasoning.</p>
+                <div class="card-tags">
+                    <span class="tag">Chemistry</span><span class="tag">Physics</span>
+                    <span class="tag dim">D3 Strategic</span>
+                </div>
+                <span class="play-btn">Play →</span>
+            </a>
+
+            <a class="card" href="./apps/games/survival-equation/index.html">
+                <h2 class="card-title">Survival Equation</h2>
+                <div class="card-genre">Cooperative Puzzle</div>
+                <p class="card-desc">Information asymmetry forces real teamwork. AI partners with personality. Choose wisely.</p>
+                <div class="card-tags">
+                    <span class="tag">Applied Math</span><span class="tag">Science</span>
+                    <span class="tag dim">D4 Social</span>
+                </div>
+                <span class="play-btn">Play →</span>
+            </a>
+        </main>
+
+        <div class="footer">
+            <p>Add <code>?debug=1</code> to any game URL for a live ECD profile viewer.<br />
+            Telemetry is offline-only on this static deployment — sessions persist to localStorage instead of the EdGame backend.</p>
+            <p style="margin-top:18px;">
+                <a href="./docs/assessment/ecd/">ECD docs</a> · <a href="./reports/sample-telemetry/">Sample datasets</a> · <a href="./EdGame%20Analytics%20Blueprint.pdf">Analytics Blueprint (PDF)</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

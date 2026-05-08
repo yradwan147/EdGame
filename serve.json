@@ -1,0 +1,13 @@
+{
+  "cleanUrls": false,
+  "trailingSlash": true,
+  "renderSingle": false,
+  "rewrites": [],
+  "redirects": [],
+  "headers": [
+    {
+      "source": "**/*.@(js|mjs|css|html)",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+    }
+  ]
+}

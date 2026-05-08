@@ -1,0 +1,16 @@
+# Nixpacks build config for Railway (and any nixpacks-compatible host).
+#
+# This deploys the games as a static site. We don't run the Next.js
+# backend (apps/web/) here — telemetry POSTs will 404 and the games
+# fall back to localStorage. See docs/DEPLOY-RAILWAY.md.
+
+providers = ["node"]
+
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[phases.install]
+cmds = ["npm install --no-audit --no-fund --no-save serve@14"]
+
+[start]
+cmd = "node node_modules/serve/build/main.js -l tcp://0.0.0.0:${PORT:-8080} ."
