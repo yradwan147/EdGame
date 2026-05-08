@@ -3,6 +3,12 @@
 # This deploys the games as a static site. We don't run the Next.js
 # backend (apps/web/) here — telemetry POSTs will 404 and the games
 # fall back to localStorage. See docs/DEPLOY-RAILWAY.md.
+#
+# We explicitly override every phase because nixpacks auto-detects the
+# pnpm-workspace.yaml + a workspace package's `build` script and tries
+# to run `pnpm --filter @edgame/lab-explorer build` (which fails because
+# we never install pnpm). Forcing each phase to a known command stops
+# that auto-detection.
 
 providers = ["node"]
 
@@ -11,6 +17,11 @@ nixPkgs = ["nodejs_20"]
 
 [phases.install]
 cmds = ["npm install --no-audit --no-fund --no-save serve@14"]
+
+[phases.build]
+# No build step — the games are static HTML + ES modules + CDN-loaded
+# Kaplay. `serve` will just hand them to the browser as files.
+cmds = []
 
 [start]
 cmd = "node node_modules/serve/build/main.js -l tcp://0.0.0.0:${PORT:-8080} ."
