@@ -8,34 +8,38 @@ import { ROLE_CONFIG } from "../config/roles.js";
 export function createRoleCard(k) {
     let root = null;
 
+    /* NB: do NOT use square brackets in icons / header text — KAPLAY's
+       k.text parses [tagName]…[/tagName] as styled-text and throws
+       "Styled text error: unclosed tags <X>" if it sees one without a
+       matching close. Use angle brackets ‹ › instead. */
     const STYLE_THEMES = {
         blueprint: {
             bg: [15, 25, 50],
             border: [60, 120, 200],
             accent: [100, 180, 255],
             headerText: "ENGINEERING BLUEPRINT",
-            icon: "[BP]",
+            icon: "‹BP›",
         },
         lab_report: {
             bg: [15, 20, 40],
             border: [80, 130, 200],
             accent: [120, 200, 255],
             headerText: "FIELD LAB REPORT",
-            icon: "[LR]",
+            icon: "‹LR›",
         },
         medical_chart: {
             bg: [15, 30, 20],
             border: [60, 180, 100],
             accent: [80, 220, 120],
             headerText: "MEDICAL ASSESSMENT",
-            icon: "[MC]",
+            icon: "‹MC›",
         },
         field_map: {
             bg: [25, 15, 35],
             border: [160, 80, 200],
             accent: [200, 100, 255],
             headerText: "SCOUT FIELD REPORT",
-            icon: "[FM]",
+            icon: "‹FM›",
         },
     };
 
