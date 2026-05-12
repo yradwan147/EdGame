@@ -40,3 +40,9 @@ EdTech operator advisor — name, title, prior company; ideally a Reach/Owl/GSV 
 ## `[ADVISOR_GCC]`
 GCC schools / education-ministry advisor — name, title, network; ideally GEMS / Taaleem / SABIS senior, or ex-Saudi MoE
 
+## `[HUMAN_TELEMETRY_COUNT]`
+Replace with actual count of human-played telemetry events. Aim for >500 to have something credible to reference; track separately in reports/sample-telemetry/
+
+## `[FOUNDER_COMMITMENT_LETTERS]`
+Signed full-time commitment letters from all founders effective seed close — replace this placeholder with attestation language once signed
+

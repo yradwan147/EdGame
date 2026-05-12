@@ -11,155 +11,127 @@
     "Y5"
   ],
   "revenue_total": [
-    255000,
-    742500.0,
-    2704500.0,
-    5939800.0,
-    10260000
+    195000,
+    565500.0,
+    1535700.0,
+    2932980.0,
+    4963740.0
   ],
   "revenue_by_segment": {
     "Individual Teacher Pro (SaaS)": [
       60000,
-      156000,
-      600000,
-      1360000,
-      2160000
+      175000,
+      455000,
+      877500,
+      1400000
     ],
-    "School Standard ($6-8 / student / yr)": [
-      105000,
-      227500.0,
-      525000,
-      914250.0,
-      1540000
+    "School Standard ($6-7 / student / yr)": [
+      75000,
+      201500.0,
+      439400.0,
+      759780.0,
+      1197840.0
     ],
-    "School Premium ($10-14 / student / yr)": [
-      90000,
-      264000,
-      576000,
-      1047800,
-      1820000
+    "School Premium ($10-12 / student / yr)": [
+      60000,
+      189000.0,
+      443300,
+      796950.0,
+      1303900.0
     ],
     "District / Multi-school ($5-6 / student / yr)": [
       0,
       0,
-      247500.0,
-      603750.0,
-      1200000
-    ],
-    "Parent Premium ($72-80 / yr)": [
-      0,
-      35000,
-      216000,
-      418000,
-      640000
-    ],
-    "After-School Programs ($300-400 / mo / program)": [
-      0,
-      60000,
-      540000,
-      1176000,
-      1920000
-    ],
-    "OEM / API partners ($120K avg)": [
-      0,
-      0,
-      0,
-      220000,
-      480000
-    ],
-    "Custom development + data licensing": [
-      0,
-      0,
-      0,
-      200000,
-      500000
+      198000.0,
+      498750.0,
+      1062000.0
     ]
   },
   "costs_total": [
-    720000,
-    1650000,
-    3120000,
-    5800000,
-    8620000
+    640000,
+    1480000,
+    2780000,
+    4810000,
+    6950000
   ],
   "costs_by_line": {
     "Engineering & R&D": [
-      220000,
-      450000,
-      900000,
-      1500000,
-      2100000
+      200000,
+      400000,
+      750000,
+      1200000,
+      1700000
     ],
     "Game Design & Content": [
-      80000,
-      200000,
-      450000,
-      800000,
-      1100000
-    ],
-    "Cloud Infrastructure": [
       60000,
       150000,
-      300000,
+      350000,
       600000,
-      1000000
+      850000
     ],
-    "Sales & Marketing": [
-      150000,
-      400000,
-      700000,
-      1500000,
-      2200000
-    ],
-    "Customer Success": [
+    "Cloud Infrastructure": [
       40000,
       120000,
       250000,
       500000,
       800000
     ],
-    "Research & Curriculum": [
-      50000,
+    "Sales & Marketing": [
+      180000,
+      450000,
+      800000,
+      1400000,
+      1900000
+    ],
+    "Customer Success": [
+      30000,
       100000,
-      150000,
-      220000,
-      300000
+      200000,
+      400000,
+      650000
     ],
-    "G&A (legal, finance, ops)": [
-      80000,
-      150000,
-      250000,
-      500000,
-      900000
-    ],
-    "Compliance / data governance": [
+    "Research & Curriculum": [
       40000,
       80000,
-      120000,
+      130000,
       180000,
-      220000
+      250000
+    ],
+    "G&A (legal, finance, ops)": [
+      60000,
+      120000,
+      200000,
+      380000,
+      600000
+    ],
+    "Compliance / data governance": [
+      30000,
+      60000,
+      100000,
+      150000,
+      200000
     ]
   },
   "ebitda": [
-    -465000,
-    -907500.0,
-    -415500.0,
-    139800.0,
-    1640000
+    -445000,
+    -914500.0,
+    -1244300.0,
+    -1877020.0,
+    -1986260.0
   ],
   "cash_flow_cum": [
-    -465000,
-    -1372500.0,
-    -1788000.0,
-    -1648200.0,
-    -8200.0
+    -445000,
+    -1359500.0,
+    -2603800.0,
+    -4480820.0,
+    -6467080.0
   ],
   "operating_margin_pct": [
-    -182.35294117647058,
-    -122.22222222222223,
-    -15.36328341652801,
-    2.353614599818176,
-    15.984405458089668
+    -228.2051282051282,
+    -161.71529619805483,
+    -81.02493976688156,
+    -63.99702691460563,
+    -40.015391620028446
   ],
   "seed": {
     "raise_usd": 500000,
@@ -214,57 +186,57 @@
   "scenarios": {
     "bear": {
       "series_a": {
-        "y3_arr": 1352250.0,
-        "y4_forward_arr": 2969900.0,
-        "series_a_post_money": 17819400.0,
+        "y3_arr": 767850.0,
+        "y4_forward_arr": 1466490.0,
+        "series_a_post_money": 4399470.0,
         "seed_ownership_post_a": 0.09111111111111111,
-        "seed_paper_value": 1623545.3333333335,
-        "moic": 3.247090666666667
+        "seed_paper_value": 400840.60000000003,
+        "moic": 0.8016812000000001
       },
       "series_b": {
-        "y5_arr": 4104000.0,
-        "series_b_post_money": 24624000.0,
+        "y5_arr": 1985496.0,
+        "series_b_post_money": 5956488.0,
         "seed_ownership_post_b": 0.07744444444444444,
-        "seed_paper_value": 1906992.0,
-        "moic": 3.813984
+        "seed_paper_value": 461296.904,
+        "moic": 0.922593808
       },
-      "desc": "GCC pilot conversion stalls; only 50% of base ARR realized; trading at a discount EdTech multiple"
+      "desc": "GCC pilot conversion stalls; only 50% of base ARR realized; trading at distressed-EdTech multiple"
     },
     "base": {
       "series_a": {
-        "y3_arr": 2704500.0,
-        "y4_forward_arr": 5939800.0,
-        "series_a_post_money": 59398000.0,
+        "y3_arr": 1535700.0,
+        "y4_forward_arr": 2932980.0,
+        "series_a_post_money": 14664900.0,
         "seed_ownership_post_a": 0.09111111111111111,
-        "seed_paper_value": 5411817.777777778,
-        "moic": 10.823635555555557
+        "seed_paper_value": 1336135.3333333335,
+        "moic": 2.672270666666667
       },
       "series_b": {
-        "y5_arr": 10260000.0,
-        "series_b_post_money": 102600000.0,
+        "y5_arr": 4963740.0,
+        "series_b_post_money": 24818700.0,
         "seed_ownership_post_b": 0.07744444444444444,
-        "seed_paper_value": 7945800.0,
-        "moic": 15.8916
+        "seed_paper_value": 1922070.4333333333,
+        "moic": 3.8441408666666668
       },
-      "desc": "BMC plan executes; Series A 2028 at industry-median EdTech revenue multiple (10\u00d7)"
+      "desc": "Plan executes; Series A 2028 at current EdTech median revenue multiple (~5\u00d7 public comp; ~6-8\u00d7 private growth)"
     },
     "bull": {
       "series_a": {
-        "y3_arr": 3786299.9999999995,
-        "y4_forward_arr": 8315719.999999999,
-        "series_a_post_money": 99788639.99999999,
+        "y3_arr": 2303550.0,
+        "y4_forward_arr": 4399470.0,
+        "series_a_post_money": 35195760.0,
         "seed_ownership_post_a": 0.09111111111111111,
-        "seed_paper_value": 9091853.866666665,
-        "moic": 18.183707733333332
+        "seed_paper_value": 3206724.8000000003,
+        "moic": 6.413449600000001
       },
       "series_b": {
-        "y5_arr": 16416000.0,
-        "series_b_post_money": 196992000.0,
+        "y5_arr": 8438358.0,
+        "series_b_post_money": 67506864.0,
         "seed_ownership_post_b": 0.07744444444444444,
-        "seed_paper_value": 15255936.0,
-        "moic": 30.511872
+        "seed_paper_value": 5228031.5786666665,
+        "moic": 10.456063157333332
       },
-      "desc": "GCC ministries adopt + GCC private chain partnership; Kahoot-style 11-12\u00d7 multiple"
+      "desc": "GCC ministries adopt + US Clever partnership lands; private growth multiple (8\u00d7 ARR per Q4 2025 Finrofca private-comp range)"
     }
   },
   "unit_economics": {
@@ -290,10 +262,10 @@
     }
   },
   "use_of_funds": {
-    "Engineering hires (3 new + AI tooling)": 200000,
-    "Go-to-market: 1 founder-led BD + GESS/BETT": 125000,
-    "Pilots + content (3 game updates + curriculum mapping)": 75000,
-    "Compliance + legal (KSA PDPL, COPPA, contracts)": 50000,
-    "Operations + reserve": 50000
+    "GTM: 2 BD hires + founder travel + GESS/BETT": 250000,
+    "Engineering (1 senior hire + AI tooling)": 125000,
+    "Pilots + content + 1 wedge-game deepening": 50000,
+    "Compliance + legal (KSA PDPL, COPPA, SAFE)": 50000,
+    "Operations + reserve": 25000
   }
 }

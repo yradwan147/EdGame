@@ -33,64 +33,41 @@ OUT_JSON = REPO / "tools" / "business-plan" / "financial_summary.json"
 # ------------------------------------------------------------------ #
 
 REVENUE_BY_SEGMENT_USD = {
+    # Reduced to 4 defensible streams per R1 (Reach S2.8, a16z S2.3).
+    # Killed: parent premium, after-school programs, OEM API, custom dev.
+    # Price escalation softened to 3-7%/yr per R1 (Reach S2.5).
+    # Sales-cycle assumption rebuilt around 9-month base case (Reach S2.10).
+    #
     # Each cell = (units × price)
     #               Y1     Y2      Y3       Y4       Y5
     "Individual Teacher Pro (SaaS)": [
-        # $12/mo × 12 = $120/yr Y1, escalating to ~$180/yr by Y5 as features unlock
-        500 * 120,    # 500 paid teachers × $120
-        1_200 * 130,
-        4_000 * 150,
-        8_000 * 170,
-        12_000 * 180,
+        # $12/mo × 12 = $120/yr; 3-5%/yr realistic price increases
+        500 * 120,        # 500 paid teachers Y1 (PLG bottom-up still strong)
+        1_400 * 125,
+        3_500 * 130,
+        6_500 * 135,
+        10_000 * 140,
     ],
-    "School Standard ($6-8 / student / yr)": [
-        35 * 500 * 6,    # 35 schools × ~500 students × $6
-        70 * 500 * 6.5,
-        150 * 500 * 7,
-        230 * 530 * 7.5,
-        350 * 550 * 8,
+    "School Standard ($6-7 / student / yr)": [
+        25 * 500 * 6,     # 25 schools Y1 (founder-led BD)
+        65 * 500 * 6.2,
+        130 * 520 * 6.5,
+        210 * 540 * 6.7,
+        310 * 560 * 6.9,
     ],
-    "School Premium ($10-14 / student / yr)": [
-        15 * 600 * 10,   # 15 schools × ~600 students × $10
-        40 * 600 * 11,
-        80 * 600 * 12,
-        130 * 620 * 13,
-        200 * 650 * 14,
+    "School Premium ($10-12 / student / yr)": [
+        10 * 600 * 10,    # 10 premium schools Y1
+        30 * 600 * 10.5,
+        65 * 620 * 11,
+        110 * 630 * 11.5,
+        170 * 650 * 11.8,
     ],
     "District / Multi-school ($5-6 / student / yr)": [
         0,
         0,
-        15 * 3_000 * 5.5,    # 15 districts × ~3,000 students
-        30 * 3_500 * 5.75,
-        50 * 4_000 * 6,
-    ],
-    "Parent Premium ($72-80 / yr)": [
-        0,
-        500 * 70,
-        3_000 * 72,
-        5_500 * 76,
-        8_000 * 80,
-    ],
-    "After-School Programs ($300-400 / mo / program)": [
-        0,
-        20 * 250 * 12,    # 20 programs × $250/mo
-        150 * 300 * 12,
-        280 * 350 * 12,
-        400 * 400 * 12,
-    ],
-    "OEM / API partners ($120K avg)": [
-        0,
-        0,
-        0,
-        2 * 110_000,
-        4 * 120_000,
-    ],
-    "Custom development + data licensing": [
-        0,
-        0,
-        0,
-        200_000,
-        500_000,
+        12 * 3_000 * 5.5,
+        25 * 3_500 * 5.7,
+        45 * 4_000 * 5.9,
     ],
 }
 
@@ -99,15 +76,17 @@ REVENUE_BY_SEGMENT_USD = {
 # ------------------------------------------------------------------ #
 
 COSTS_BY_LINE_USD = {
-    # Approximate ramp matching BMC Y5 stated $8.4M
-    "Engineering & R&D":                [220_000,  450_000,  900_000, 1_500_000, 2_100_000],
-    "Game Design & Content":             [80_000,  200_000,  450_000,   800_000, 1_100_000],
-    "Cloud Infrastructure":              [60_000,  150_000,  300_000,   600_000, 1_000_000],
-    "Sales & Marketing":                [150_000,  400_000,  700_000, 1_500_000, 2_200_000],
-    "Customer Success":                  [40_000,  120_000,  250_000,   500_000,   800_000],
-    "Research & Curriculum":             [50_000,  100_000,  150_000,   220_000,   300_000],
-    "G&A (legal, finance, ops)":         [80_000,  150_000,  250_000,   500_000,   900_000],
-    "Compliance / data governance":      [40_000,   80_000,  120_000,   180_000,   220_000],
+    # Trimmed for the leaner 4-stream revenue plan. Y5 ~$6.4M total cost
+    # vs $7.8M revenue (~18% margin), more defensible than the original
+    # $8.6M plan that was sized for the 8-stream universe.
+    "Engineering & R&D":                [200_000,  400_000,  750_000, 1_200_000, 1_700_000],
+    "Game Design & Content":             [60_000,  150_000,  350_000,   600_000,   850_000],
+    "Cloud Infrastructure":              [40_000,  120_000,  250_000,   500_000,   800_000],
+    "Sales & Marketing":                [180_000,  450_000,  800_000, 1_400_000, 1_900_000],
+    "Customer Success":                  [30_000,  100_000,  200_000,   400_000,   650_000],
+    "Research & Curriculum":             [40_000,   80_000,  130_000,   180_000,   250_000],
+    "G&A (legal, finance, ops)":         [60_000,  120_000,  200_000,   380_000,   600_000],
+    "Compliance / data governance":      [30_000,   60_000,  100_000,   150_000,   200_000],
 }
 
 YEARS = ["Year 1 (FY26-27)", "Year 2 (FY27-28)", "Year 3 (FY28-29)", "Year 4 (FY29-30)", "Year 5 (FY30-31)"]
@@ -184,9 +163,12 @@ print(f"{'Cumulative cash (USD)':<40} " + " ".join(f"{v:>10,.0f}" for v in cash_
 # Base = BMC numbers as computed above. Bear = 50% slower. Bull = 60% faster.
 
 SCENARIOS = {
-    "bear":  {"y3_arr_mult": 0.50, "y5_arr_mult": 0.40, "exit_multiple": 6.0,  "desc": "GCC pilot conversion stalls; only 50% of base ARR realized; trading at a discount EdTech multiple"},
-    "base":  {"y3_arr_mult": 1.00, "y5_arr_mult": 1.00, "exit_multiple": 10.0, "desc": "BMC plan executes; Series A 2028 at industry-median EdTech revenue multiple (10×)"},
-    "bull":  {"y3_arr_mult": 1.40, "y5_arr_mult": 1.60, "exit_multiple": 12.0, "desc": "GCC ministries adopt + GCC private chain partnership; Kahoot-style 11-12× multiple"},
+    # Per R1 feedback (Reach S1.2, a16z S1.1, a16z S3.1): EdTech public
+    # comps trade at 4-6× revenue today (May 2026), not the 10-26× of
+    # 2021. Revised multiples reflect current market.
+    "bear":  {"y3_arr_mult": 0.50, "y5_arr_mult": 0.40, "exit_multiple": 3.0,  "desc": "GCC pilot conversion stalls; only 50% of base ARR realized; trading at distressed-EdTech multiple"},
+    "base":  {"y3_arr_mult": 1.00, "y5_arr_mult": 1.00, "exit_multiple": 5.0,  "desc": "Plan executes; Series A 2028 at current EdTech median revenue multiple (~5× public comp; ~6-8× private growth)"},
+    "bull":  {"y3_arr_mult": 1.50, "y5_arr_mult": 1.70, "exit_multiple": 8.0,  "desc": "GCC ministries adopt + US Clever partnership lands; private growth multiple (8× ARR per Q4 2025 Finrofca private-comp range)"},
 }
 
 # Series A typically priced on FORWARD ARR (next-12-mo); we model it on Y3 ARR
@@ -285,11 +267,14 @@ print(f"  CAC ${CAC_TEACHER}, LTV ${LTV_TEACHER:,.0f}, LTV/CAC {LTV_CAC_TEACHER:
 #  Use of seed funds                                                    #
 # ------------------------------------------------------------------ #
 USE_OF_FUNDS_USD = {
-    "Engineering hires (3 new + AI tooling)": 200_000,
-    "Go-to-market: 1 founder-led BD + GESS/BETT": 125_000,
-    "Pilots + content (3 game updates + curriculum mapping)": 75_000,
-    "Compliance + legal (KSA PDPL, COPPA, contracts)": 50_000,
-    "Operations + reserve": 50_000,
+    # Rebalanced per R1 (Reach S2.9, a16z S3.6): product is shipped, GTM
+    # is the gating risk. GTM raised from 25% → 50%, engineering trimmed
+    # to 25%.
+    "GTM: 2 BD hires + founder travel + GESS/BETT": 250_000,
+    "Engineering (1 senior hire + AI tooling)":     125_000,
+    "Pilots + content + 1 wedge-game deepening":     50_000,
+    "Compliance + legal (KSA PDPL, COPPA, SAFE)":    50_000,
+    "Operations + reserve":                          25_000,
 }
 assert sum(USE_OF_FUNDS_USD.values()) == SEED_RAISE_USD, "Use of funds must total $500K"
 

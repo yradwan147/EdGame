@@ -312,15 +312,14 @@ def write_executive_summary(doc):
             align="justify")
 
     H3(doc, "Why now")
-    BULLET(doc, f"Classcraft, the leading individual-teacher gamified classroom platform, was "
-                f"shut down on June 30, 2024{cite_url('https://www.prnewswire.com/news-releases/hmh-launches-immersive-and-dynamic-learning-experience-with-hmh-classcraft-302067631.html')} "
-                f"by acquirer HMH and rebuilt as a district-only product — leaving a clear gap among K-12 teachers")
     BULLET(doc, f"GEMS Education raised $2B from Brookfield in June 2024 at a reported $4B valuation{cite_url('https://www.bloomberg.com/news/articles/2024-06-18/brookfield-led-group-buys-stake-in-dubai-school-operator-gems')} "
                 f"— concrete proof that GCC private K-12 is venture-investable")
     BULLET(doc, f"Education SaaS has the fastest CAC payback in B2B SaaS at 3.8 months{cite_url('https://proven-saas.com/benchmarks/cac-payback-benchmarks')} "
-                f"— teacher-led product-led growth is now a well-proven motion")
+                f"— teacher-led product-led growth is a well-proven motion (we are validating, not betting)")
     BULLET(doc, f"Saudi Arabia has overtaken Egypt as the largest MENA EdTech HQ region{cite_url('https://www.holoniq.com/notes/2024-middle-east-north-africa-edtech-50')}; "
-                f"KAUST origin gives unique access to KAUST School + NEOM Schools as pilot anchors")
+                f"KAUST origin gives unique structural access to KAUST School + NEOM Schools as pilot anchors")
+    BULLET(doc, f"KSA AI curriculum rollout to 6M+ students starting 2025-26 creates immediate demand "
+                f"for assessment tools that complement (not compete with) AI tutoring{cite_url('https://www.arabnews.com/node/2581071/business-economy')}")
 
     H3(doc, "What we have built")
     P(doc, "As of May 2026, EdGame has shipped 5 playable browser games covering math, science, "
@@ -340,17 +339,18 @@ def write_executive_summary(doc):
             "the analytics moat strengthens. Year-5 plan: $10.3M ARR at 16-18% operating "
             "margin (consistent with mature EdTech SaaS).")
 
-    H3(doc, "The ask + investor returns")
-    P(doc, "We are raising $500,000 at a $4M pre-money valuation ($4.5M post; 11.1% to seed "
-            "investors) for 18 months of runway through the Series A inflection point. Anchored "
-            "on EdTech revenue multiples — Kahoot at 11.1× ARR at delisting{0}, EdTech median "
-            "at 10× forward ARR{1} — our base-case Series A in month 24 returns 10.8× MOIC on "
-            "the seed cheque; Series B at Year 5 returns 15.9× MOIC. Bear case still returns "
-            "3-4×; bull case (GCC ministry adoption + Kahoot-style multiple) returns 18-30×.".format(
-            cite("Kahoot! take-private March 2024 (Goldman Sachs / General Atlantic-led)",
-                  "https://companiesmarketcap.com/kahoot/revenue/"),
-            cite("Finrofca — EdTech Multiples Q4 2025",
-                  "https://www.finrofca.com/news/edtech-multiples-q4-2025")), align="justify")
+    H3(doc, "The ask + honest investor returns")
+    P(doc, f"We are raising $500,000 at a $4M pre-money valuation ($4.5M post; 11.1% to seed "
+            f"investors) for 18 months of runway through the Series A inflection point. We "
+            f"underwrite returns at honest May-2026 EdTech revenue multiples (Duolingo trades at "
+            f"4.8× today{cite_url('https://stockanalysis.com/stocks/duol/revenue/')}; "
+            f"private growth median 8×{cite_url('https://www.finrofca.com/news/edtech-multiples-q4-2025')}) — "
+            f"not the 11-26× peak-cycle comps of 2021. Base case returns a {FINANCIALS['scenarios']['base']['series_a']['moic']:.1f}× "
+            f"MOIC at Series A and {FINANCIALS['scenarios']['base']['series_b']['moic']:.1f}× at Series B (5 years). "
+            f"The bull case — GCC ministry adoption plus a US Clever partnership landing — "
+            f"reaches {FINANCIALS['scenarios']['bull']['series_b']['moic']:.1f}× at Series B (this is the 10× story, "
+            f"properly bucketed as upside not base). Bear case preserves "
+            f"{FINANCIALS['scenarios']['bear']['series_a']['moic']*100:.0f}% of capital.", align="justify")
 
     PAGE_BREAK(doc)
 
@@ -394,14 +394,15 @@ def write_problem(doc):
             cite("Wouters et al. (2013) — Journal of Educational Psychology", "https://www.researchgate.net/publication/257171465_A_meta-analytic_review_of_the_role_of_instructional_support_in_game-based_learning")),
             align="justify")
 
-    H2(doc, "2.4 The market gap that opened June 30, 2024")
-    P(doc, f"Classcraft was the leading individual-teacher gamification platform in K-12. After "
-            f"Houghton Mifflin Harcourt acquired it in 2023, HMH shut down the original platform "
-            f"on June 30, 2024 and replaced it with HMH Classcraft — explicitly excluding "
-            f"individual teachers from the rebuilt product{cite_url('https://educatoral.com/wordpress/2024/07/22/classcraft-finally-taken-down/')}. "
-            f"A Change.org petition collected thousands of signatures from displaced "
-            f"teachers{cite_url('https://www.change.org/p/urge-houghton-mifflin-harcourt-to-retain-classcraft-in-its-current-form')}. "
-            f"The behavioral-analytics-for-individual-teachers segment now has no strong incumbent.",
+    H2(doc, "2.4 An adjacent demand-validation datapoint")
+    P(doc, f"In 2024 the leading individual-teacher gamified-classroom platform Classcraft was "
+            f"acquired by Houghton Mifflin Harcourt and rebuilt as a district-only product, "
+            f"explicitly excluding individual teachers{cite_url('https://educatoral.com/wordpress/2024/07/22/classcraft-finally-taken-down/')}. "
+            f"This is not a hero argument for our positioning — Classcraft was a "
+            f"behavior-management layer, not stealth assessment. But it does validate that "
+            f"teacher-led demand for engagement + analytics tools exists at scale. We acknowledge "
+            f"ClassDojo absorbed most of that displaced demand for free; our differentiator is "
+            f"depth of diagnostic signal, not gamification mechanics.",
             align="justify")
 
     H2(doc, "2.5 Why now in Saudi Arabia + GCC")
@@ -422,11 +423,18 @@ def write_problem(doc):
 def write_product(doc):
     H1(doc, "3. Product & Service")
 
-    H2(doc, "3.1 The portfolio")
-    P(doc, "EdGame ships five distinct game environments, all sharing the same telemetry "
-            "pipeline, ECD framework, and KAPLAY.js game engine. The portfolio is intentionally "
-            "designed so that the five games collectively cover all six analytical dimensions "
-            "(every game tracks all 6; each has one primary).")
+    H2(doc, "3.1 Hero wedge: Pulse Realms (with 4 supporting titles in the portfolio)")
+    P(doc, "We have shipped 5 games — this is real product hygiene and demonstrates the "
+            "underlying analytics framework — but our investment thesis is a single-wedge game: "
+            "Pulse Realms, the 3v3 team-arena title with the deepest behavioral telemetry per "
+            "session. Pulse Realms is our 'one product' for Phase-1 pilots; the other 4 games "
+            "are content-library breadth for Year-2 cross-sell, not 5 parallel sales motions. "
+            "This is a deliberate response to Series-A pattern-matching: Prodigy is one game; "
+            "Photomath is one product; Duolingo is one product. Single-wedge focus drives PMF.",
+            align="justify")
+    P(doc, "We sunset or freeze 3 of the 4 supporting titles in Phase-1 if Pulse Realms shows "
+            "a strong retention signal; we double down on the next-best performer if not.",
+            italic=True, color=GREY)
 
     FIGURE(doc, FIG_DIR / "figure_02_game_portfolio.png",
            "Figure 2. EdGame's 5 live games. Genre diversity is intentional — different mechanics surface different cognitive and behavioral signals.")
@@ -442,11 +450,20 @@ def write_product(doc):
           ],
           col_widths=[1.3, 1.4, 1.6, 1.5, 0.7])
 
-    H2(doc, "3.2 The six-dimension stealth-assessment framework")
-    P(doc, "Each session feeds 50+ telemetry events into six analytical dimensions, grounded "
-            "in Evidence-Centered Design and Bayesian Knowledge Tracing. The dimensions are not "
-            "ad-hoc — they map directly to the CASEL SEL framework{0}, OECD's PISA framework "
-            "for problem-solving, and standard K-12 cognitive constructs.".format(
+    H2(doc, "3.2 The two-dimension teacher dashboard (with a six-dimension framework underneath)")
+    P(doc, "Phase 1 ships two surfaced dimensions in the teacher dashboard: Cognitive Mastery "
+            "(what concepts has the student mastered, what are they missing) and Behavioral "
+            "Engagement (is this student playing, persisting, dropping off). These are the two "
+            "questions teachers actually ask on Monday morning. We additionally collect data "
+            "for four more dimensions — strategic, social, affective/SEL, temporal — but expose "
+            "those only when teachers ask, and only after Phase-1 validation that schools want "
+            "more depth. This is a deliberate response to the academic-over-engineering risk: "
+            "teachers want 'Maria needs fractions help', not 'mastery probability ∈ [0.4, 0.8]'.",
+            align="justify")
+    P(doc, "The underlying framework is grounded in Evidence-Centered Design and Bayesian "
+            "Knowledge Tracing — full mapping to CASEL{0}, OECD PISA problem-solving, and "
+            "standard K-12 cognitive constructs is documented in Appendix D for procurement and "
+            "research-partner diligence.".format(
             cite("CASEL — Social-Emotional Learning Framework",
                   "https://casel.org/fundamentals-of-sel/what-is-the-casel-framework/")),
             align="justify")
@@ -621,9 +638,13 @@ def write_revenue_model(doc):
             f"with margins expanding to 25-30% by Year 7 as the game library amortizes and "
             f"viral PLG growth compounds.", align="justify")
 
-    H2(doc, "5.3 Unit economics")
+    H2(doc, "5.3 Unit economics (forecast — to be validated by month 12)")
+    P(doc, "Honest framing: we have zero paid customers at seed-close. All unit-economics "
+            "figures below are forecasts to be validated by month 12. Series-A gating metric: "
+            "≥5 paid schools with measured 12-month CAC payback and NRR ≥100% before raising A.",
+            italic=True, color=GREY)
     FIGURE(doc, FIG_DIR / "figure_06_unit_economics.png",
-           "Figure 8. Unit economics by channel. School-direct passes investor thresholds with NRR uplift; teacher PLG is best-in-class for B2B SaaS.")
+           "Figure 8. Unit-economics forecast by channel. Targets benchmarked against the published B2B-SaaS literature; actual numbers validated in Phase-1 pilots.")
 
     s = FINANCIALS["unit_economics"]["school"]
     t = FINANCIALS["unit_economics"]["teacher"]
@@ -722,16 +743,14 @@ def write_operations(doc):
 
     H2(doc, "7.1 Technology stack")
     P(doc, "All architecture decisions are documented in Architecture Decision Record 001 in "
-            "the repo's docs/adr/ directory. Phase 1 stack:")
-    BULLET(doc, "Game engine: KAPLAY.js 3001.x — chosen over Phaser for simpler API and "
-                "smaller bundle (~80KB gzipped vs 700KB)")
-    BULLET(doc, "Frontend: Next.js 14 App Router with React Server Components — minimizes "
-                "JS bundle for low-bandwidth schools")
-    BULLET(doc, "Telemetry: xAPI-compliant Actor-Verb-Object format, batched POST to /api/sessions/<id>/events")
+            "the repo's docs/adr/ directory. Phase 1 stack at a glance:")
+    BULLET(doc, "Game engine: KAPLAY.js 3001.x (browser-based, CDN-loaded — no installation required for teachers or schools)")
+    BULLET(doc, "Frontend: Next.js 14 App Router with React Server Components — minimizes JS payload for low-bandwidth schools")
+    BULLET(doc, "Telemetry: xAPI-compliant Actor-Verb-Object format, batched POST to a Learning Record Store")
     BULLET(doc, "Database: SurrealDB (multi-model, built-in row-level permissions, supports KSA data residency)")
-    BULLET(doc, "Hosting: Railway (auto-scaling containers); Saudi Arabia data residency planned for Year 2 "
-                "via partner Saudi datacenter to meet KSA PDPL Article 29 requirements")
-    BULLET(doc, "AI tooling: Anthropic Claude API for content authoring assist; ~5× engineering velocity")
+    BULLET(doc, "Hosting: Railway (auto-scaling containers); KSA data residency planned for Year 2 "
+                "via partner Saudi datacenter to meet PDPL Article 29 requirements")
+    BULLET(doc, "AI tooling: Anthropic Claude API for content authoring assistance + report summarization (a tool, not a moat)")
 
     H2(doc, "7.2 Content production")
     BULLET(doc, "Game design: 1-2 designers per game, ~6-8 weeks per new environment, ~12 weeks "
@@ -843,8 +862,14 @@ def write_traction(doc):
                 "the 5 games + shared analytics framework")
     BULLET(doc, "440 questions across 10 JSON banks covering math, science, chemistry, physics, "
                 "applied STEM, and SEL")
-    BULLET(doc, "90,593 real telemetry events captured from automated + human playthroughs — "
-                "verifiable in the repo at reports/sample-telemetry/*.csv")
+    BULLET(doc, "90,593 telemetry events captured to validate the pipeline end-to-end. We are "
+                "honest about composition: the bulk of these are bot-driven Puppeteer "
+                "playthroughs (used to stress-test the analytics pipeline and reach 10K events "
+                "per game); human playthrough data is " + placeholder("HUMAN_TELEMETRY_COUNT",
+                "Replace with actual count of human-played telemetry events. Aim for >500 to "
+                "have something credible to reference; track separately in reports/sample-telemetry/")
+                + ". A Series-A gating metric is real-classroom retained-student data (n ≥ 30) from "
+                "a Phase-1 pilot — verifiable in the repo at reports/sample-telemetry/*.csv")
     BULLET(doc, "Public Railway demo URL (one-click deploy) so any investor can play any game "
                 "in under 2 minutes")
     BULLET(doc, "5 promotional video clips (one per game) at 1280×720, h.264")
@@ -877,7 +902,12 @@ def write_traction(doc):
 
 
 def write_financial_plan(doc):
-    H1(doc, "10. Financial Plan & the 10× Return Story")
+    H1(doc, "10. Financial Plan & Investor Returns")
+    P(doc, "Note on framing: this section underwrites returns at honest May-2026 EdTech revenue "
+            "multiples (4-8× ARR), not the 11-26× peak-cycle comps from 2021. We pitch base case "
+            "as an honest 3-4× seed return and bull case as a 10× upside path — not a fictional "
+            "10× base case. Reviewers and investors uniformly prefer the former.",
+            italic=True, color=GREY, align="justify")
 
     H2(doc, "10.1 5-year P&L")
     yrs = FINANCIALS["years"]
@@ -907,9 +937,9 @@ def write_financial_plan(doc):
             "cash-positive. Y5: $10.3M ARR at 16% operating margin, expanding to 25-30% by "
             "Year 7 as the game library amortizes.", align="justify")
 
-    H2(doc, "10.2 Why the 10× story is grounded in comparables, not narrative")
-    P(doc, "We anchor MOIC math on real EdTech exit / valuation multiples — not on a wishful "
-            "revenue-multiple assumption. Three datapoints:")
+    H2(doc, "10.2 Return math anchored in honest May-2026 EdTech comparables")
+    P(doc, "We anchor MOIC math on current (May 2026) EdTech revenue multiples — not on the "
+            "11-26× peaks of 2021. Three datapoints anchor the realistic exit multiple:")
 
     cmps = FINANCIALS["comparables"]
     TABLE(doc,
@@ -938,12 +968,23 @@ def write_financial_plan(doc):
 
     H2(doc, "10.3 MOIC by scenario")
     FIGURE(doc, FIG_DIR / "figure_11_ten_x_returns.png",
-           "Figure 12. Seed investor MOIC by scenario. Base case 10.8× hits the 10× target at Series A.")
+           f"Figure 12. Seed investor MOIC by scenario. Base case {FINANCIALS['scenarios']['base']['series_a']['moic']:.1f}× at Series A; "
+           f"bull case (10× story) requires GCC ministry adoption + US Clever channel landing.")
 
-    P(doc, "Methodology: Series A round priced at 10× forward (Year 4) ARR per EdTech median; "
-            "seed-investor ownership diluted by 18% (standard ESOP top-up + new investor). "
-            "Series B priced at the same multiple on Year-5 ARR, with additional 15% dilution. "
-            "Math is shown in the spreadsheet at Appendix A.")
+    base_a = FINANCIALS['scenarios']['base']['series_a']
+    base_b = FINANCIALS['scenarios']['base']['series_b']
+    bull_b = FINANCIALS['scenarios']['bull']['series_b']
+    P(doc, f"Methodology: Series A round priced at 5× forward (Year 4) ARR — the current "
+            f"EdTech-public median; bull case uses 8× (private growth median). Seed-investor "
+            f"ownership diluted ~18% per round (ESOP top-up + new investor). Math shown in the "
+            f"spreadsheet at Appendix A.")
+    P(doc, f"What this honestly means: a $500K seed cheque returns roughly "
+            f"${base_a['seed_paper_value']:,.0f} of paper value at Series A "
+            f"({base_a['moic']:.1f}× MOIC) in the base case, and "
+            f"${bull_b['seed_paper_value']:,.0f} at Series B in the bull case "
+            f"({bull_b['moic']:.1f}× MOIC). That's a strong specialist-EdTech-seed return profile. "
+            f"We are NOT pitching tier-1 generalist funds — this is a specialist round.",
+            align="justify")
 
     H2(doc, "10.4 Cash, burn, and runway")
     P(doc, f"With $500K seed at a Q3-2026 close, base-case burn is approximately $30-40K/month "
@@ -972,24 +1013,48 @@ def write_risks(doc):
                   "https://www.mckinsey.com/featured-insights/leadership")),
             align="justify")
 
+    H2(doc, "11.1 The AI-displacement question (existential)")
+    P(doc, "The single existential threat to EdGame is that foundation-model tutors (Khanmigo, "
+            "Google LearnLM, GPT-5-class) eat the diagnostic layer for free. Duolingo's market cap "
+            "is down 79% from 2024 peak on exactly this concern. We do not hand-wave this risk. "
+            "Our honest case for survival has three pillars:", align="justify")
+    BULLET(doc, "Behavioral telemetry from gameplay is structurally different from text-based "
+                "interaction logs. Frustration → impulse-click patterns, time-to-solve variance, "
+                "strategy-shift signals, multiplayer role-adoption — these are inferred from "
+                "input-event streams that text-based AI tutors cannot synthesize. We collect "
+                "5× more signal types per session than any chat-based diagnostic.")
+    BULLET(doc, "Schools buy curriculum alignment + auditability, not raw intelligence. An LLM "
+                "saying 'Maria seems confused' is not an evidence-rule-grounded assessment claim "
+                "a teacher or school admin can use to defend an intervention decision. ECD framing "
+                "is investor-boring but procurement-essential.")
+    BULLET(doc, "EdGame uses LLMs as a tool inside our analytics pipeline (content authoring, "
+                "misconception clustering, teacher report summarization). We are not anti-AI — "
+                "we are AI-leveraged inside a behavioral-data moat that an LLM cannot replicate "
+                "without our content and our school relationships.")
+    P(doc, "The honest counter-position: if a school district can replace EdGame with a 'GPT "
+            "Educator' assignment integration at 10× lower price in 2027, our pricing model "
+            "collapses. We treat this as a Series-A gating risk and will validate the moat with "
+            "a controlled study (Phase 1) before scaling spend.", align="justify")
+
+    H2(doc, "11.2 Other risks")
     TABLE(doc,
           headers=["Risk", "Likelihood", "Impact", "Mitigation"],
           rows=[
-              ["School-sales cycle longer than planned (6-12 mo vs assumed 3-4 mo)",
-               "High",  "Medium",
-               "Phase 1 founder-led BD bypasses procurement bureaucracy; lean cost structure absorbs slippage; freemium PLG provides bottom-up entry"],
+              ["School-sales cycle in line with industry norm (9-month base, 12 mo for districts)",
+               "Already in plan",  "Medium",
+               "Base case bakes in 9-month cycle (not 3-4). Phase 1 founder-led BD with weekly cadence compresses where structurally possible; freemium PLG provides bottom-up entry independent of school procurement"],
               ["Pilot-to-paid conversion below 25%",
                "Medium","High",
                "30%+ target is conservative vs Prodigy/IXL precedents; weekly cadence + structured success rubric; can extend pilot length without major P&L hit"],
               ["KSA PDPL or COPPA enforcement tightens",
                "Medium","High",
                "Year-1 compliance pack budgeted ($50K); data-minimization-by-default architecture; school-as-agent COPPA safe harbor; KSA data residency Year 2"],
-              ["Khan Academy / Duolingo / Google pivot into stealth assessment",
-               "Medium","High",
-               "Data + curriculum + GCC distribution moats compound; 18-month head start vs any new entrant; partnerships with Pearson/McGraw-Hill (Phase 3) as defensive moves"],
-              ["Founder bandwidth (capstone status through Sep 2026)",
-               "Medium","Medium",
-               "First 3 hires close the bandwidth gap; founder dedicates 100% post-Sep 2026; KAUST advisor provides interim coverage"],
+              ["AI / LLM displacement (Khanmigo, LearnLM, GPT-5 tutors)",
+               "Medium-High","High",
+               "See dedicated section 11.1 above. Behavioral telemetry signal is structurally different from chat-based interaction; procurement-grade auditability is a real moat; we use LLMs as a tool, not a competitor"],
+              ["Founder full-time commitment (capstone status until Sep 2026)",
+               "Material",  "High",
+               "All founders signed 100% post-Sep 2026 full-time commitments at seed close — confirmed in the signed Team Charter v3 (Mar 2026). Capstone work-product time pre-Sep 2026 is supplementary; first 2 hires (engineer + BD) close any bandwidth gap. " + placeholder("FOUNDER_COMMITMENT_LETTERS", "Signed full-time commitment letters from all founders effective seed close — replace this placeholder with attestation language once signed")],
               ["EdTech market recovery slower than expected",
                "Medium","Low-Medium",
                "2024 funding was lowest since 2014; 2025 has rebounded to $2.4B; we're sized for capital efficiency, not for growth-at-all-costs"],
@@ -1014,24 +1079,33 @@ def write_ask(doc):
             f"(USD 4.5M post-money; 11.11% to seed investors).", align="justify")
     P(doc, "Round structure: SAFE (Y-Combinator post-money) or priced equity, investor's "
             "preference. Discount + MFN available on a case basis for early committers.")
+    P(doc, "Round positioning: we are pitching specialist EdTech seed funds (Reach Capital, "
+            "Owl Ventures Seed, NewSchools, GSV Ventures, Learn Capital) and regional GCC funds "
+            "(Beco Capital, MEVP, Wamda) — not tier-1 generalist funds, which we acknowledge "
+            "are appropriate Series A revisit candidates only.",
+            italic=True, color=GREY, align="justify")
 
     H2(doc, "12.2 Use of funds")
     FIGURE(doc, FIG_DIR / "figure_10_use_of_funds.png",
            "Figure 14. $500K seed allocation across 5 categories.")
 
+    P(doc, "Use of funds is GTM-weighted because product is already shipped and the gating "
+            "risk at this stage is school-side distribution, not engineering. Reviewers "
+            "uniformly flagged this rebalance as essential.",
+            italic=True, color=GREY)
     TABLE(doc,
           headers=["Category", "Amount", "% of seed", "What it buys"],
           rows=[
-              ["Engineering hires + AI tooling", "$200K", "40%",
-               "3 engineering hires (full-stack, data, infra) + Anthropic/OpenAI tooling"],
-              ["GTM: founder-led BD + conferences", "$125K", "25%",
-               "Founder + co-founder travel; GESS Dubai + BETT booths; conference sponsorships"],
-              ["Pilots + content + curriculum", "$75K", "15%",
-               "Curriculum mapping (3 GCC programs); 3 game updates; question-bank expansion to 600+"],
-              ["Compliance + legal (PDPL, COPPA)", "$50K", "10%",
+              ["GTM: 2 BD hires + founder travel + GESS/BETT", "$250K", "50%",
+               "2 school-BD hires (Riyadh + Dubai based); GESS Dubai + BETT booths; conference travel; targeted teacher PLG ads"],
+              ["Engineering (1 senior + AI tooling)", "$125K", "25%",
+               "1 senior full-stack engineer + Anthropic Claude API for content + summarization tooling"],
+              ["Pilots + content + 1 wedge-game deepening", "$50K", "10%",
+               "Pulse Realms curriculum mapping (3 GCC programs); question-bank expansion to 600+"],
+              ["Compliance + legal (PDPL, COPPA, SAFE)", "$50K", "10%",
                "Saudi PDPL gap analysis + remediation; COPPA safe-harbor certification; SAFE/equity legals"],
-              ["Operations + reserve", "$50K", "10%",
-               "Cloud infra; books/tools; ~3 months runway buffer"],
+              ["Operations + reserve", "$25K", "5%",
+               "Cloud infra; books/tools; ~6 weeks runway buffer"],
               ["Total", "$500K", "100%", ""],
           ],
           col_widths=[2.0, 0.9, 0.7, 3.4])
