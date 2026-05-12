@@ -1,0 +1,495 @@
+{
+  "_meta": {
+    "compiled_for": "EdGame business plan (KAUST capstone, $500K seed @ $4M pre)",
+    "compiled_on": "2026-05-13",
+    "researcher": "Claude (Opus 4.7) via WebSearch",
+    "notes": "All figures verified against secondary source where possible. Where two sources give different numbers, both are listed with the more authoritative cited first. 'USD' figures are nominal year-of-source unless noted."
+  },
+
+  "market": [
+    {
+      "claim": "Global EdTech expenditure is projected to reach $404B by 2025, representing a 16.3% CAGR from 2019-2025 (2.5x growth over the period)",
+      "value": "$404B by 2025; 16.3% CAGR",
+      "source": "HolonIQ — Global EdTech Market to Reach $404B by 2025",
+      "url": "https://www.holoniq.com/notes/global-education-technology-market-to-reach-404b-by-2025",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "The total global education market (all of education, not just tech) is projected to reach nearly $10T by 2030, with Early Childhood and Workforce as fastest-growing segments",
+      "value": "~$10T by 2030",
+      "source": "HolonIQ — 2025 Global Education Outlook",
+      "url": "https://www.holoniq.com/notes/2025-global-education-outlook",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Global EdTech venture capital reached $2.4B in 2025, up from $1.8B in 2024 (the lowest level since 2014); deals are smaller, more disciplined, and skewed toward AI-enabled, workforce-aligned models",
+      "value": "$2.4B VC in 2025; $1.8B in 2024",
+      "source": "HolonIQ — EdTech funding drops again in early 2025",
+      "url": "https://www.holoniq.com/notes/edtech-funding-drops-again-in-early-2025-fewer-deals-but-bigger-bets",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Cumulative global EdTech VC funding through 2030 is projected to surpass $87B (vs. $32B over the entire prior decade)",
+      "value": "$87B+ through 2030",
+      "source": "HolonIQ — $87bn+ of Global EdTech funding predicted through 2030",
+      "url": "https://www.holoniq.com/notes/87bn-of-global-edtech-funding-predicted-to-2030",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Global game-based learning market was $13.17B in 2024, projected to grow to $49.52B by 2035 at ~12.79% CAGR (Market Research Future). Other firms give larger figures up to $88-191B by 2035",
+      "value": "$13.17B (2024) -> $49.52B (2035) at 12.79% CAGR (MRF base case); alt estimates $88-191B at 15-22% CAGR",
+      "source": "Market Research Future — Game-Based Learning Market",
+      "url": "https://www.marketresearchfuture.com/reports/game-based-learning-market-31653",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "The K-12 segment of global game-based learning is projected to reach $17.0B by 2035 (MRF)",
+      "value": "$17.0B K-12 GBL by 2035",
+      "source": "Market Research Future — Game-Based Learning Market",
+      "url": "https://www.marketresearchfuture.com/reports/game-based-learning-market-31653",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "GCC EdTech market was valued at $3.02B in 2024 and is projected to reach $4.47B by 2030 at a 6.74% CAGR (MarkNtel)",
+      "value": "$3.02B (2024) -> $4.47B (2030); 6.74% CAGR",
+      "source": "MarkNtel Advisors — GCC EdTech Market",
+      "url": "https://www.marknteladvisors.com/research-library/gcc-edtech-market.html",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Saudi Arabia EdTech market was $2.32B in 2024 and is projected to reach $6.85B by 2033, and Saudi Arabia overtook Egypt as the largest MENA EdTech HQ region in HolonIQ's 2025 rankings",
+      "value": "KSA EdTech $2.32B (2024) -> $6.85B (2033)",
+      "source": "HolonIQ — 2024 Middle East & North Africa EdTech 50",
+      "url": "https://www.holoniq.com/notes/2024-middle-east-north-africa-edtech-50",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Middle East EdTech market size (broad/regional definition) was $264.2B in 2024 with 16.6% CAGR projected to $573.1B by 2032 (Verified Market Research — broader definition includes adjacent services)",
+      "value": "$264.2B (2024) -> $573.1B (2032)",
+      "source": "Verified Market Research — Middle East EdTech Market",
+      "url": "https://www.verifiedmarketresearch.com/product/middle-east-edtech-market/",
+      "accessed": "2026-05-13"
+    }
+  ],
+
+  "competitors": [
+    {
+      "name": "Kahoot!",
+      "funding": "$584M raised; IPO Oct 2019 on Euronext Oslo; delisted March 19, 2024 after Goldman Sachs/General Atlantic-led take-private",
+      "revenue": "~$150M revenue TTM (2024); $140M in 2022; $91M in 2021",
+      "users": "4B+ cumulative participants in 200 countries",
+      "valuation": "£1.18B (~$1.5B) market cap at delisting in March 2024; enterprise value ~$1.66B post-delisting",
+      "source": "companiesmarketcap.com / Crunchbase",
+      "url": "https://companiesmarketcap.com/kahoot/revenue/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "name": "Prodigy Education (Prodigy Math)",
+      "funding": "$125M total raised (founded 2011, Toronto)",
+      "revenue": "Not publicly disclosed (private)",
+      "users": "100M+ registered students globally per company claims",
+      "valuation": "Private; no confirmed IXL acquisition found in search results — Prodigy remains independent",
+      "source": "CB Insights — Prodigy Education",
+      "url": "https://www.cbinsights.com/company/prodigy-education/financials",
+      "accessed": "2026-05-13"
+    },
+    {
+      "name": "IXL Learning",
+      "funding": "$570M raised total; private since 1998",
+      "revenue": "Estimated $500M-$1B annual (Growjo); other sources $100-500M",
+      "users": "18M+ students; 17,000+ topics",
+      "valuation": "Private; aggressive acquirer — bought WyzAnt (Apr 2024), Carson Dellosa (Aug 2024), MyTutor (May 2025), Evan-Moor (Oct 2025), Rosetta Stone (Feb 2026)",
+      "source": "Growjo / Tracxn",
+      "url": "https://growjo.com/company/IXL_Learning",
+      "accessed": "2026-05-13"
+    },
+    {
+      "name": "Legends of Learning",
+      "funding": "$18.6M-$27.3M total across 5 rounds; $5M seed led by Konvoy Ventures with angels including Fitbit CEO James Park, Lightspeed's Jeremy Liew, Crunchyroll's Kun Gao",
+      "revenue": "Not publicly disclosed",
+      "users": "K-8 math + science games; 2M+ students per company claims",
+      "valuation": "Private; small relative to category leaders",
+      "source": "Crunchbase / PitchBook",
+      "url": "https://www.crunchbase.com/organization/legends-of-learning",
+      "accessed": "2026-05-13"
+    },
+    {
+      "name": "Classcraft",
+      "funding": "Acquired by Houghton Mifflin Harcourt (HMH) in 2023; relaunched as 'HMH Classcraft' in Feb 2024",
+      "revenue": "N/A (subsumed)",
+      "users": "Original platform shut down June 30, 2024; rebuilt version excludes individual teachers (district-only); created a major market gap among individual K-12 teachers",
+      "valuation": "Acquisition terms not disclosed",
+      "source": "HMH press release / Change.org petition / educatoral.com",
+      "url": "https://www.hmhco.com/about-us/press-releases/hmh-launches-immersive-and-dynamic-learning-experience-with-hmh-classcraft",
+      "accessed": "2026-05-13"
+    },
+    {
+      "name": "Minecraft: Education Edition",
+      "funding": "Microsoft-owned (acquired Mojang 2014 for $2.5B); no separate education funding rounds",
+      "revenue": "Not separately reported by Microsoft",
+      "users": "Available in 115+ countries, 35+ languages; used in 100M+ classrooms cumulatively per Microsoft",
+      "valuation": "Subsidiary of Microsoft (NASDAQ: MSFT, ~$3T market cap)",
+      "source": "Microsoft / Mojang public statements",
+      "url": "https://education.minecraft.net/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "name": "Duolingo",
+      "funding": "Pre-IPO ~$183M raised; IPO July 2021 at $6.5B valuation (NASDAQ: DUOL)",
+      "revenue": "$1.04B in 2025 (38.7% YoY growth); $740M in 2024",
+      "users": "~100M MAU; ~9M+ paid subscribers (Super + Family plans)",
+      "valuation": "~$5B market cap as of May 2026 (down ~79% YoY from 2024-25 peak amid AI-substitution concerns)",
+      "source": "Macrotrends / StockAnalysis",
+      "url": "https://stockanalysis.com/stocks/duol/revenue/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "name": "Khan Academy",
+      "funding": "501(c)(3) non-profit; raised $100M+ in cumulative donations",
+      "revenue": "$107.3M revenue in 2023 (75% from foundation + individual donors; $64.2M from institutional/major donors; $15.3M corporate; $12M earned)",
+      "users": "150M+ registered users in 50+ languages",
+      "valuation": "N/A (non-profit). Major funders: Bill & Melinda Gates Foundation, Beneficus Foundation; in-kind support from Google, Microsoft, Adobe, Walmart",
+      "source": "Khan Academy Annual Report",
+      "url": "https://annualreport.khanacademy.org/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "name": "Brainly",
+      "funding": "$148.5M raised; largest round was $80M Series D (Dec 2020) led by Learn Capital",
+      "revenue": "$59.6M in 2024",
+      "users": "350M+ registered users globally per company claims",
+      "valuation": "Private; last priced round (2020) implied ~$500M+ valuation; no public 2024-25 valuation",
+      "source": "GetLatka / Crunchbase",
+      "url": "https://getlatka.com/companies/brainly",
+      "accessed": "2026-05-13"
+    },
+    {
+      "name": "Quizlet",
+      "funding": "$62M total raised across 3 rounds; $30M Series C in May 2020 from General Atlantic + Union Square Ventures + Icon Ventures at $1B valuation (unicorn)",
+      "revenue": "$80M in 2024; $139M ARR in 2025 (74% YoY)",
+      "users": "30M+ MAU; used by 2/3 of US high schoolers and 1/2 of US college students",
+      "valuation": "$1B (May 2020); private — no newer valuation disclosed",
+      "source": "GetLatka / TechCrunch",
+      "url": "https://getlatka.com/companies/quizlet",
+      "accessed": "2026-05-13"
+    }
+  ],
+
+  "vision2030": [
+    {
+      "claim": "Saudi Arabia's 2025 budget allocates SAR 201B (~$53.5B) to education — 16% of total government expenditures, the single largest line item",
+      "value": "SAR 201B / $53.5B (16% of 2025 budget)",
+      "source": "KPMG Saudi Arabia Budget Report 2025 / Asharq Al-Awsat",
+      "url": "https://english.aawsat.com/business/5244194-saudi-arabia%E2%80%99s-2025-budget-record-non-oil-revenues-sustained-investment-well-being",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Saudi Arabia spent $52B on education in 2022 + an additional $7B under the National Transformation Program for school modernization through 2030",
+      "value": "$52B + $7B NTP",
+      "source": "Saudi Vision 2030 Annual Reports / OECD",
+      "url": "https://www.vision2030.gov.sa/en/annual-reports",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "More than 6 million Saudi students will be reached by the nationwide AI curriculum starting in the 2025-2026 academic year",
+      "value": "6M+ students; AI curriculum launches 2025-26",
+      "source": "Arab News — Saudi Arabia's 2025 education plan",
+      "url": "https://www.arabnews.com/node/2581071/business-economy",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Over 400 new private schools opened in Saudi Arabia in 2024, marking the fastest private-school growth phase in recent KSA history",
+      "value": "400+ new private schools in 2024",
+      "source": "JK Management — Saudi Education Sector 2025",
+      "url": "https://jkmanagement.ae/saudi-education-sector/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "NEOM has announced ~$10B in investment for its education, research, and innovation sector, including NEOM U (online classes launching 2025), the Education Research and Innovation Foundation, Talent Academy, and the Neom Community School (operating since 2021, K-11 as of Feb 2025)",
+      "value": "$10B NEOM education investment",
+      "source": "Arab News / NEOM / Arab Education Magazine",
+      "url": "https://www.arabnews.com/node/2362981/amp",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "KAUST Innovation Ventures invests $200K (seed) up to $2M (early-stage) in deep-tech startups across energy, water, food, ICT, and healthcare; KAUST runs the National Transformation Institute as an innovation catalyst",
+      "value": "KAUST IV: $200K-$2M checks",
+      "source": "KAUST Innovation Ventures",
+      "url": "https://innovation.kaust.edu.sa/entrepreneurs/kaust-innovation-ventures/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Saudi Vision 2030's Human Capability Development Program (launched 2021 by Crown Prince MBS) targets sending 70,000 Saudis to top-200 global institutions by 2030; kindergarten enrollment hit 34% in 2023, surpassing the 32% target",
+      "value": "70K scholarship target; 34% KG enrollment (2023)",
+      "source": "Saudi Vision 2030 — Human Capability Development Program",
+      "url": "https://www.vision2030.gov.sa/en/explore/programs/human-capability-development-program",
+      "accessed": "2026-05-13"
+    }
+  ],
+
+  "regulation": [
+    {
+      "claim": "COPPA (US): EdTech vendors must obtain verifiable parental consent before collecting personal data from children under 13; the K-12 'school consent exception' allows schools to consent on behalf of parents — this is the legal mechanism enabling B2B-K12 EdTech at scale",
+      "value": "COPPA: under-13 consent + school exception",
+      "source": "AI Governance Group — FERPA, COPPA, and Beyond",
+      "url": "https://aigovernancegroup.com/blog/bridging-edtech-education-compliance-gap",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "FERPA (US): Federal law protecting student education records; EdTech vendors are treated as 'school officials' and must sign data-processing agreements limiting use, ensuring security, and supporting access/deletion requests",
+      "value": "FERPA: school official designation required",
+      "source": "US Department of Education — FERPA",
+      "url": "https://studentprivacy.ed.gov/ferpa",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Saudi Arabia's Personal Data Protection Law (PDPL) became fully enforceable September 14, 2024; explicitly treats minors' data, health data, genetic data, and credit data as 'special types' requiring elevated protection per the Implementing Regulations issued by SDAIA",
+      "value": "PDPL effective 14 Sep 2024; minors = special category",
+      "source": "Morgan Lewis — Saudi Arabia PDPL Transition Period Ends Sep 14",
+      "url": "https://www.morganlewis.com/pubs/2024/09/saudi-arabia-personal-data-protection-law-transition-period-ends-september-14",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Saudi PDPL: Data of minors is processed under stricter rules per the SDAIA Implementing Regulations; cross-border transfer of personal data is restricted and requires SDAIA approval for sensitive categories",
+      "value": "PDPL: minor-data + cross-border restrictions",
+      "source": "ICLG Data Protection Laws and Regulations 2025-2026 — Saudi Arabia",
+      "url": "https://iclg.com/practice-areas/data-protection-laws-and-regulations/saudi-arabia",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "GDPR (EU/UK): Children under 16 (or 13-16 by member state) require parental consent for data processing; UK's Age Appropriate Design Code adds 15 standards for any online service likely to be accessed by children",
+      "value": "GDPR-K: under-13/16 parental consent",
+      "source": "6B.education — Building Privacy-Compliant EdTech Systems",
+      "url": "https://6b.education/insight/building-privacy-compliant-systems-edtech-development-under-gdpr-coppa-and-ferpa/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "US-state student privacy laws: 121+ state laws now exceed FERPA; the Texas SCOPE Act became effective September 1, 2024 imposing additional duties on platforms accessed by minors",
+      "value": "121+ US state laws; SCOPE Act effective Sep 2024",
+      "source": "McDermott — EdTech and Privacy Regulatory Landscape",
+      "url": "https://www.mcdermottlaw.com/insights/edtech-and-privacy-navigating-a-shifting-regulatory-landscape/",
+      "accessed": "2026-05-13"
+    }
+  ],
+
+  "vc_thesis_reach": [
+    {
+      "claim": "Reach Capital closed Fund IV in April 2023 at $215M — its largest fund ever — to invest in seed through Series B in K-12, higher-ed, and workforce/reskilling technology",
+      "value": "Reach IV: $215M; seed-Series B",
+      "source": "Reach Capital — Announcing Reach IV",
+      "url": "https://www.reachcapital.com/2023/04/10/announcing-reach-iv-our-new-215m-core-fund-and-our-first-founders-fund/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Reach Capital was founded in 2015 by Jennifer Carolan (ex-NewSchools Venture Fund Seed Fund MD); the firm explicitly seeks to 'reject mercenary founders' and invests on 7-10-year K-12 timelines",
+      "value": "Founded 2015; 7-10 yr horizon",
+      "source": "Stanford GSB Case — Reach Capital",
+      "url": "https://www.gsb.stanford.edu/faculty-research/case-studies/reach-capital-performance-education-technology",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Reach Capital has made 256 investments to date; Reach Fund II's $32M into 14 core bets produced multiple unicorns including Newsela, Handshake, and Outschool",
+      "value": "256 investments; 3 unicorns from Fund II",
+      "source": "Reach Capital / TechCrunch",
+      "url": "https://techcrunch.com/2021/09/15/inside-reach-capitals-edtech-powered-returns/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Reach Capital 2024-2025 deals include Teachy ($7M Series A, Dec 2024 — AI for LATAM/Asia schools, co-led with Goodwater), Tenor ($5.4M seed, Dec 2024), Stepful ($31.5M), Manifold AI, and Songscription — signal AI + workforce focus",
+      "value": "Active 2024-25 deals: Teachy, Tenor, Stepful, Manifold",
+      "source": "Reach Capital portfolio / PitchBook",
+      "url": "https://pitchbook.com/profiles/investor/111506-59",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Reach Capital portfolio includes notable game/play-adjacent K-12 bets: ClassDojo, Tynker, Nearpod, Newsela, BetterLesson, eSpark, Outschool, Schoolzilla, Zeal — pattern is play/engagement + measurable teacher utility",
+      "value": "Portfolio pattern: engagement + teacher utility",
+      "source": "EdSurge — Reach Capital fund I portfolio",
+      "url": "https://www.edsurge.com/news/2015-10-22-six-questions-about-reach-capital-s-53-million-edtech-fund",
+      "accessed": "2026-05-13"
+    }
+  ],
+
+  "vc_thesis_a16z": [
+    {
+      "claim": "Marc Andreessen has publicly argued AI tutors will solve Bloom's two-sigma problem (1-on-1 tutoring producing +2 SD outcomes vs. classroom); a16z thesis: 'every child will have an AI tutor — infinitely patient, knowledgeable, helpful'",
+      "value": "Bloom 2-sigma; AI tutor thesis",
+      "source": "a16z — Why AI Will Save the World",
+      "url": "https://a16z.com/ai-will-save-the-world/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "a16z published 'Five Predictions for the Future of Learning in the Age of AI' (2024) outlining how AI tutors + human supplementation reshape K-12 and higher-ed; thesis tags education as part of the consumer/learning economy",
+      "value": "a16z 'Future of Learning in AI' framework",
+      "source": "a16z — Five Predictions for the Future of Learning",
+      "url": "https://a16z.com/the-future-of-learning-education-knowledge-in-the-age-of-ai/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Notable a16z education-adjacent investments referenced in firm content: Outschool (live classes marketplace), Numerade (AI tutor 'Ace' for STEM), Lambda School (ISA-based bootcamp), Replit (browser-based coding/education); Connie Chan (GP, consumer) historically covers learning",
+      "value": "a16z edu touchpoints: Outschool, Numerade, Lambda, Replit",
+      "source": "a16z — Education & Tech category",
+      "url": "https://a16z.com/category/consumer/education/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "a16z manages $44B+ AUM across funds (firm-wide); Connie Chan (GP) covers consumer including learning; Anjney Midha (GP from 2023) leads AI infrastructure but has no public education-specific thesis. a16z does not have a dedicated education fund — investments come from consumer/AI/apps funds",
+      "value": "$44B+ AUM; no dedicated edu fund",
+      "source": "Andreessen Horowitz (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Andreessen_Horowitz",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "a16z 'New Learning Economy: It's Time To Build in Education' (post-COVID) positions edtech opportunity as supplemental + skill-based + creator-economy adjacent — anti-thesis to seat-license institutional sales",
+      "value": "a16z thesis: supplemental > institutional",
+      "source": "a16z — The New Learning Economy",
+      "url": "https://a16z.com/the-new-learning-economy-its-time-to-build-in-education/",
+      "accessed": "2026-05-13"
+    }
+  ],
+
+  "edtech_benchmarks": [
+    {
+      "claim": "Median EdTech revenue multiple was 1.6x by Q4 2024 (down from 7.2x peak in Q4 2020); seed-stage EdTech EV/Revenue averages ~11.9x (with very wide dispersion 0.2x-80x)",
+      "value": "1.6x median; 11.9x seed avg",
+      "source": "Finerva — EdTech 2025 Valuation Multiples",
+      "url": "https://finerva.com/report/edtech-2025-valuation-multiples/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "US SaaS seed-stage 2024-25 typical post-money valuations cluster $14-17M (median); mean seed round size is ~$4M (higher for AI-tagged startups)",
+      "value": "$14-17M post-money median; $4M round size",
+      "source": "Metal.so — US SaaS Seed Benchmarks 2025",
+      "url": "https://www.metal.so/collections/us-saas-seed-round-benchmarks-2025-average-round-size-valuations-dilution",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Series A and B EV/Revenue multiples remain ~10-10.5x but spread narrows substantially; example: $5M ARR + 35% growth + 102% NRR = ~4.1x = ~$20.5M valuation",
+      "value": "Series A/B: 10x median; ARR-driven from ~4x",
+      "source": "Finrofca — EdTech Multiples Q4 2025",
+      "url": "https://www.finrofca.com/news/edtech-multiples-q4-2025",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Education SaaS has fastest CAC payback in B2B SaaS at ~3.8 months (vs. 8.6 months B2B SaaS median) due to ~$42 CAC from efficient teacher-focused social ads",
+      "value": "3.8 months payback; ~$42 CAC",
+      "source": "Proven SaaS — CAC Payback Benchmarks 2026",
+      "url": "https://proven-saas.com/benchmarks/cac-payback-benchmarks",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Healthy LTV:CAC ratio is 3:1 minimum, 5:1+ strong; SMB SaaS averages 2.5:1, Enterprise SaaS ($100K+ ACV) averages 4.5:1; median across all B2B SaaS is 3.2:1",
+      "value": "LTV:CAC target 3:1+; SMB 2.5x, Ent 4.5x",
+      "source": "Optifai — B2B SaaS LTV Benchmarks",
+      "url": "https://optif.ai/learn/questions/b2b-saas-ltv-benchmark/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Healthy CAC payback targets by segment: <12 months SMB, <18 months Mid-Market, <24 months Enterprise; early-stage <$1M ARR sees median 2-month payback while $50M+ ARR slows to 20 months",
+      "value": "Payback: <12mo SMB / <18mo MM / <24mo Ent",
+      "source": "ScaleXP — 2025 SaaS Benchmarks CAC Payback",
+      "url": "https://www.scalexp.com/blog-saas-benchmarks-cac-payback-2025/",
+      "accessed": "2026-05-13"
+    }
+  ],
+
+  "research_efficacy": [
+    {
+      "claim": "Clark, Tanner-Smith & Killingsworth (2016) meta-analysis: digital games significantly enhance learning vs. non-game conditions, effect size g=0.33 (95% CI 0.19-0.48) across 57 studies (n=209)",
+      "value": "g = 0.33 (Clark 2016)",
+      "source": "Clark et al., Review of Educational Research, 2016",
+      "url": "https://vittoriodublinoblog.org/wp-content/uploads/2024/10/clark-et-al-2016-digital-games-design-and-learning-a-systematic-review-and-meta-analysis.pdf",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Wouters et al. (2013) meta-analysis: serious games beat conventional instruction on learning (d=0.29) and retention (d=0.36); single-session interventions did NOT show significant gains — multi-session is the moderator",
+      "value": "d = 0.29 learning / 0.36 retention (Wouters 2013)",
+      "source": "Wouters et al., Journal of Educational Psychology (via ResearchGate)",
+      "url": "https://www.researchgate.net/publication/257171465_A_meta-analytic_review_of_the_role_of_instructional_support_in_game-based_learning",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Valerie Shute (FSU) & colleagues established stealth assessment in Physics Playground: in-game telemetry validly correlates with external physics tests, students improved physics understanding after gameplay, and reported enjoyment — the foundational framework EdGame builds on",
+      "value": "Stealth assessment validated (Shute & Ventura 2013)",
+      "source": "Shute — Stealth Assessment (MIT Press, open access)",
+      "url": "https://direct.mit.edu/books/oa-monograph/3700/Stealth-AssessmentMeasuring-and-Supporting",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Crystal Island (NC State, narrative-centered microbiology learning environment) has produced significant learning gains across content + problem-solving measures, consistent across genders, in 40+ peer-reviewed publications and thousands of students across urban/suburban/rural schools",
+      "value": "Crystal Island: 40+ publications; consistent gains",
+      "source": "NC State Intellimedia — Crystal Island Research",
+      "url": "https://projects.intellimedia.ncsu.edu/crystalisland/research-technology/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Frontiers in Education (2020) replicated stealth-assessment findings using multichannel data from Crystal Island, supporting individualized game-learning analytics as a robust assessment paradigm",
+      "value": "Multichannel stealth assessment validated 2020",
+      "source": "Frontiers in Education — Quantifying Scientific Thinking with Crystal Island",
+      "url": "https://www.frontiersin.org/journals/education/articles/10.3389/feduc.2020.572546/full",
+      "accessed": "2026-05-13"
+    }
+  ],
+
+  "gcc_school_groups": [
+    {
+      "claim": "GEMS Education operates 60+ schools across MENA + Asia/Europe/N. America serving ~170,000 students from 176+ countries; revenue $539.1M for 6 months ending Feb 2024 (+15% YoY)",
+      "value": "60+ schools; 170K students; $539M H1 revenue",
+      "source": "GEMS Education / The Pie News",
+      "url": "https://thepienews.com/brookfield-invests-gems-k12-education/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "GEMS Education: Brookfield-led consortium invested ~$2B in June 2024 at a reported $4B+ valuation, replacing an outright London IPO route; sets benchmark for GCC private-K12 enterprise value",
+      "value": "$2B Brookfield investment; ~$4B valuation (Jun 2024)",
+      "source": "Bloomberg — Brookfield Buys Stake in GEMS Education",
+      "url": "https://www.bloomberg.com/news/articles/2024-06-18/brookfield-led-group-buys-stake-in-dubai-school-operator-gems",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Taaleem operates 14 schools in the UAE and has publicly stated plans to expand into Bahrain, Qatar, and Saudi Arabia (DFM-listed since 2022)",
+      "value": "14 UAE schools; KSA expansion planned",
+      "source": "MEED — Taaleem company profile",
+      "url": "https://www.meed.com/taaleem/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "SABIS Network operates schools across Saudi Arabia (e.g., Abdulaziz International Schools in Riyadh, Knowledge Private International School in Dammam) as part of its global K-12 operator footprint",
+      "value": "SABIS operates in KSA (Riyadh, Dammam, more)",
+      "source": "SABIS KSA",
+      "url": "https://ksa.sabis.net/",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Al-Andalus Private Schools (Madares Al-Andalus) was established in 1984 in Jeddah and has expanded across multiple KSA cities; AdvancED-accredited; runs Saudi curriculum with Islamic/national values + academic excellence focus",
+      "value": "Al-Andalus: founded 1984; multi-city KSA",
+      "source": "Mdares AI — Al Andalus International Schools",
+      "url": "https://mdares.ai/sa-en/schools/al---andalus-private-schools",
+      "accessed": "2026-05-13"
+    }
+  ],
+
+  "classcraft_gap": [
+    {
+      "claim": "Classcraft was acquired by Houghton Mifflin Harcourt (HMH) in 2023; the original platform was shut down on June 30, 2024 and replaced by 'HMH Classcraft' — a district-only product that explicitly excludes individual teachers",
+      "value": "Original platform shut down Jun 30, 2024",
+      "source": "HMH press release Feb 2024",
+      "url": "https://www.prnewswire.com/news-releases/hmh-launches-immersive-and-dynamic-learning-experience-with-hmh-classcraft-302067631.html",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "HMH publicly acknowledged that 'many of the beloved gamification features would be missing initially' from the rebuilt platform, triggering a Change.org petition and an educator exodus to ClassMana, EdQuest, and other alternatives",
+      "value": "Gamification features removed; teachers churned",
+      "source": "Change.org — Petition to Retain Classcraft",
+      "url": "https://www.change.org/p/urge-houghton-mifflin-harcourt-to-retain-classcraft-in-its-current-form",
+      "accessed": "2026-05-13"
+    },
+    {
+      "claim": "Educator-reported impact: Classcraft had been a leading individual-teacher gamification platform before the shutdown; the shutdown left a market gap among K-12 teachers who relied on RPG-style classroom mechanics, validating demand for game-mechanic-driven K-12 tools",
+      "value": "Market gap among individual K-12 teachers",
+      "source": "educatoral.com — Classcraft Finally Taken Down",
+      "url": "https://educatoral.com/wordpress/2024/07/22/classcraft-finally-taken-down/",
+      "accessed": "2026-05-13"
+    }
+  ]
+}

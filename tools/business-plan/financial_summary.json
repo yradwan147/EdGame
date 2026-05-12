@@ -1,0 +1,299 @@
+{
+  "_meta": {
+    "compiled_on": "2026-05-13",
+    "seed_post_money": 4500000
+  },
+  "years": [
+    "Y1",
+    "Y2",
+    "Y3",
+    "Y4",
+    "Y5"
+  ],
+  "revenue_total": [
+    255000,
+    742500.0,
+    2704500.0,
+    5939800.0,
+    10260000
+  ],
+  "revenue_by_segment": {
+    "Individual Teacher Pro (SaaS)": [
+      60000,
+      156000,
+      600000,
+      1360000,
+      2160000
+    ],
+    "School Standard ($6-8 / student / yr)": [
+      105000,
+      227500.0,
+      525000,
+      914250.0,
+      1540000
+    ],
+    "School Premium ($10-14 / student / yr)": [
+      90000,
+      264000,
+      576000,
+      1047800,
+      1820000
+    ],
+    "District / Multi-school ($5-6 / student / yr)": [
+      0,
+      0,
+      247500.0,
+      603750.0,
+      1200000
+    ],
+    "Parent Premium ($72-80 / yr)": [
+      0,
+      35000,
+      216000,
+      418000,
+      640000
+    ],
+    "After-School Programs ($300-400 / mo / program)": [
+      0,
+      60000,
+      540000,
+      1176000,
+      1920000
+    ],
+    "OEM / API partners ($120K avg)": [
+      0,
+      0,
+      0,
+      220000,
+      480000
+    ],
+    "Custom development + data licensing": [
+      0,
+      0,
+      0,
+      200000,
+      500000
+    ]
+  },
+  "costs_total": [
+    720000,
+    1650000,
+    3120000,
+    5800000,
+    8620000
+  ],
+  "costs_by_line": {
+    "Engineering & R&D": [
+      220000,
+      450000,
+      900000,
+      1500000,
+      2100000
+    ],
+    "Game Design & Content": [
+      80000,
+      200000,
+      450000,
+      800000,
+      1100000
+    ],
+    "Cloud Infrastructure": [
+      60000,
+      150000,
+      300000,
+      600000,
+      1000000
+    ],
+    "Sales & Marketing": [
+      150000,
+      400000,
+      700000,
+      1500000,
+      2200000
+    ],
+    "Customer Success": [
+      40000,
+      120000,
+      250000,
+      500000,
+      800000
+    ],
+    "Research & Curriculum": [
+      50000,
+      100000,
+      150000,
+      220000,
+      300000
+    ],
+    "G&A (legal, finance, ops)": [
+      80000,
+      150000,
+      250000,
+      500000,
+      900000
+    ],
+    "Compliance / data governance": [
+      40000,
+      80000,
+      120000,
+      180000,
+      220000
+    ]
+  },
+  "ebitda": [
+    -465000,
+    -907500.0,
+    -415500.0,
+    139800.0,
+    1640000
+  ],
+  "cash_flow_cum": [
+    -465000,
+    -1372500.0,
+    -1788000.0,
+    -1648200.0,
+    -8200.0
+  ],
+  "operating_margin_pct": [
+    -182.35294117647058,
+    -122.22222222222223,
+    -15.36328341652801,
+    2.353614599818176,
+    15.984405458089668
+  ],
+  "seed": {
+    "raise_usd": 500000,
+    "pre_money_usd": 4000000,
+    "post_money_usd": 4500000,
+    "ownership_pct": 11.11111111111111
+  },
+  "comparables": [
+    {
+      "name": "Kahoot! (take-private Mar 2024)",
+      "ev_usd": 1660000000,
+      "arr_usd": 150000000,
+      "multiple": 11.1,
+      "type": "K-12 game-based"
+    },
+    {
+      "name": "Duolingo (IPO Jul 2021)",
+      "ev_usd": 6500000000,
+      "arr_usd": 250000000,
+      "multiple": 26.0,
+      "type": "EdTech consumer"
+    },
+    {
+      "name": "Duolingo (May 2026 trading)",
+      "ev_usd": 5000000000,
+      "arr_usd": 1040000000,
+      "multiple": 4.8,
+      "type": "EdTech consumer (mature)"
+    },
+    {
+      "name": "Quizlet (Series C, May 2020)",
+      "ev_usd": 1000000000,
+      "arr_usd": 80000000,
+      "multiple": 12.5,
+      "type": "EdTech B2C SaaS"
+    },
+    {
+      "name": "EdTech seed-stage avg (Finerva 2024)",
+      "ev_usd": null,
+      "arr_usd": null,
+      "multiple": 11.9,
+      "type": "Seed benchmark"
+    },
+    {
+      "name": "EdTech Series A/B median (Finrofca Q4 2025)",
+      "ev_usd": null,
+      "arr_usd": null,
+      "multiple": 10.0,
+      "type": "Series A/B benchmark"
+    }
+  ],
+  "scenarios": {
+    "bear": {
+      "series_a": {
+        "y3_arr": 1352250.0,
+        "y4_forward_arr": 2969900.0,
+        "series_a_post_money": 17819400.0,
+        "seed_ownership_post_a": 0.09111111111111111,
+        "seed_paper_value": 1623545.3333333335,
+        "moic": 3.247090666666667
+      },
+      "series_b": {
+        "y5_arr": 4104000.0,
+        "series_b_post_money": 24624000.0,
+        "seed_ownership_post_b": 0.07744444444444444,
+        "seed_paper_value": 1906992.0,
+        "moic": 3.813984
+      },
+      "desc": "GCC pilot conversion stalls; only 50% of base ARR realized; trading at a discount EdTech multiple"
+    },
+    "base": {
+      "series_a": {
+        "y3_arr": 2704500.0,
+        "y4_forward_arr": 5939800.0,
+        "series_a_post_money": 59398000.0,
+        "seed_ownership_post_a": 0.09111111111111111,
+        "seed_paper_value": 5411817.777777778,
+        "moic": 10.823635555555557
+      },
+      "series_b": {
+        "y5_arr": 10260000.0,
+        "series_b_post_money": 102600000.0,
+        "seed_ownership_post_b": 0.07744444444444444,
+        "seed_paper_value": 7945800.0,
+        "moic": 15.8916
+      },
+      "desc": "BMC plan executes; Series A 2028 at industry-median EdTech revenue multiple (10\u00d7)"
+    },
+    "bull": {
+      "series_a": {
+        "y3_arr": 3786299.9999999995,
+        "y4_forward_arr": 8315719.999999999,
+        "series_a_post_money": 99788639.99999999,
+        "seed_ownership_post_a": 0.09111111111111111,
+        "seed_paper_value": 9091853.866666665,
+        "moic": 18.183707733333332
+      },
+      "series_b": {
+        "y5_arr": 16416000.0,
+        "series_b_post_money": 196992000.0,
+        "seed_ownership_post_b": 0.07744444444444444,
+        "seed_paper_value": 15255936.0,
+        "moic": 30.511872
+      },
+      "desc": "GCC ministries adopt + GCC private chain partnership; Kahoot-style 11-12\u00d7 multiple"
+    }
+  },
+  "unit_economics": {
+    "school": {
+      "acv_usd": 3400,
+      "gm_pct": 78.0,
+      "cac_usd": 6500,
+      "ltv_usd": 17680.0,
+      "ltv_cac": 2.72,
+      "payback_mo": 29.411764705882355,
+      "logo_retention": 0.85,
+      "nrr": 1.1
+    },
+    "teacher": {
+      "acv_usd": 150,
+      "gm_pct": 78.0,
+      "cac_usd": 50,
+      "ltv_usd": 334.2857142857143,
+      "ltv_cac": 6.685714285714286,
+      "payback_mo": 5.128205128205128,
+      "logo_retention": 0.65,
+      "nrr": 1.0
+    }
+  },
+  "use_of_funds": {
+    "Engineering hires (3 new + AI tooling)": 200000,
+    "Go-to-market: 1 founder-led BD + GESS/BETT": 125000,
+    "Pilots + content (3 game updates + curriculum mapping)": 75000,
+    "Compliance + legal (KSA PDPL, COPPA, contracts)": 50000,
+    "Operations + reserve": 50000
+  }
+}
