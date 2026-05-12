@@ -1,5 +1,65 @@
 # EdGame Worklog
 
+## 2026-05-13 — Business plan (investor-ready DOCX + adversary review)
+
+Built a complete 30+ page investor-ready business plan as a single
+DOCX for the $500K seed at $4M pre-money ($4.5M post; 11.1% to seed)
+with a comparable-multipliers-grounded 10× MOIC story.
+
+### Deliverables
+- `reports/business-plan/EdGame_Business_Plan.docx` (4.0 MB) —
+  17 sections (cover + 12 numbered sections + 4 appendices),
+  ~5,000 words body, 14 embedded figures, 15 tables, 34 cited
+  sources, 12 user-fill-in placeholders
+- `reports/business-plan/financial_model.xlsx` — 5-sheet workbook
+  (P&L, unit economics, comparables, 10× scenarios, use of funds)
+- `reports/business-plan/figures/*.png` — 12 figures at 300 DPI
+  (6-dimensions hexagon, game portfolio, TAM/SAM/SOM, competitive
+  2×2, revenue stacked bar, unit-economics waterfall, pilot funnel,
+  org-growth, roadmap Gantt, use-of-funds donut, 10× MOIC bar,
+  market CAGR line)
+- `reports/business-plan/USER_FILL_IN.md` — checklist of placeholders
+  that need user-supplied content (founder bios, advisor names, etc.)
+- `reports/business-plan/adversary-review-log.md` — Round 1 critiques
+  from two simulated investor personas (Reach Capital + a16z) with
+  revisions tracked
+
+### Tools (new)
+- `tools/business-plan/figures.py` — matplotlib + Pillow figure
+  generator. All figures visually inspected at high resolution to
+  ensure no overlapping elements, no clipped text, readable fonts.
+  Key gotcha: matplotlib's `text.parse_math` rcParam must be `False`
+  or literal `$` gets interpreted as math-mode delimiter and stripped.
+- `tools/business-plan/financial_model.py` — 5-year P&L + 10× MOIC
+  math anchored in EdTech comparables (Kahoot 11.1×, Duolingo 26×
+  IPO / 4.8× now, Quizlet 12.5×, EdTech Series A/B median 10×)
+- `tools/business-plan/generate_plan.py` — DOCX builder using
+  python-docx. Inline `[N]` citation markers render as superscripts
+  and aggregate into Appendix B references list. Placeholders
+  registered via `placeholder()` helper and flagged to user.
+
+### 10× MOIC story (base case)
+- Seed: $500K @ $4M pre = 11.11% ownership at $4.5M post-money
+- Year 3 ARR: $2.7M; Year 4 forward ARR: ~$5.8M
+- Series A priced at 10× forward ARR (EdTech median per Finrofca Q4 2025)
+  = $58M post-money
+- Seed ownership after 18% Series A dilution = 9.11%
+- Paper value at Series A: 9.11% × $58M = $5.3M = **10.6× MOIC**
+- Bear case (50% of plan + 6× multiple): 3.2× / 3.8× (Series A / B)
+- Bull case (40% upside + Kahoot 12× multiple): 18.2× / 30.5×
+
+### Key inputs synthesized
+- McKinsey + Harvard 20-min + TIE212 KAUST guides (unified outline)
+- EdGame Analytics Blueprint (50+ metrics × 6 ECD dimensions)
+- Business Model Canvas (Mar 2026) (revenue tiers, segments,
+  pilot-to-paid funnel)
+- Web research (50+ sources): HolonIQ, MarkNtel, Verified Market
+  Research, Crunchbase, CB Insights, KPMG KSA Budget 2025, Bloomberg
+  GEMS-Brookfield deal, Statista, Finerva + Finrofca EdTech multiples,
+  Proven SaaS CAC payback benchmarks, Optifai LTV benchmarks,
+  Clark 2016 + Wouters 2013 efficacy meta-analyses, Shute MIT Press,
+  Crystal Island NC State research, etc.
+
 ## 2026-04-02 — All 4 Games Implemented
 
 ### Summary
