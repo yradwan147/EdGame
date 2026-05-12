@@ -210,3 +210,123 @@ The repo is real. The telemetry is real. The 6-dimension framework is more rigor
 **PASS at seed.** Generalist tier-1 doesn't lead pre-seed K-12, the round size is sub-scale for our fund, the team isn't full-time, and the venture-scale outcome math doesn't pencil at honest 2026 multiples. Refer to Reach, Owl, GSV. Track for Series A if they hit $1M+ ARR with measured unit economics and a named US channel.
 
 **Round 1 verdict: PASS — revisit at Series A on real US traction.**
+
+---
+
+## Round 2 — Jennifer Carolan, Reach Capital
+
+**Reviewer:** Jennifer Carolan, Co-Founder & GP, Reach Capital
+**Date:** 2026-05-13
+**Document:** EdGame BP v2 (revised pre-seed plan, May 2026)
+**Round 1 verdict (recap):** NEEDS REVISION — 6 conditions to flip; would consider $500K SAFE at $3M pre + MFN + board observer if 1-4 landed in 90 days.
+
+This is a verification pass. I am checking whether the six conditions are addressed, not re-litigating the thesis.
+
+### Condition-by-condition
+
+**1. Founder bios + named operator advisor — Not addressed in text; placeholder approach is honest. 🟡 Partial.**
+Section 8 still reads `[FOUNDER_NAME]`, `[FOUNDER_BIO]`, `[CTO_BIO]`, `[ADVISOR_OPERATOR]`. The Team Charter v3 reference and the §11 "[FOUNDER_COMMITMENT_LETTERS]" callout indicate the team is documenting commitment rigorously, but the actual bios and the named ex-Kahoot/ex-Prodigy/ex-IXL operator advisor I asked for are not in this draft. I accept this as a draft-stage placeholder, but I will not write a check until I see (a) four real bios with LinkedIn URLs and post-Sep-2026 full-time confirmations countersigned, and (b) at least one named operator advisor with a signed advisory agreement (0.25-0.5% equity is standard). This is a hard pre-close deliverable.
+
+**2. Signed paid LOI from a GCC operator — Not present in BP. 🟡 Partial / structurally weak.**
+The BP claims KAUST School + NEOM Schools access as a "structural advantage no Western EdTech founder can replicate" (§2.5, §4.5) but does NOT include a signed paid LOI from any GCC operator. §9.3 milestone "Q4 2026 KAUST + NEOM pilot launches" still uses future tense. §6.2 still says "weekly demos at KAUST School + NEOM Schools + GCC private chains" without a single named, signed counterparty. I called this the most important of the six and it remains unaddressed in writing. Acceptable as a placeholder ONLY if a paid LOI (KAUST School OR GEMS/Taaleem/SABIS/NEOM) is delivered as a condition precedent to close. I will not waive this.
+
+**3. MOIC math at honest 4-6× ARR multiples — Addressed. ✅**
+§10 explicitly reframes: "honest May-2026 EdTech revenue multiples (4-8× ARR), not the 11-26× peak-cycle comps from 2021." Base case 2.7× MOIC at Series A and 3.8× at Series B. Bull case 10.5× explicitly bucketed as upside, not base. Comparables table now correctly shows Duolingo May-2026 at 4.8× alongside the 2021 IPO 26× as a historical anchor. The $1.34M paper-value-on-$500K-cheque math is honest, transparent, and properly framed for specialist EdTech seed (not generalist). This is the cleanest fix in the revision and I credit it without reservation. Note: §10.3 still labels the bull case "the 10× story" — fine for a sales doc, but I'd push to label it "Upside scenario, conditional on GCC ministry + Clever landing" in the data room version.
+
+**4. One wedge game + 8-week retention data — Wedge chosen, retention data not delivered. 🟡 Partial.**
+Big win: §3.1 names Pulse Realms as the hero wedge and commits to sunsetting or freezing 3 of 4 supporting titles in Phase 1 if Pulse Realms underperforms. This is exactly the Prodigy/Photomath/Duolingo single-wedge framing I asked for. Excellent.
+What's missing: zero real-classroom retained-student data. §9.1 honestly states "the bulk of these [90,593 events] are bot-driven Puppeteer playthroughs ... human playthrough data is [HUMAN_TELEMETRY_COUNT]." That honesty is appreciated but it confirms my R1 concern: there is no n≥30 classroom cohort with 8-week retention yet. §9.1 commits to it as "a Series-A gating metric." For a seed, I will accept "deliver first 4-week classroom retention readout on Pulse Realms (n≥30) before close, full 8-week by month 4 post-close" as a pre/post-close milestone — but this is the metric that converts me from observer to lead.
+
+**5. Y5 revenue collapsed to ≤4 streams — Half-fixed. 🟡 Partial.**
+§5.2 narrative now says "school count × students × price + teachers × Pro price + districts + parents + after-school + OEM" — that's still 6 streams in the description. Appendix A Revenue Streams panel in the BMC also lists 8 lines (Teacher Pro, School Standard, School Premium, District, After-school, Parent Premium, OEM/API, Custom+data). The Year-5 ARR also doesn't reconcile — §1 and §5 say $10.3M, but the financial table in §10.1 shows Y5 revenue of $4.96M. That is a $5.3M gap and a serious internal inconsistency. Either (a) the §10.1 table is the lean/honest cut and the $10.3M is aspirational marketing, or (b) the table is wrong. Fix before any data room goes out. Stream count: please collapse to four — Teacher Pro / School (Standard+Premium+District blended) / Parent / Partnerships (OEM+After-school) — and stick with it across narrative, financial model, BMC, and pitch deck. This is a 1-day spreadsheet fix.
+
+**6. Use of funds rebalanced to ≥50% GTM — Addressed. ✅**
+§12.2: GTM 50%, Engineering 25%, Pilots/content 10%, Compliance 10%, Operations 5%. Explicit nod to reviewer feedback ("Reviewers uniformly flagged this rebalance as essential"). Clean fix.
+
+### New concerns the revision introduced
+
+- **NC1 — Revenue inconsistency ($10.3M vs $4.96M Y5).** Cited above. The §1, §5.2, §10 narrative says $10.3M; the §10.1 P&L table says $4.96M. Pick one. I assume $4.96M is correct because it matches the build-up math and the segment table sums to ~$5M, not $10.3M. If $4.96M is the real number, the MOIC math in §10.3 needs a re-run because it appears to anchor on a higher revenue base. This is the single biggest credibility risk in v2.
+- **NC2 — EBITDA never reaches breakeven in the 5-year window.** §10.1 table shows EBITDA -$1.99M in Y5 and cumulative cash -$6.47M. This contradicts §5.2's "16-18% operating margin" claim and §1's "Year-5 plan: $10.3M ARR at 16-18% operating margin." Cumulative -$6.47M cash also means the company needs ~$7M of capital across seed + Series A + bridge to reach Y5, which is fine, but it must be stated, not hidden inside an appendix table.
+- **NC3 — Unit economics still labeled "forecast — to be validated by month 12."** §5.3 is admirably honest. But until those four numbers (CAC $6,500 school / $50 teacher, NRR 110% / 100%) are measured, my Series-A gating language stands: ≥5 paid schools with measured 12-month CAC payback before any markup.
+- **NC4 — Section 4.4 "Competitor profiles" heading has no content** in the linear text — just a heading followed by the competitor table 200+ lines below. Cosmetic but suggests the v2 pass was rushed in places.
+- **NC5 — Citation [27] PDPL and [28] COPPA/FERPA still marked "(no source)" in Appendix B.** Sam (R1, S3.4) flagged exactly this. Easy fix. In a compliance section it remains an own-goal.
+
+### What v2 got right that I want to acknowledge
+
+- AI-displacement risk now has its own honest §11.1 with three pillars and a stated counter-position. This is the rare section in a pre-seed BP that survives a hostile read.
+- The "forecast, not measured" labeling on unit economics is investor-grade transparency.
+- The R1-to-R2 pivot from "10× base case" to "3-4× base, 10× upside" is the single most credibility-restoring change I see in the document.
+- Single-wedge framing on Pulse Realms is the right strategic call.
+- §1 and §10 now correctly position the round as specialist-EdTech-seed, not tier-1-generalist. This alone moves the doc out of the "doesn't know its own market" bucket.
+
+### Where I land
+
+Three of six conditions are cleanly addressed (MOIC honesty, wedge focus, use-of-funds rebalance). Three are placeholders awaiting user-supplied content (bios + advisor, signed LOI, retention data) — which I treat as acceptable for a draft if they materialize before close. The Y5 revenue/EBITDA inconsistency (NC1, NC2) is the one new blocker I did not have in R1.
+
+At my previously stated terms ($500K SAFE at $3M pre + MFN + observer seat), the placeholder-driven items are acceptable as conditions precedent. The NC1/NC2 financial-model inconsistency is NOT acceptable as a placeholder — it must be reconciled before I move to LOI. That's a 1-2 day spreadsheet pass, not a strategy question.
+
+I'd structure my offer as: $500K SAFE at $3M post-money cap, 20% discount, MFN, board observer seat, with the following conditions precedent to close: (i) four real founder bios + one named ex-Kahoot/ex-Prodigy/ex-IXL operator advisor signed; (ii) one signed paid LOI from KAUST School or a GCC operator (paid pilot, not free); (iii) reconciled financial model with consistent Y5 ARR figure across narrative + table + BMC; (iv) collapsed revenue streams to ≤4; (v) commitment to deliver 4-week Pulse Realms classroom retention readout (n≥30) by month 3 post-close, full 8-week by month 6.
+
+That last point shifts my $3M cap to $4M (the asked price) if the 8-week retention number lands above industry benchmarks. Upside ratchet is fair given they are taking the retention risk.
+
+I am not at "Yes, here is a term sheet today." I am at "Yes, I will do the work, and here is the structure I'd sign on closing those five conditions." That is meaningfully closer than R1's "needs revision."
+
+**Round 2 verdict: WILLING TO INVEST — $500K SAFE at $3M post-money cap + 20% discount + MFN + board observer seat, subject to the five conditions precedent listed above.**
+
+---
+
+## Round 2 — a16z General Partner
+
+**To:** a16z IC (informal — not a deal memo)
+**From:** [GP], Consumer / Edu vertical
+**Re:** EdGame — Round 2 read of revised pre-seed BP
+**Date:** May 2026
+
+---
+
+I told the team at Round 1 that a16z does not lead pre-seed K-12 and that I'd revisit at Series A on US traction. I gave them six items I'd want before a second meeting. They turned the deck around in roughly a week and — usefully — explicitly *de-positioned themselves out of tier-1 generalist consideration* in Section 10.3 and 12.1. That is the correct read of my Round 1 feedback. I'm grading the six conditions on whether they made the deck *coherent for a specialist seed conversation*, not on whether they made it fundable by a16z. Those are different bars.
+
+### Scorecard
+
+**1. §10 underwriting a $1B outcome on realized exit math, not Series A markup — 🟡 partial.**
+The revised §10 / 10.2 / 10.3 does the honest thing on multiples: 4.8× (Duolingo May 2026) and 8× (private growth median) replace the prior 10-26× peak-cycle comps. Base case is now stated as 2.7× MOIC at Series A / 3.8× at Series B, with 10.5× explicitly bucketed as bull-case upside requiring GCC ministry adoption *and* US Clever landing. That's the right framing for a specialist seed pitch — but it is no longer a venture-scale $1B-outcome story, which is what I asked for. They've answered the question by *withdrawing the $1B claim* rather than by underwriting it on realized exit math. That's actually fine and intellectually honest. It also confirms the round is not for us: a16z needs the $1B base case, not the 3-4× specialist case. Credit for honesty; clarity that this isn't our shape.
+
+**2. US distribution plan with named design partners — ❌ not addressed.**
+This is the gap that didn't move. §6.3 still names *channels* (Clever, Google Classroom Marketplace, Canvas/Schoology LTI) and a Prodigy precedent. No named US design-partner districts. No US teacher-evangelist roster. The Q3 2027 milestone is "Clever + Google Classroom integrations live" — that's an integration, not a customer. Until there is a named US partner — even one charter network or a single named ESD — the US story remains the same wish it was at Round 1. For a specialist fund this is acceptable at seed (Reach/Owl will source US partners themselves); for me at Series A it's still the gating item.
+
+**3. Dedicated AI-displacement section that survives a hostile read — ✅ addressed.**
+§11.1 is now a standalone section, written in the right key. Three pillars (telemetry signal-type differentiation, procurement-grade auditability via ECD, LLMs-as-tool-not-competitor) plus an explicit counter-position ("if a district can replace us with a GPT Educator integration at 10× lower price in 2027, our pricing collapses"). The honest counter-position is what I was looking for. It doesn't *defeat* the AI-displacement risk — nothing pre-revenue does — but it shows the team has thought about it adversarially and treated it as a Series A gating risk, not a hand-wave. This is genuinely the strongest section of the revised deck.
+
+**4. Named, full-time founders. No `[FOUNDER_NAME]` placeholders — ❌ not addressed.**
+§8.1 still reads "[FOUNDER_NAME] — Founder & CEO," "[FOUNDER_BIO]," "[CTO_NAME]," etc. The risk table (line 717) references "[FOUNDER_COMMITMENT_LETTERS]." Advisory board is "[ADVISOR_KAUST]" / "[ADVISOR_OPERATOR]" / "[ADVISOR_GCC]." I said in Round 1 this is the most important page in a pre-seed deck. It is still literally unfilled. I understand the deck is in template form because the founder identity is being intentionally held until close — fine — but until those slots are filled with real bios and a real full-time commitment statement, no specialist lead is going to wire on this document. Reach and Owl will both bounce this for the same reason I did. This is the single biggest "fix before next meeting" item and it's purely an authoring/execution gap, not a substantive one.
+
+**5. Named EdTech-specialist lead investor at terms — ❌ not addressed.**
+§12.1 names the *target list* (Reach, Owl, NewSchools, GSV, Learn Capital, plus Beco / MEVP / Wamda regionally). That is correct positioning — those are the right funds — but it is a list, not a commitment. No lead is signed. No term sheet. For specialist seed this is still the critical missing piece; the deck cannot close without it. Acknowledged as not-yet-addressed; this is a process item, not a deck item.
+
+**6. Honest TAM, honest unit-economics labels, Series A gating metrics in writing — ✅ addressed.**
+This is the cleanest improvement in the revision. §4.1 now explicitly uses bottom-up sales forecasting rather than top-down market-share extrapolation. §5.3 is labelled "Unit economics (forecast — to be validated by month 12)" with the explicit honest-framing sentence: "we have zero paid customers at seed-close. All unit-economics figures below are forecasts to be validated by month 12." Series A gating metric is now in writing: "≥5 paid schools with measured 12-month CAC payback and NRR ≥100% before raising A." §9.1 honestly separates bot-driven Puppeteer telemetry from human telemetry (with a placeholder for the human count that still needs filling). This is exactly the right epistemic hygiene for a specialist seed pitch — and frankly more honest than 80% of pre-seed decks I see.
+
+### Scorecard summary
+
+| # | Condition | Status |
+|---|---|---|
+| 1 | $1B outcome on realized exit math | 🟡 partial — answered by withdrawing the $1B claim rather than underwriting it; honest but confirms not-for-a16z |
+| 2 | US distribution with named design partners | ❌ not addressed |
+| 3 | AI-displacement section survives hostile read | ✅ addressed |
+| 4 | Named, full-time founders | ❌ not addressed (placeholders remain) |
+| 5 | Named EdTech-specialist lead at terms | ❌ not addressed (target list only) |
+| 6 | Honest TAM, honest unit-economics labels, Series A gates in writing | ✅ addressed |
+
+Two of six fully addressed, one partial, three open. But — and this is the important re-framing — the *partial* and *open* items mostly aren't deck failures; they're execution work (signing founders' full-time letters, signing a US design partner, signing a specialist lead). The deck itself is now coherent. Round 1, the deck was internally contradictory (10× MOIC base case alongside Duolingo's 4.8× comp on the same page). Round 2, the deck tells a single consistent story: honest specialist-seed math, bottom-up forecast, named gating metrics, AI-displacement risk treated adversarially, explicitly de-positioned from tier-1 generalists. That's a meaningful upgrade.
+
+### Where I land
+
+The team understood the feedback. They did not pretend a16z is the right lead — they took my "I don't lead pre-seed K-12" and rewrote §10 and §12 around it. They lowered the return claim, they labelled forecasts as forecasts, and they wrote down the Series A gates. That's professional. It does not change my Round 1 conclusion — I'm still not the lead, and the round is still sub-scale for our fund — but it earns the team a warm intro to my Reach/Owl/GSV contacts and a calendar reminder at Series A.
+
+What I would tell them off-record: fill §8 *this week* with real names and real bios, get one US design partner LOI before approaching Reach (even a single named charter network changes the read), and don't worry about a16z for this round. Come back at $1M+ ARR with a named US channel and we'll do a real Series A meeting.
+
+### Decision
+
+**WILLING TO REVISIT AT SERIES A** — calendar reminder set for Q2 2028 per their own roadmap. **WILLING TO PROVIDE SUPPORT** in the interim via warm intros to Reach, Owl, and GSV — not a cheque, but specialist-fund referrals are the more useful form of help here anyway. The deck is now in the right shape for those conversations; the gating execution items (founder names, US partner, signed lead) are on them.
+
+**Round 2 verdict: WILLING TO REVISIT AT SERIES A + warm intros to specialist funds.**

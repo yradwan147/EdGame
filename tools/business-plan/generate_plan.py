@@ -336,8 +336,11 @@ def write_executive_summary(doc):
             "(b) teacher Pro SaaS at $12/month, and (c) optional district + parent-premium "
             "tiers from Year 2. Penetration pricing (60% below IXL's $12-20/student) builds "
             "switching costs through accumulated behavioral data; prices rise 20-30%/year as "
-            "the analytics moat strengthens. Year-5 plan: $10.3M ARR at 16-18% operating "
-            "margin (consistent with mature EdTech SaaS).")
+            "the analytics moat strengthens. Year-5 plan (4-stream model): "
+            f"${FINANCIALS['revenue_total'][4]/1_000_000:.2f}M ARR at "
+            f"{FINANCIALS['operating_margin_pct'][4]:.0f}% operating margin "
+            "— pre-profitable at Year 5, Series A bridges to break-even in Year 6-7. "
+            "(Margin is honestly negative through Year 5; we don't pretend otherwise.)")
 
     H3(doc, "The ask + honest investor returns")
     P(doc, f"We are raising $500,000 at a $4M pre-money valuation ($4.5M post; 11.1% to seed "
@@ -505,11 +508,10 @@ def write_market_competition(doc):
     H1(doc, "4. Market & Competition")
 
     H2(doc, "4.1 TAM / SAM / SOM")
-    P(doc, "We use bottom-up sales forecasting (per TIE212 and Harvard guidance{0}) rather than "
-            "top-down market-share extrapolation. TAM frames the upside; SAM defines our "
-            "addressable opportunity in Phase 1-2; SOM is the bottom-up 5-year revenue plan.".format(
-            cite("Harvard Business Review — Creating a Business Plan",
-                  "https://hbr.org/2007/06/creating-a-business-plan")),
+    P(doc, "We use bottom-up sales forecasting (per Harvard 20-minute business-plan guidance and "
+            "KAUST TIE212 capstone slides) rather than top-down market-share extrapolation. TAM "
+            "frames the upside; SAM defines our addressable opportunity in Phase 1-2; SOM is the "
+            "bottom-up 5-year revenue plan.",
             align="justify")
 
     FIGURE(doc, FIG_DIR / "figure_03_tam_sam_som.png",
@@ -535,6 +537,9 @@ def write_market_competition(doc):
            "Figure 6. Competitive 2x2. EdGame occupies the upper-right opportunity zone left vacant by Classcraft's 2024 shutdown.")
 
     H2(doc, "4.4 Competitor profiles")
+    P(doc, "Funding and valuation data verified against public filings, Crunchbase, and CB Insights "
+            "in May 2026. The Assessment-gap column highlights what each platform does NOT measure "
+            "that EdGame does.")
     TABLE(doc,
           headers=["Competitor", "Funding raised", "Latest valuation / status", "Assessment gap vs EdGame"],
           rows=[
@@ -632,11 +637,13 @@ def write_revenue_model(doc):
     FIGURE(doc, FIG_DIR / "figure_05_revenue_growth.png",
            "Figure 7. Year-1 to Year-5 ARR build by segment. Bottom-up: school count × students × price + teachers × Pro price + districts + parents + after-school + OEM.")
 
-    P(doc, f"Our Year-5 ARR target of $10.3M is 58% lower than the original BMC plan's $24.8M "
-            f"and far more defensible. At Year 5 we hit 16-18% operating margin (healthy for "
-            f"growth-stage EdTech){cite_url('https://www.scalexp.com/blog-saas-benchmarks-cac-payback-2025/')} "
-            f"with margins expanding to 25-30% by Year 7 as the game library amortizes and "
-            f"viral PLG growth compounds.", align="justify")
+    P(doc, f"Our Year-5 ARR target of ${FINANCIALS['revenue_total'][4]/1_000_000:.2f}M is roughly 80% lower than the original BMC plan's "
+            f"$24.8M, reflecting the 4-stream collapse and softer Year-1 ramp baked in after R1 "
+            f"investor feedback. At Year 5 we are still pre-profitable "
+            f"({FINANCIALS['operating_margin_pct'][4]:.0f}% operating margin), with break-even expected in Year 6-7 "
+            f"once the Series A is deployed and revenue scales further. This is honest and "
+            f"matches the realistic-EdTech-SaaS pattern{cite_url('https://www.scalexp.com/blog-saas-benchmarks-cac-payback-2025/')}.",
+            align="justify")
 
     H2(doc, "5.3 Unit economics (forecast — to be validated by month 12)")
     P(doc, "Honest framing: we have zero paid customers at seed-close. All unit-economics "
@@ -768,10 +775,10 @@ def write_operations(doc):
     P(doc, "Student data governance is treated as a P0 requirement, not a checkbox. Phase 1 "
             "compliance pack:")
     BULLET(doc, f"KSA PDPL (Personal Data Protection Law) — consent, data minimization, "
-                f"anonymization/pseudonymization, role-based access controls, retention limits{cite_url('https://www.morganlewis.com/blogs/sourcingatmorganlewis/2025/07/saudi-arabias-personal-data-protection-law-compliance-deadline-extended')}")
+                f"anonymization/pseudonymization, role-based access controls, retention limits{cite('Morgan Lewis — Saudi Arabia PDPL compliance deadline extended (2025)', 'https://www.morganlewis.com/blogs/sourcingatmorganlewis/2025/07/saudi-arabias-personal-data-protection-law-compliance-deadline-extended')}")
     BULLET(doc, f"COPPA (US) — verifiable parental consent for under-13 students; "
-                f"safe-harbor under the school-as-agent doctrine for school-issued accounts{cite_url('https://www.iclg.com/practice-areas/data-protection-laws-and-regulations/usa')}")
-    BULLET(doc, f"FERPA — school-record handling, parent inspection rights{cite_url('https://www.iclg.com/practice-areas/data-protection-laws-and-regulations/usa')}")
+                f"safe-harbor under the school-as-agent doctrine for school-issued accounts{cite('ICLG — USA Data Protection Laws & Regulations', 'https://www.iclg.com/practice-areas/data-protection-laws-and-regulations/usa')}")
+    BULLET(doc, f"FERPA — school-record handling, parent inspection rights (FERPA covered by the same ICLG USA reference above)")
     BULLET(doc, "GDPR-K — applies to any EU students (after-school networks, expat schools)")
     BULLET(doc, "Internal: data minimization, pseudonymization at the analytics layer, 12-month retention by default, "
                 "annual fairness audits of BKT models across demographic groups")
@@ -781,9 +788,9 @@ def write_operations(doc):
            "Figure 10. Headcount evolution vs revenue/FTE productivity. Lean Y1; scale Y2-3; hire density Y4-5.")
 
     P(doc, "We hire ahead of revenue in Y1-Y2 (engineering + design), then GTM-heavy in Y3-Y4. "
-            "Revenue-per-FTE reaches $270K by Year 5, in line with mid-stage EdTech SaaS benchmarks "
-            "of $250-300K{0}.".format(cite("Bessemer Venture Partners — Cloud benchmarks (revenue per FTE)",
-                                            "https://www.bvp.com/atlas/cloud-100-benchmarks-report-2024")),
+            "Target revenue-per-FTE is $200-250K by Year 5 — slightly below the Bessemer Cloud "
+            "100 'best-in-class' mark of $300K but appropriate for the pre-profitable 4-stream "
+            "model. As ARR scales post-Series A, revenue-per-FTE should improve toward the best-in-class band.",
             align="justify")
 
     PAGE_BREAK(doc)
@@ -933,9 +940,11 @@ def write_financial_plan(doc):
           ],
           col_widths=[2.0, 1.0, 1.0, 1.0, 1.0, 1.0])
 
-    P(doc, "Y3 inflection: ARR crosses $2.7M with operating margin nearing breakeven. Y4: "
-            "cash-positive. Y5: $10.3M ARR at 16% operating margin, expanding to 25-30% by "
-            "Year 7 as the game library amortizes.", align="justify")
+    P(doc, f"Y3 inflection: ARR crosses ${FINANCIALS['revenue_total'][2]/1_000_000:.2f}M; operating margin still negative "
+            f"({FINANCIALS['operating_margin_pct'][2]:.0f}%) as we invest in GTM. Y4 ARR "
+            f"${FINANCIALS['revenue_total'][3]/1_000_000:.2f}M, margin {FINANCIALS['operating_margin_pct'][3]:.0f}%. "
+            f"Y5 ARR ${FINANCIALS['revenue_total'][4]/1_000_000:.2f}M, margin {FINANCIALS['operating_margin_pct'][4]:.0f}%. "
+            f"Break-even expected in Year 6-7 post Series A deployment.", align="justify")
 
     H2(doc, "10.2 Return math anchored in honest May-2026 EdTech comparables")
     P(doc, "We anchor MOIC math on current (May 2026) EdTech revenue multiples — not on the "
@@ -1007,10 +1016,9 @@ def write_financial_plan(doc):
 def write_risks(doc):
     H1(doc, "11. Risks & Mitigation")
 
-    P(doc, "Per McKinsey guidance{0}: 'investors expect a risk section and judge credibility by "
-            "your honest assessment.' We treat risk transparency as a credibility-builder.".format(
-            cite("McKinsey — The McKinsey Approach to Business Plans (Starting Up book)",
-                  "https://www.mckinsey.com/featured-insights/leadership")),
+    P(doc, "Per the McKinsey 'Starting Up' business-plan playbook: investors expect a risk "
+            "section and judge credibility by your honest assessment. We treat risk transparency "
+            "as a credibility-builder, not a checkbox.",
             align="justify")
 
     H2(doc, "11.1 The AI-displacement question (existential)")
@@ -1231,28 +1239,29 @@ def write_appendix_c_bmc(doc):
           "• After-school programs (Y2+)\n"
           "• OEM API partners (Y3+)")],
         # row 3
-        [("Cost Structure",
-          "Y5: 82% costs / 18% margin\n"
-          "• Engineering & R&D: $2.1M (20%)\n"
-          "• Sales & Marketing: $2.2M (21%)\n"
-          "• Game Design & Content: $1.1M (11%)\n"
-          "• Cloud Infrastructure: $1.0M (10%)\n"
-          "• Customer Success: $0.8M (8%)\n"
-          "• G&A: $0.9M (9%)\n"
-          "• Compliance: $0.2M (2%)\n"
-          "• Research / Curriculum: $0.3M (3%)"),
+        [("Cost Structure (revised, 4-stream model)",
+          f"Y5: ${FINANCIALS['costs_total'][4]/1_000_000:.2f}M costs / {FINANCIALS['operating_margin_pct'][4]:.0f}% margin (pre-profitable)\n"
+          "• Engineering & R&D: $1.7M (24%)\n"
+          "• Sales & Marketing: $1.9M (27%)\n"
+          "• Game Design & Content: $0.9M (12%)\n"
+          "• Cloud Infrastructure: $0.8M (12%)\n"
+          "• Customer Success: $0.7M (9%)\n"
+          "• G&A: $0.6M (9%)\n"
+          "• Compliance: $0.2M (3%)\n"
+          "• Research / Curriculum: $0.3M (4%)"),
          ("",
           ""),
-         ("Revenue Streams",
-          "Y5: $10.3M ARR\n"
-          "• Teacher Pro: $2.16M (21%)\n"
-          "• School Standard: $1.54M (15%)\n"
-          "• School Premium: $1.82M (18%)\n"
-          "• District: $1.20M (12%)\n"
-          "• After-school: $1.92M (19%)\n"
-          "• Parent Premium: $0.64M (6%)\n"
-          "• OEM / API: $0.48M (5%)\n"
-          "• Custom + data: $0.50M (5%)")],
+         ("Revenue Streams (revised, 4 streams)",
+          f"Y5: ${FINANCIALS['revenue_total'][4]/1_000_000:.2f}M ARR\n"
+          "• Teacher Pro (PLG): $1.4M (28%)\n"
+          "• School Standard: $1.2M (24%)\n"
+          "• School Premium: $1.3M (26%)\n"
+          "• District / Multi-school: $1.1M (22%)\n\n"
+          "Cut after R1 review:\n"
+          "• Parent Premium (sunset)\n"
+          "• After-school Programs (sunset)\n"
+          "• OEM / API (deferred to Year 6+)\n"
+          "• Custom Dev (deferred)")],
     ]
 
     for r, row in enumerate(bmc):
